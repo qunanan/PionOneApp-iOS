@@ -1,0 +1,59 @@
+PODS:
+  - AFNetworking (2.6.0):
+    - AFNetworking/NSURLConnection (= 2.6.0)
+    - AFNetworking/NSURLSession (= 2.6.0)
+    - AFNetworking/Reachability (= 2.6.0)
+    - AFNetworking/Security (= 2.6.0)
+    - AFNetworking/Serialization (= 2.6.0)
+    - AFNetworking/UIKit (= 2.6.0)
+  - AFNetworking/NSURLConnection (2.6.0):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/NSURLSession (2.6.0):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (2.6.0)
+  - AFNetworking/Security (2.6.0)
+  - AFNetworking/Serialization (2.6.0)
+  - AFNetworking/UIKit (2.6.0):
+    - AFNetworking/NSURLConnection
+    - AFNetworking/NSURLSession
+  - CocoaAsyncSocket (7.4.2)
+  - DZNEmptyDataSet (1.7.1)
+  - KHFlatButton (1.0.0)
+  - LibYAML (0.1.4)
+  - MBProgressHUD (0.9.1)
+  - RESideMenu (4.0.7)
+  - SDWebImage (3.7.3):
+    - SDWebImage/Core (= 3.7.3)
+  - SDWebImage/Core (3.7.3)
+  - TextFieldEffects (0.4.2)
+  - YAML-Framework (0.0.2):
+    - LibYAML (~> 0.1.4)
+
+DEPENDENCIES:
+  - AFNetworking (~> 2.0)
+  - CocoaAsyncSocket
+  - DZNEmptyDataSet
+  - KHFlatButton (~> 1.0.0)
+  - MBProgressHUD (~> 0.9.1)
+  - RESideMenu (~> 4.0)
+  - SDWebImage
+  - TextFieldEffects
+  - YAML-Framework
+
+SPEC CHECKSUMS:
+  AFNetworking: 79f7eb1a0fcfa7beb409332b2ca49afe9ce53b05
+  CocoaAsyncSocket: f5783bdedd232d91b89769bc4b5a1580aed518ad
+  DZNEmptyDataSet: 2a398066c2bf5848f7f693fb50954b5064debd12
+  KHFlatButton: 8fe86ab4cc7ef2e503276ad2872dc55cd985e5aa
+  LibYAML: 3af2c5adf3a40dff936d087aa6a77edc10036bc5
+  MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
+  RESideMenu: f24c508404b49c667344c54aba7e590883533958
+  SDWebImage: 1d2b1a1efda1ade1b00b6f8498865f8ddedc8a84
+  TextFieldEffects: de5b2db55fd8af5d5bfe0c7ce5a023076f2835a2
+  YAML-Framework: 6fe698e19d39d778829f5937e39d1e6bc12afd7b
+
+COCOAPODS: 0.38.1
