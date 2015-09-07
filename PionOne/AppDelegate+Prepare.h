@@ -11,5 +11,6 @@
 @interface AppDelegate (Prepare)
 - (void)prepareManagedObjectContext;
 - (BOOL)isUserExist;
+- (void)registerAPconfigLocalNotification;
 
 @end

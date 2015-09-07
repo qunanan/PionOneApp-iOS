@@ -11,6 +11,7 @@
 #import "PionOneUserDefaults.h"
 #import "NSString+Email.h"
 #import "GCDAsyncUdpSocket.h"
+
 @import SystemConfiguration.CaptiveNetwork;
 
 @interface PionOneManager()
@@ -542,6 +543,21 @@
         }
         NSLog(@"Networking error: %@", error.helpAnchor);
     }];
+}
+
+- (void)checkIfConnectedToPionOneWithCompletionHandler:(void (^)(BOOL, NSString *))handler {
+    self.canceled = NO;
+    self.isConfigurationSuccess = NO;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        while (![self isConnectedToPionOne] && !self.canceled) {
+            [NSThread sleepForTimeInterval:1];
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (handler) {
+                handler(YES,nil);
+            }
+        });
+    });
 }
 
 - (void)cancel {

@@ -15,6 +15,18 @@
 @end
 
 @implementation StartAPConfigVC
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [[PionOneManager sharedInstance] checkIfConnectedToPionOneWithCompletionHandler:^(BOOL succes, NSString *msg) {
+        UILocalNotification *notification = [[UILocalNotification alloc] init];
+        if (notification) {
+            notification.soundName = UILocalNotificationDefaultSoundName;
+            notification.alertBody = @"Connected to PionOne!";
+            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+        }
+        
+    }];
+}
 - (IBAction)gotReady {
     BOOL isConnected = [[PionOneManager sharedInstance] isConnectedToPionOne];
     if (isConnected) {

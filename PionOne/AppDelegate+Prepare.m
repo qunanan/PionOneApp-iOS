@@ -46,4 +46,13 @@
     return NO;
 }
 
+- (void)registerAPconfigLocalNotification{
+    
+    UIUserNotificationType types = UIUserNotificationTypeAlert | UIUserNotificationTypeSound;
+    UIUserNotificationSettings *connectToNodeSettings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
+    
+    [[UIApplication sharedApplication] registerUserNotificationSettings:connectToNodeSettings];
+
+}
+
 @end

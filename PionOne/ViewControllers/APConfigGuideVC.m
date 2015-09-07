@@ -33,6 +33,7 @@
     self.step2Label.hidden = YES;
     self.step3Label.hidden = YES;
     self.step4Label.hidden = YES;
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {

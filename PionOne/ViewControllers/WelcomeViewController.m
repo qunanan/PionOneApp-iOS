@@ -120,7 +120,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
-    self.navigationController.navigationBar.hidden = NO;
+    //self.navigationController.navigationBar.hidden = NO;
 }
 
 - (void)login {

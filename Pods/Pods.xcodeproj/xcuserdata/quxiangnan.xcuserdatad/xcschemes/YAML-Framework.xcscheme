@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "27E5ABE04556B81B5CA5CE07"
+               BlueprintIdentifier = "A9367F09D94612F879BF3BDD"
                BuildableName = "YAML_Framework.framework"
                BlueprintName = "YAML-Framework"
                ReferencedContainer = "container:Pods.xcodeproj">

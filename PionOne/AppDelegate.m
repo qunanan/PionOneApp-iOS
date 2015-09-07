@@ -23,6 +23,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    [self registerAPconfigLocalNotification];
+    
     [[PionOneManager sharedInstance] setManagedObjectContext:self.managedObjectContext];
     [self prepareManagedObjectContext];
     if ([self isUserExist]) {
@@ -41,6 +43,7 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [application beginBackgroundTaskWithExpirationHandler:nil];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -135,6 +138,16 @@
             abort();
         }
     }
+}
+
+
+# pragma -mark Notification Service methods
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
+    NSLog(@"%@", notificationSettings);
+    
+}
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
 }
 
 @end

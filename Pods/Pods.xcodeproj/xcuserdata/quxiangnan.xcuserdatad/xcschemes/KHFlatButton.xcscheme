@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9D3FC5E5D2368196B5EC749D"
+               BlueprintIdentifier = "F9F35998AEE8E91FBD4FC1DA"
                BuildableName = "KHFlatButton.framework"
                BlueprintName = "KHFlatButton"
                ReferencedContainer = "container:Pods.xcodeproj">

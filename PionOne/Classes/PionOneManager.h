@@ -50,6 +50,8 @@
 - (void)setupNodeNodeWithCompletionHandler:(void (^)(BOOL succes, NSString *msg))handler;
 - (void)findTheConfiguringNodeFromSeverWithCompletionHandler:(void (^)(BOOL succes, NSString *msg))handler;
 - (void)setNodeName:(NSString *)name withNodeSN:(NSString *)sn completionHandler:(void (^)(BOOL succes, NSString *msg))handler;
+- (void)checkIfConnectedToPionOneWithCompletionHandler:(void (^)(BOOL succes, NSString *msg))handler;
+
 - (void)cancel;
 
 @end

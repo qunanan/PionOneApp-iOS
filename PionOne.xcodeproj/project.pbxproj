@@ -14,7 +14,6 @@
 		98F6726B1B980E6800A9292B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 98F672691B980E6800A9292B /* Main.storyboard */; };
 		98F6726D1B980E6800A9292B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 98F6726C1B980E6800A9292B /* Images.xcassets */; };
 		98F672701B980E6800A9292B /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 98F6726E1B980E6800A9292B /* LaunchScreen.xib */; };
-		98F6727C1B980E6800A9292B /* PionOneTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 98F6727B1B980E6800A9292B /* PionOneTests.m */; };
 		98F672AD1B98114C00A9292B /* CoreDataTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 98F672A61B98114C00A9292B /* CoreDataTableViewController.m */; };
 		98F672AE1B98114C00A9292B /* SignInVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 98F672A81B98114C00A9292B /* SignInVC.m */; };
 		98F672AF1B98114C00A9292B /* SignUpVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 98F672AA1B98114C00A9292B /* SignUpVC.m */; };
@@ -42,16 +41,6 @@
 		98F6732D1B9B0A4600A9292B /* NamePionOneVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 98F6732C1B9B0A4600A9292B /* NamePionOneVC.m */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		98F672761B980E6800A9292B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 98F672511B980E6800A9292B /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 98F672581B980E6800A9292B;
-			remoteInfo = PionOne;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		243FA921D9EC0C3B3301DE1F /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		98F672591B980E6800A9292B /* PionOne.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PionOne.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -63,9 +52,6 @@
 		98F6726A1B980E6800A9292B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		98F6726C1B980E6800A9292B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		98F6726F1B980E6800A9292B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		98F672751B980E6800A9292B /* PionOneTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PionOneTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		98F6727A1B980E6800A9292B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		98F6727B1B980E6800A9292B /* PionOneTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PionOneTests.m; sourceTree = "<group>"; };
 		98F672A51B98114C00A9292B /* CoreDataTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDataTableViewController.h; sourceTree = "<group>"; };
 		98F672A61B98114C00A9292B /* CoreDataTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDataTableViewController.m; sourceTree = "<group>"; };
 		98F672A71B98114C00A9292B /* SignInVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignInVC.h; sourceTree = "<group>"; };
@@ -131,13 +117,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		98F672721B980E6800A9292B /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -163,7 +142,6 @@
 			isa = PBXGroup;
 			children = (
 				98F6725B1B980E6800A9292B /* PionOne */,
-				98F672781B980E6800A9292B /* PionOneTests */,
 				98F6725A1B980E6800A9292B /* Products */,
 				0930383B8D93905EAB144D33 /* Pods */,
 				6437B1C9D2B17EC71581EC7D /* Frameworks */,
@@ -174,7 +152,6 @@
 			isa = PBXGroup;
 			children = (
 				98F672591B980E6800A9292B /* PionOne.app */,
-				98F672751B980E6800A9292B /* PionOneTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -204,23 +181,6 @@
 				98F672E81B98457B00A9292B /* AppDelegate+Prepare.m */,
 				98F6725D1B980E6800A9292B /* Info.plist */,
 				98F6725E1B980E6800A9292B /* main.m */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		98F672781B980E6800A9292B /* PionOneTests */ = {
-			isa = PBXGroup;
-			children = (
-				98F6727B1B980E6800A9292B /* PionOneTests.m */,
-				98F672791B980E6800A9292B /* Supporting Files */,
-			);
-			path = PionOneTests;
-			sourceTree = "<group>";
-		};
-		98F672791B980E6800A9292B /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				98F6727A1B980E6800A9292B /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -325,39 +285,22 @@
 			productReference = 98F672591B980E6800A9292B /* PionOne.app */;
 			productType = "com.apple.product-type.application";
 		};
-		98F672741B980E6800A9292B /* PionOneTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 98F672821B980E6800A9292B /* Build configuration list for PBXNativeTarget "PionOneTests" */;
-			buildPhases = (
-				98F672711B980E6800A9292B /* Sources */,
-				98F672721B980E6800A9292B /* Frameworks */,
-				98F672731B980E6800A9292B /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				98F672771B980E6800A9292B /* PBXTargetDependency */,
-			);
-			name = PionOneTests;
-			productName = PionOneTests;
-			productReference = 98F672751B980E6800A9292B /* PionOneTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		98F672511B980E6800A9292B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0640;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = SeeedStudio;
 				TargetAttributes = {
 					98F672581B980E6800A9292B = {
 						CreatedOnToolsVersion = 6.4;
-					};
-					98F672741B980E6800A9292B = {
-						CreatedOnToolsVersion = 6.4;
-						TestTargetID = 98F672581B980E6800A9292B;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -375,7 +318,6 @@
 			projectRoot = "";
 			targets = (
 				98F672581B980E6800A9292B /* PionOne */,
-				98F672741B980E6800A9292B /* PionOneTests */,
 			);
 		};
 /* End PBXProject section */
@@ -388,13 +330,6 @@
 				98F6726B1B980E6800A9292B /* Main.storyboard in Resources */,
 				98F672701B980E6800A9292B /* LaunchScreen.xib in Resources */,
 				98F6726D1B980E6800A9292B /* Images.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		98F672731B980E6800A9292B /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -484,23 +419,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		98F672711B980E6800A9292B /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				98F6727C1B980E6800A9292B /* PionOneTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		98F672771B980E6800A9292B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 98F672581B980E6800A9292B /* PionOne */;
-			targetProxy = 98F672761B980E6800A9292B /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		98F672691B980E6800A9292B /* Main.storyboard */ = {
@@ -543,6 +462,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -558,7 +478,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -595,7 +515,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -611,6 +531,7 @@
 				INFOPLIST_FILE = PionOne/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "STU.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -624,41 +545,8 @@
 				INFOPLIST_FILE = PionOne/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "STU.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
-		98F672831B980E6800A9292B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = PionOneTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PionOne.app/PionOne";
-			};
-			name = Debug;
-		};
-		98F672841B980E6800A9292B /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = PionOneTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PionOne.app/PionOne";
 			};
 			name = Release;
 		};
@@ -679,15 +567,6 @@
 			buildConfigurations = (
 				98F672801B980E6800A9292B /* Debug */,
 				98F672811B980E6800A9292B /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		98F672821B980E6800A9292B /* Build configuration list for PBXNativeTarget "PionOneTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				98F672831B980E6800A9292B /* Debug */,
-				98F672841B980E6800A9292B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
