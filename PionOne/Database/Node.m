@@ -2,7 +2,7 @@
 //  Node.m
 //  PionOne
 //
-//  Created by Qxn on 15/9/4.
+//  Created by Qxn on 15/9/9.
 //  Copyright (c) 2015年 SeeedStudio. All rights reserved.
 //
 
@@ -15,9 +15,9 @@
 
 @dynamic key;
 @dynamic name;
+@dynamic nodeID;
 @dynamic online;
 @dynamic sn;
-@dynamic nodeID;
 @dynamic groves;
 @dynamic user;
 

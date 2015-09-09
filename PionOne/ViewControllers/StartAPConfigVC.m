@@ -15,18 +15,24 @@
 @end
 
 @implementation StartAPConfigVC
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [[PionOneManager sharedInstance] checkIfConnectedToPionOneWithCompletionHandler:^(BOOL succes, NSString *msg) {
-        UILocalNotification *notification = [[UILocalNotification alloc] init];
-        if (notification) {
-            notification.soundName = UILocalNotificationDefaultSoundName;
-            notification.alertBody = @"Connected to PionOne!";
-            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-        }
-        
-    }];
+//    [self startCheckingNodeAPConnection];
 }
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    if (![[PionOneManager sharedInstance] isConnectedToPionOne]) {
+        [self startCheckingNodeAPConnection];
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [[PionOneManager sharedInstance] cancel]; //cancel all processing, include Checking Node AP connection
+}
+
 - (IBAction)gotReady {
     BOOL isConnected = [[PionOneManager sharedInstance] isConnectedToPionOne];
     if (isConnected) {
@@ -41,4 +47,21 @@
     }
 }
 
+- (void)startCheckingNodeAPConnection {
+    [[PionOneManager sharedInstance] longDurationProcessBegin];
+    [[PionOneManager sharedInstance] checkIfConnectedToPionOneWithCompletionHandler:^(BOOL succes, NSString *msg) {
+        if (succes) {
+            UILocalNotification *notification = [[UILocalNotification alloc] init];
+            if (notification) {
+                notification.soundName = UILocalNotificationDefaultSoundName;
+                notification.alertBody = @"Connected to PionOne!";
+                [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                [self performSegueWithIdentifier:@"ShowAPConfigGuideVC" sender:nil];
+            }
+        }
+        else {
+            NSLog(@"Stopped checking SSID.");
+        }
+    }];
+}
 @end

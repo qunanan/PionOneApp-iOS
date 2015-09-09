@@ -36,13 +36,16 @@
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Driver"];
     request.predicate = nil;
-    request.sortDescriptors = @[[[NSSortDescriptor alloc] initWithKey:@"groveName"
+    request.sortDescriptors = @[[[NSSortDescriptor alloc] initWithKey:@"interfaceType"
+                                                            ascending:YES
+                                                           selector:@selector(localizedStandardCompare:)],
+                                [[NSSortDescriptor alloc] initWithKey:@"groveName"
                                                             ascending:YES
                                                              selector:@selector(localizedStandardCompare:)]];
     self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                         managedObjectContext:managedObjectContext
                                                                           sectionNameKeyPath:@"interfaceType"
-                                                                                   cacheName:nil];
+                                                                                   cacheName:@"DriverList"];
 }
 
 
@@ -52,6 +55,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"GroveDriverCell" forIndexPath:indexPath];
     Driver *driver = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.textLabel.text = driver.groveName;
+    cell.detailTextLabel.text = driver.interfaceType;
     NSURL *url = [NSURL URLWithString:driver.imageURL];
     [cell.imageView sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"About"]];
     return cell;

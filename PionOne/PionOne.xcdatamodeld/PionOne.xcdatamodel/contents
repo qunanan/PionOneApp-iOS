@@ -8,10 +8,13 @@
         <attribute name="interfaceType" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="Grove" representedClassName="Grove" syncable="YES">
+        <attribute name="connectorName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="imageURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="instanceName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="interfaceType" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="pinNum" optional="YES" attributeType="Integer 16" syncable="YES"/>
+        <attribute name="pinNum0" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pinNum1" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="node" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Node" inverseName="groves" inverseEntity="Node" syncable="YES"/>
     </entity>
     <entity name="Node" representedClassName="Node" syncable="YES">
@@ -20,7 +23,7 @@
         <attribute name="nodeID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="online" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="sn" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="groves" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Grove" inverseName="node" inverseEntity="Grove" syncable="YES"/>
+        <relationship name="groves" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Grove" inverseName="node" inverseEntity="Grove" syncable="YES"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="nodes" inverseEntity="User" syncable="YES"/>
     </entity>
     <entity name="User" representedClassName="User" syncable="YES">
@@ -30,7 +33,7 @@
     </entity>
     <elements>
         <element name="Driver" positionX="-333" positionY="-42" width="128" height="118"/>
-        <element name="Grove" positionX="-155" positionY="-225" width="128" height="118"/>
+        <element name="Grove" positionX="-162" positionY="-223" width="128" height="163"/>
         <element name="Node" positionX="-335" positionY="-223" width="128" height="148"/>
         <element name="User" positionX="-513" positionY="-225" width="128" height="88"/>
     </elements>

@@ -2,7 +2,7 @@
 //  Grove.h
 //  PionOne
 //
-//  Created by Qxn on 15/9/4.
+//  Created by Qxn on 15/9/9.
 //  Copyright (c) 2015年 SeeedStudio. All rights reserved.
 //
 
@@ -15,8 +15,11 @@
 
 @property (nonatomic, retain) NSString * imageURL;
 @property (nonatomic, retain) NSString * interfaceType;
+@property (nonatomic, retain) NSString * instanceName;
+@property (nonatomic, retain) NSString * pinNum0;
 @property (nonatomic, retain) NSString * name;
-@property (nonatomic, retain) NSNumber * pinNum;
+@property (nonatomic, retain) NSString * connectorName;
+@property (nonatomic, retain) NSString * pinNum1;
 @property (nonatomic, retain) Node *node;
 
 @end

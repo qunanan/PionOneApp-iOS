@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface WiFiPasswordVC : UIViewController
-
+@property (nonatomic, weak) id presentingVC;
 @end

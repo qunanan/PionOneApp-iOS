@@ -9,6 +9,7 @@
 #import "APConfigGuideVC.h"
 #import "KHFlatButton.h"
 #import "PionOneManager.h"
+#import "WiFiPasswordVC.h"
 
 #define IN_STEP_1   self.step1Label.hidden == NO && self.step2Label.hidden == YES
 #define IN_STEP_2   self.step2Label.hidden == NO && self.step3Label.hidden == YES
@@ -33,30 +34,52 @@
     self.step2Label.hidden = YES;
     self.step3Label.hidden = YES;
     self.step4Label.hidden = YES;
-    
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    [self startConfiguration];
+    [self setDefinesPresentationContext:YES];
+    [self performSegueWithIdentifier:@"ShowEnterPassowrdVC" sender:nil];
+    [self.indicator startAnimating];
 }
 
 - (IBAction)buttonPushed:(KHFlatButton *)button {
     if ([button.titleLabel.text isEqualToString:@"Cancel"]) {
-        [button setTitle:@"Start" forState:UIControlStateNormal];
         [self cancelConfiguration];
-    } else if ([button.titleLabel.text isEqualToString:@"Start"]) {
-        [button setTitle:@"Cancel" forState:UIControlStateNormal];
-        [self startConfiguration];
-    } else {
+    } else if ([button.titleLabel.text isEqualToString:@"Done"]) {
         [self.navigationController popToRootViewControllerAnimated:YES];
     }
 }
 
+- (void)startConfiguration {
+    PionOneManager *manager = [PionOneManager sharedInstance];
+    [manager longDurationProcessBegin];
+    if (manager.cachedNodeName && manager.cachedPassword) {
+        [manager startAPConfigWithProgressHandler:^(BOOL success, NSInteger step, NSString *msg) {
+            if (success) {
+                switch (step) {
+                    case 1:
+                        self.step1Label.hidden = NO;
+                        break;
+                    case 2:
+                        self.step2Label.hidden = NO;
+                        break;
+                    case 3:
+                        self.step3Label.hidden = NO;
+                        break;
+                    case 4:
+                        self.step4Label.hidden = NO;
+                        [self configurationgDone];
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                [self showAlertMsg:msg];
+                [self cancelConfiguration];
+            }
+        }];
+    }
+}
 - (void)cancelConfiguration {
     PionOneManager *manager = [PionOneManager sharedInstance];
     manager.APConfigurationDone = NO;
-    manager.cachedPassword = nil;
     [manager cancel];
     self.step1Label.hidden = YES;
     self.step2Label.hidden = YES;
@@ -66,41 +89,6 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)startConfiguration {
-    [self.indicator startAnimating];
-    PionOneManager *manager = [PionOneManager sharedInstance];
-    if (manager.cachedPassword == nil) {
-        [self performSegueWithIdentifier:@"ShowEnterPassowrdVC" sender:nil];
-        return;
-    } else {
-        self.step1Label.hidden = NO;
-    }
-    
-    if (manager.APConfigurationDone) {
-        self.step4Label.hidden = NO;
-        [self configurationgDone];
-    }
-    
-    if (IN_STEP_1) {
-        [[PionOneManager sharedInstance] setupNodeNodeWithCompletionHandler:^(BOOL succes, NSString *msg) {
-            if (succes) {
-                self.step2Label.hidden = NO;
-                [manager findTheConfiguringNodeFromSeverWithCompletionHandler:^(BOOL succes, NSString *msg) {
-                    if (succes) {
-                        self.step3Label.hidden = NO;
-                        [self performSegueWithIdentifier:@"ShowEnterNameVC" sender:nil];
-                    } else {
-                        [self showAlertMsg:msg];
-                        [self cancelConfiguration];
-                    }
-                }];
-            } else {
-                [self showAlertMsg:msg];
-                [self cancelConfiguration];
-            }
-        }];
-    }
-}
 
 - (void)configurationgDone {
     PionOneManager *manager = [PionOneManager sharedInstance];
@@ -119,5 +107,10 @@
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    id dVC = [segue destinationViewController];
+    if ([dVC isKindOfClass:[WiFiPasswordVC class]]) {
+        [(WiFiPasswordVC *)dVC setPresentingVC:self];
+    }
 }
+
 @end

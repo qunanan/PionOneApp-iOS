@@ -18,7 +18,8 @@
 @property (nonatomic, strong) AFHTTPRequestOperationManager *httpManager;
 @property (nonatomic, strong) GCDAsyncUdpSocket *udpSocket;
 @property (atomic ,assign) __block BOOL canceled;
-@property (atomic ,assign) __block BOOL isConfigurationSuccess;
+@property (atomic ,assign) __block BOOL isAPConfigSuccess;
+@property (atomic ,assign) __block BOOL foundTheNodeOnServer;
 
 @end
 @implementation PionOneManager
@@ -66,6 +67,9 @@
     if (_APConfigurationDone) {
         self.tmpNodeSN = nil;
         self.tmpNodeKey = nil;
+        self.cachedPassword = nil;
+        self.cachedNodeName = nil;
+        self.cachedSSID = nil;
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:kPionOneTmpNodeSN];
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:kPionOneTmpNodeKey];
     }
@@ -100,7 +104,6 @@
         }
         return;
     }
-
     if (!self.managedObjectContext) {
         NSLog(@"To call the APIs, you need to setManagedObjectContext");
         if (handler) handler(NO,nil);
@@ -121,9 +124,9 @@
         NSLog(@"JSON: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
-            handler(NO,@"Connecting to Server failed!");
+            handler(NO,@"SignUp:Connecting to Server failed!");
         }
-        NSLog(@"Networking error: %@", error.helpAnchor);
+        NSLog(@"Networking error: %@", error);
     }];
 }
 
@@ -164,9 +167,9 @@
         NSLog(@"JSON: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
-            handler(NO,@"Connecting to Server failed!");
+            handler(NO,@"SignIn:Connecting to Server failed!");
         }
-        NSLog(@"Networking error: %@", error.helpAnchor);
+        NSLog(@"Networking error: %@", error);
     }];
 }
 
@@ -210,9 +213,9 @@
         NSLog(@"JSON: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
-            handler(NO,@"Connecting to Server failed!");
+            handler(NO,@"RetrievePWD:Connecting to Server failed!");
         }
-        NSLog(@"Networking error: %@", error.helpAnchor);
+        NSLog(@"Networking error: %@", error);
     }];
 }
 
@@ -240,9 +243,9 @@
         NSLog(@"JSON: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
-            handler(NO,@"Connecting to Server failed!");
+            handler(NO,@"ChangePWD:Connecting to Server failed!");
         }
-        NSLog(@"Networking error: %@", error.helpAnchor);
+        NSLog(@"Networking error: %@", error);
     }];
 }
 
@@ -272,9 +275,9 @@
         NSLog(@"JSON: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
-            handler(NO,@"Connecting to Server failed!");
+            handler(NO,@"CreatNode:Connecting to Server failed!");
         }
-        NSLog(@"Networking error: %@", error.helpAnchor);
+        NSLog(@"Networking error: %@", error);
     }];
 }
 
@@ -303,9 +306,9 @@
         NSLog(@"JSON: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
-            handler(NO,@"Connecting to Server failed!");
+            handler(NO,@"GetNodeList:Connecting to Server failed!");
         }
-        NSLog(@"Networking error: %@", error.helpAnchor);
+        NSLog(@"Networking error: %@", error);
     }];
 }
 
@@ -329,15 +332,15 @@
         NSLog(@"JSON: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
-            handler(NO,@"Connecting to Server failed!");
+            handler(NO,@"DeleteNode:Connecting to Server failed!");
         }
-        NSLog(@"Networking error: %@", error.helpAnchor);
+        NSLog(@"Networking error: %@", error);
     }];
 
 }
 
 #pragma -mark Driver Management API
-- (void)scanDriverListWithCompletionHandler:(void (^)(BOOL succes, NSString *msg))handler {
+- (void)scanDriverListWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler {
     
     if (!self.user) {
         NSLog(@"To call the APIs, you need to set User.");
@@ -355,9 +358,9 @@
         NSLog(@"JSON: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
-            handler(NO,@"Connecting to Server failed!");
+            handler(NO,@"ScanDriver:Connecting to Server failed!");
         }
-        NSLog(@"Networking error: %@", error.helpAnchor);
+        NSLog(@"Networking error: %@", error);
     }];
 }
 
@@ -427,9 +430,9 @@
         NSLog(@"JSON: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
-            handler(NO,@"Connecting to Server failed!");
+            handler(NO,@"DeleteZombie:Connecting to Server failed!");
         }
-        NSLog(@"Networking error: %@", error.helpAnchor);
+        NSLog(@"Networking error: %@", error);
     }];
 }
 
@@ -439,7 +442,7 @@
     NSLog(@"CachedSSID: %@", self.cachedSSID);
 }
 
-- (void)setupNodeNodeWithCompletionHandler:(void (^)(BOOL, NSString *))handler {
+- (void)APConfigNodeWithCompletionHandler:(void (^)(BOOL, NSString *))handler {
     if (self.tmpNodeKey == nil || self.tmpNodeSN == nil ||self.cachedSSID == nil || self.cachedPassword == nil) {
         NSString *error = @"Incomplete setup node progress infomation";
         NSLog(@"%@",error);
@@ -448,44 +451,46 @@
         }
         return;
     }
-    self.isConfigurationSuccess = NO;
-    self.canceled = NO;
+    self.isAPConfigSuccess = NO;
+    __block BOOL timeout = NO;
+    int64_t delay = 30.0; // In seconds
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self openUdpObserver];
-        int64_t delay = 30.0; // In seconds
         dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC);
         dispatch_after(time,dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 1), ^{
-            self.canceled = YES;
+            timeout = YES;
         });
-        while (!self.canceled && !self.isConfigurationSuccess) {
+        while (!timeout && !self.canceled && !self.isAPConfigSuccess) {
             [self udpSendPionOneConfiguration];
             [NSThread sleepForTimeInterval:3];
         }
         [self closeUdpObserver];
         dispatch_async(dispatch_get_main_queue(), ^{
-            if(self.isConfigurationSuccess == YES) {
+            if(self.isAPConfigSuccess == YES) {
                 if (handler) {
                     handler(YES,[NSString stringWithFormat:@"setup success!"]);
                 }
             } else {
                 if (handler) {
-                    handler(NO,@"setup canceled or time out!");
+                    if (handler && !self.canceled) {
+                        handler(NO,@"APConfig:setup canceled or time out!");
+                    }
                 }
             }
         });
     });
 }
 
-- (void)findTheConfiguringNodeFromSeverWithCompletionHandler:(void (^)(BOOL succes, NSString *msg))handler {
+- (void)findTheConfiguringNodeFromSeverWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        self.canceled = NO;
-        self.isConfigurationSuccess = NO;
+        self.foundTheNodeOnServer = NO;
+        __block BOOL timeout = NO;
         int64_t delay = 60.0; // In seconds
         dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC);
         dispatch_after(time,dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 1), ^{
-            self.canceled = YES;
+            timeout = YES;
         });
-        while (!self.canceled && !self.isConfigurationSuccess) {
+        while (!timeout && !self.canceled && !self.foundTheNodeOnServer) {
             NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token] forKeys:@[@"access_token"]];
             [self.httpManager GET:aPionOneNodeList parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
                 NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
@@ -496,25 +501,25 @@
                         if ([sn isEqualToString:self.tmpNodeSN]) {
                             NSNumber *online = dic[@"online"];
                             if (online.boolValue) {
-                                self.isConfigurationSuccess = YES;
+                                self.foundTheNodeOnServer = YES;
                             }
                         }
                     }
                 }
                 NSLog(@"JSON: %@", responseObject);
             } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
-                NSLog(@"Networking error: %@", error.helpAnchor);
+                NSLog(@"Networking error: %@", error);
             }];
             [NSThread sleepForTimeInterval:3];
         }
         dispatch_async(dispatch_get_main_queue(), ^{
-            if(self.isConfigurationSuccess == YES) {
+            if(self.foundTheNodeOnServer == YES) {
                 if (handler) {
                     handler(YES,[NSString stringWithFormat:@"setup success!"]);
                 }
             } else {
-                if (handler) {
-                    handler(NO,@"setup canceled or time out!");
+                if (handler && !self.canceled) {
+                    handler(NO,@"FindNodeInServer:setup canceled or time out!");
                 }
             }
         });
@@ -539,30 +544,95 @@
         NSLog(@"JSON: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
-            handler(NO,@"Connecting to Server failed!");
+            handler(NO,@"APConfigSetNodeName:Connecting to Server failed!");
         }
-        NSLog(@"Networking error: %@", error.helpAnchor);
+        NSLog(@"Networking error: %@", error);
     }];
 }
 
 - (void)checkIfConnectedToPionOneWithCompletionHandler:(void (^)(BOOL, NSString *))handler {
-    self.canceled = NO;
-    self.isConfigurationSuccess = NO;
+    __block BOOL timeout = NO;
+    int64_t delay = 60.0; // In seconds
+    dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC);
+    dispatch_after(time,dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 1), ^{
+        timeout = YES;
+    });
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        while (![self isConnectedToPionOne] && !self.canceled) {
+        while (!timeout && ![self isConnectedToPionOne] && !self.canceled) {
             [NSThread sleepForTimeInterval:1];
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             if (handler) {
-                handler(YES,nil);
+                handler(self.isConnectedToPionOne,nil);
             }
         });
     });
 }
 
+- (void)startAPConfigWithProgressHandler:(void (^)(BOOL, NSInteger, NSString *))handler {
+    if (self.cachedNodeName && self.cachedPassword) {
+        if (handler) {
+            handler(YES, 1, nil);
+        }
+    } else {
+        NSLog(@"To Start APConfig, setNodenName and setPassword first!");
+        return;
+    }
+    NSLog(@"APConfig step1:Sending UDP package");
+    [self APConfigNodeWithCompletionHandler:^(BOOL succes, NSString *msg) {
+        if (succes) {
+            if(handler) {
+                handler(YES, 2, msg);
+            }
+            NSLog(@"APConfig step2:Find Node in Server");
+            [self findTheConfiguringNodeFromSeverWithCompletionHandler:^(BOOL succes, NSString *msg) {
+                if (succes) {
+                    if(handler) {
+                        handler(YES, 3, msg);
+                    }
+                    NSLog(@"APConfig step3:Set Node Name");
+                    [self setNodeName:self.cachedNodeName withNodeSN:self.tmpNodeSN completionHandler:^(BOOL success, NSString *msg) {
+                        if (success) {
+                            NSLog(@"APConfig step4:Refresh Node List");
+                            [self getNodeListWithCompletionHandler:^(BOOL succes, NSString *msg) {
+                                if (success) {
+                                    NSLog(@"APConfig step1:Done");
+                                    [self setAPConfigurationDone:YES];
+                                    if (handler) {
+                                        handler(YES, 4, msg);
+                                    }
+                                } else {
+                                    handler(NO, 4, msg);
+                                }
+                            }];
+                        } else {
+                            handler(NO, 4, msg);
+                        }
+                    }];
+                } else {
+                    if (handler) {
+                        handler(NO, 3, msg);
+                    }
+                }
+            }];
+        } else {
+            if (handler) {
+                handler(NO, 2, msg);
+            }
+        }
+    }];
+}
+
+- (void)longDurationProcessBegin {
+    self.canceled = NO;
+}
+
 - (void)cancel {
     self.canceled = YES;
+    self.cachedPassword = nil;
+    self.cachedNodeName = nil;
 }
+
 
 #pragma -mark UDP Methods
 - (void)openUdpObserver {
@@ -582,9 +652,107 @@
 -(void)udpSocket:(GCDAsyncUdpSocket *)sock didReceiveData:(NSData *)data fromAddress:(NSData *)address withFilterContext:(id)filterContext {
     NSString* str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     if ([str containsString:@"ok"]) {
-        self.isConfigurationSuccess = YES;
-        self.canceled = YES;
+        self.isAPConfigSuccess = YES;
     }
 }
+
+
+
+#pragma -mark Node Settings Method
+- (void)node:(Node *)node startOTAWithprogressHandler:(void (^)(BOOL, NSString *, NSString *, NSString *))handler {
+    NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[node.key, [self yamlWithnode:node]] forKeys:@[@"access_token", @"yaml"]];
+    [self.httpManager POST:aPionOneUserDownload
+            parameters:parameters
+               success:^(AFHTTPRequestOperation * __nonnull operation, id  __nonnull responseObject) {
+                   NSString *otaMsg =(NSString *)[(NSDictionary *)responseObject objectForKey:@"ota_msg"];
+                   NSString *msg =(NSString *)[(NSDictionary *)responseObject objectForKey:@"msg"];
+                   NSString *status =(NSString *)[(NSDictionary *)responseObject objectForKey:@"status"];
+                   NSString *otaStatus =(NSString *)[(NSDictionary *)responseObject objectForKey:@"ota_status"];
+                   if (status.integerValue == 200) {
+                       if (handler) {
+                           handler(YES,msg,otaMsg,otaStatus);
+                       }
+                   } else {
+                       if (handler) {
+                           handler(NO,msg,otaStatus,otaStatus);
+                       }
+                   }
+                   NSLog(@"JSON: %@", responseObject);
+               }
+               failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
+                   if (handler) {
+                       handler(NO,@"OTA:Connecting to Server failed!",nil,nil);
+                   }
+                   NSLog(@"Networking error: %@", error);
+               }];
+}
+
+- (NSString *)yamlWithnode:(Node *)node {
+    NSString *setting = [[NSString alloc] init];
+    for (Grove *grove in node.groves) {
+        setting = [setting stringByAppendingString:[self yamlWithGrove:grove]];
+    }
+    NSLog(@"%@",setting);
+    setting = [self toBase64String:setting];
+    NSLog(@"%@",setting);
+    return setting;
+}
+
+- (NSString *)yamlWithGrove:(Grove *)grove {
+    NSString *yaml = [NSString stringWithFormat:@"%@\r\n",grove.instanceName];
+    yaml = [yaml stringByAppendingFormat:@"  name: %@\r\n",grove.name];
+    yaml = [yaml stringByAppendingFormat:@"  construct_arg_list:\r\n"];
+    if ([grove.interfaceType isEqualToString:@"GPIO"]) {
+        yaml = [yaml stringByAppendingFormat:@"    pin: %@\r\n",grove.pinNum0];
+    } else if ([grove.interfaceType isEqualToString:@"I2C"]) {
+        yaml = [yaml stringByAppendingFormat:@"    pinsda: %@\r\n",grove.pinNum1];
+        yaml = [yaml stringByAppendingFormat:@"    pinscl: %@\r\n",grove.pinNum0];
+    } else if ([grove.interfaceType isEqualToString:@"ANALOG"]) {
+        yaml = [yaml stringByAppendingFormat:@"    pin: %@\r\n",grove.pinNum0];
+    } else {
+        NSLog(@"Grove interfaceType error~");
+    }
+    return yaml;
+}
+- (NSString *)toBase64String:(NSString *)string {
+    NSData *data = [string dataUsingEncoding: NSUTF8StringEncoding];
+    
+    NSString *ret = [data base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithCarriageReturn];
+    
+    return ret;
+}
+
+///有问题的，还没测试
+- (NSString *)fromBase64String:(NSString *)string {
+    NSData  *base64Data = [string dataUsingEncoding:NSUnicodeStringEncoding];
+    
+    NSString* decryptedStr = [[NSString alloc] initWithData:base64Data encoding:NSUnicodeStringEncoding];
+    
+    return decryptedStr;
+}
+
+- (NSArray *)pinNumberWithconnectorName:(NSString *)name {
+    if ([name isEqualToString:@"Grove0"]) {
+        return @[@"14",@"12"];
+    }
+    if ([name isEqualToString:@"Grove1"]) {
+        return @[@"12",@"13"];
+    }
+    if ([name isEqualToString:@"Grove2"]) {
+        return @[@"13",@"2"];
+    }
+    if ([name isEqualToString:@"Grove3"]) {
+        return @[@"17"];
+    }
+    if ([name isEqualToString:@"Grove4"]) {
+        return @[@"1",@"3"];
+    }
+    if ([name isEqualToString:@"Grove5"]) {
+        return @[@"5",@"4"];
+    }
+    return nil;
+}
+
+
 
 @end
