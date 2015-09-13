@@ -24,11 +24,6 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>LibYAML.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>MBProgressHUD.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -39,7 +34,32 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>QRExt.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>REFormattedNumberField.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>RESideMenu.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>RETableViewManager-RETableViewManager.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>RETableViewManager.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>REValidation.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -54,7 +74,7 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>YAML-Framework.xcscheme</key>
+		<key>libqrencode.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -72,12 +92,37 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>3BED021DFB98CE311F8C400B519DFF53</key>
+		<key>111BC6BA7F67254E8E0199E502B08EA6</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>4F6A0D38528C50770EB45CF012C15B85</key>
+		<key>3AB074C49F5CC221C81E36AF75724AAF</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>4692DA949D351EEA9677CB3EA5CBB1D5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>6105B7615DCF7CD2595BBF725F97B3AF</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>64B6B1D35BFA9D65DDD9716309D88B61</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>6EB9B90C5C1C0C44D9180EC5CE7742A8</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>74C2B45FEF672AF801467A574B1EC253</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -87,32 +132,27 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>9334D272A4FE1AB3D16B2678B2E891C0</key>
+		<key>79345AA17A695AB7140DDCD6B64279D2</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>A12806B1067163FF0F423FEAF605DA29</key>
+		<key>8B27E85F777DC2BBE6C0D73A9CFD5ED0</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>CC768AA30862B0479E865B4175197238</key>
+		<key>A5B574DB910922CDF847AB3A0EC30172</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>D4E3140D3365C5C8619F719D7661D7B9</key>
+		<key>C6885CE1A4A6C3EFBDDFE80933FCF944</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>D8E13FD960BE8E6AEAFEC8471ECF350C</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>ED62F2D4870033FADA9E99B6F447D1E0</key>
+		<key>FCCEB707C2239575BAF6492EFB3D4C69</key>
 		<dict>
 			<key>primary</key>
 			<true/>

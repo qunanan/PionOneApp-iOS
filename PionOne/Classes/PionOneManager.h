@@ -12,6 +12,7 @@
 #import "Node+Setup.h"
 #import "Driver+Create.h"
 #import "Grove.h"
+#import "PionOneUserDefaults.h"
 
 @interface PionOneManager : NSObject
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext; //if you want to call the API, it must not be nil
@@ -49,9 +50,9 @@
 - (BOOL)isConnectedToPionOne;
 - (void)deleteZombieNodeWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
 - (void)cacheCurrentSSID;
-- (void)APConfigNodeWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
-- (void)findTheConfiguringNodeFromSeverWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
-- (void)setNodeName:(NSString *)name withNodeSN:(NSString *)sn completionHandler:(void (^)(BOOL success, NSString *msg))handler;
+//************private method called by startAPConfigWithProgressHandler: **************
+//- (void)findTheConfiguringNodeFromSeverWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
+//- (void)setNodeName:(NSString *)name withNodeSN:(NSString *)sn completionHandler:(void (^)(BOOL success, NSString *msg))handler;
 - (void)checkIfConnectedToPionOneWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
 - (void)startAPConfigWithProgressHandler:(void (^)(BOOL success, NSInteger step, NSString *msg))handler;
 - (void)longDurationProcessBegin;
@@ -59,4 +60,13 @@
 
 #pragma -mark Node Settings Method
 - (void)node:(Node *)node startOTAWithprogressHandler:(void (^)(BOOL success, NSString *msg, NSString *ota_msg, NSString *ota_staus))handler;
+- (void)node:(Node *)node OTAStatusWithprogressHandler:(void (^)(BOOL success, NSString *msg, NSString *ota_msg, NSString *ota_staus))handler;
+- (void)node:(Node *)node getSettingsWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
+- (NSString *)interfaceTypeForCntName:(NSString *)cntName;
+- (NSArray *)pinNumberWithconnectorName:(NSString *)name;
+- (NSString *)connectoNameForPin:(NSString *)pin;
+
+#pragma -mark Node API Method
+- (void)getAPIsForNode:(Node *)node completion:(void (^)(BOOL success, NSString *msg, NSArray *apis))handler;
+
 @end

@@ -18,12 +18,17 @@
 #define aPionOneUserRetrievepassword @"/v1/user/retrievepassword"
 #define aPionOneUserChangePassword @"/v1/user/changepassword"
 #define aPionOneUserDownload @"/v1/user/download"
+#define aPionOneOTAStatus @"/v1/ota/status"
 
 #define aPionOneNodeCreate @"/v1/nodes/create"
 #define aPionOneNodeList @"/v1/nodes/list"
 #define aPionOneNodeRename @"/v1/nodes/rename"
 #define aPionOneNodeDelete @"/v1/nodes/delete"
+#define aPionOneNodeGetSettings @"/v1/node/config"
 #define aPionOneDriverScan @"/v1/scan/drivers"
+
+#define aPionOneNodeResources @"/v1/node/resources"
+#define aPionOneNodeAPIs @"/v1/node/.well-known"
 
 #define kPionOneBaseURL @"PionOneBaseURL"
 #define kPionOneUserToken @"PionOneUserToken"

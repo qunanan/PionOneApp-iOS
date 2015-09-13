@@ -9,29 +9,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "PionOne/Database/Driver+Create.m"
-            timestampString = "463424633.629668"
+            filePath = "Pods/RETableViewManager/RETableViewManager/RETableViewCell.m"
+            timestampString = "463835320.502606"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "22"
-            endingLineNumber = "22"
-            landmarkName = "+driverWithInfo:inManagedObjectContext:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "PionOne/Database/Driver+Create.m"
-            timestampString = "463425190.340048"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "26"
-            endingLineNumber = "26"
-            landmarkName = "+driverWithInfo:inManagedObjectContext:"
+            startingLineNumber = "290"
+            endingLineNumber = "290"
+            landmarkName = "-actionBar:navigationControlValueChanged:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

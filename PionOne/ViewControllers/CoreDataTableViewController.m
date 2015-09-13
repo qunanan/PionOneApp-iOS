@@ -78,7 +78,8 @@
 
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
 {
-    return [self.fetchedResultsController sectionIndexTitles];
+    //return [self.fetchedResultsController sectionIndexTitles];
+    return nil;
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
@@ -102,6 +103,10 @@
         case NSFetchedResultsChangeDelete:
             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
             break;
+        case NSFetchedResultsChangeUpdate:
+        case NSFetchedResultsChangeMove:
+            break;
+
     }
 }
 

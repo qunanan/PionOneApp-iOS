@@ -11,5 +11,5 @@
 @interface User (Create)
 
 + (User *)userWithInfo:(NSDictionary *)dic inManagedObjectContext:(NSManagedObjectContext *)context;
-
+- (void)refreshNodeListWithArry:(NSArray *)arry;
 @end

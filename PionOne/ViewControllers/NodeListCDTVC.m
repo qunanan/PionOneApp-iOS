@@ -10,6 +10,8 @@
 #import "Node.h"
 #import "PionOneManager.h"
 #import "MBProgressHUD.h"
+#import "SetupNodeVC.h"
+#import "NodeDetailTVC.h"
 
 @interface NodeListCDTVC() <MBProgressHUDDelegate>
 @property (nonatomic, strong) MBProgressHUD *HUD;
@@ -20,12 +22,19 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.managedObjectContext = [[PionOneManager sharedInstance] managedObjectContext];
+    [[PionOneManager sharedInstance] scanDriverListWithCompletionHandler:nil];
+
     // A little trick for removing the cell separators
     self.tableView.tableFooterView = [UIView new];
     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:refreshControl];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self refresh:nil];
 }
 
 - (void)refresh:(UIRefreshControl *)refreshControl {
@@ -41,7 +50,7 @@
     _managedObjectContext = managedObjectContext;
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Node"];
-    request.predicate = nil;
+    request.predicate = [NSPredicate predicateWithFormat:@"user = %@", [[PionOneManager sharedInstance] user]];
     request.sortDescriptors = @[[[NSSortDescriptor alloc] initWithKey:@"online"
                                                             ascending:NO],
                                 [[NSSortDescriptor alloc] initWithKey:@"name"
@@ -50,7 +59,7 @@
     
     self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                         managedObjectContext:managedObjectContext
-                                                                          sectionNameKeyPath:nil
+                                                                          sectionNameKeyPath:@"online"
                                                                                    cacheName:nil];
 }
 
@@ -71,6 +80,12 @@
     cell.detailTextLabel.text = node.online.boolValue? @"Online":@"Offline";
     return cell;
 }
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    Node *node = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [self performSegueWithIdentifier:@"ShowNodeDetail" sender:node];
+}
+
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
     Node *node = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [self performSegueWithIdentifier:@"ShowNodeSettings" sender:node];
@@ -94,6 +109,19 @@
     }
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    NSString *online = [[[self.fetchedResultsController sections] objectAtIndex:section] name];
+    if ([online isEqualToString:@"0"]) {
+        return @"Offline";
+    }
+    return @"Online";
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 60.0;
+}
+
+#pragma -mark Actions
 - (IBAction)addNode:(UIBarButtonItem *)sender {
     [self.HUD show:YES];
     [[PionOneManager sharedInstance] cacheCurrentSSID];
@@ -112,6 +140,21 @@
             }
         }];
     }];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    id dVC = [segue destinationViewController];
+    if ([dVC isKindOfClass:[SetupNodeVC class]]) {
+        if ([sender isKindOfClass:[Node class]]) {
+            [(SetupNodeVC *)dVC setNode:sender];
+            [(SetupNodeVC *)dVC setManagedObjectContext:self.managedObjectContext];
+            [[(SetupNodeVC *)dVC navigationController] setTitle:[(Node *)sender name]];
+        }
+    } else if ([dVC isKindOfClass:[NodeDetailTVC class]]) {
+        if ([sender isKindOfClass:[Node class]]) {
+            [(NodeDetailTVC *)dVC setNode:sender];
+        }
+    }
 }
 
 @end

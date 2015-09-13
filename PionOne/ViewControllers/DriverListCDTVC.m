@@ -24,6 +24,11 @@
     [self.tableView addSubview:refreshControl];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self refresh:nil];
+}
+
 - (void)refresh:(UIRefreshControl *)refreshControl {
     [[PionOneManager sharedInstance] scanDriverListWithCompletionHandler:^(BOOL succes, NSString *msg) {
         [refreshControl endRefreshing];

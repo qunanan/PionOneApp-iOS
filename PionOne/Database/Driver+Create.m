@@ -13,7 +13,7 @@
     Driver *driver = nil;
     NSNumber *driverID = dic[kJsonDriverID];
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Driver"];
-    request.predicate = [NSPredicate predicateWithFormat:@"driverID = %i", driverID.integerValue];
+    request.predicate = [NSPredicate predicateWithFormat:@"driverID = %@", driverID];
     
     NSError *error;
     NSArray *matches = [context executeFetchRequest:request error:&error];

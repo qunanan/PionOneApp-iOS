@@ -18,10 +18,10 @@
     self.contentViewShadowOpacity = 0.6;
     self.contentViewShadowRadius = 12;
     self.contentViewShadowEnabled = YES;
-    self.scaleContentView = YES;
+    self.scaleContentView = NO;
     self.scaleBackgroundImageView = YES;
-    self.scaleMenuView = YES;
-    self.contentViewInPortraitOffsetCenterX = 80;;
+    self.scaleMenuView = NO;
+    self.contentViewInPortraitOffsetCenterX = 10;;
     
     self.contentViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"contentViewController"];
     self.leftMenuViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"MenuViewController"];

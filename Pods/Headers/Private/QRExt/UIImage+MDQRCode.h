@@ -1,0 +1,1 @@
+../../../QRExt/UIImage+MDQRCode.h

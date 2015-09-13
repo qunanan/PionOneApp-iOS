@@ -16,17 +16,12 @@
 
 @implementation AppDelegate
 
-- (void)setManagedObjectContext2:(NSManagedObjectContext *)managedObjectContext2 {
-    _managedObjectContext2 = managedObjectContext2;
-//    [[PionOneManager sharedInstance] setManagedObjectContext:managedObjectContext2];
-}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     [self registerAPconfigLocalNotification];
     
     [[PionOneManager sharedInstance] setManagedObjectContext:self.managedObjectContext];
-    [self prepareManagedObjectContext];
     if ([self isUserExist]) {
         self.window.rootViewController = [self.window.rootViewController.storyboard instantiateViewControllerWithIdentifier:@"MainVC"];
     } else {

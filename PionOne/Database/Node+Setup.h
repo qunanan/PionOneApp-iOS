@@ -17,4 +17,6 @@
 + (Node *)nodeWithServerInfo:(NSDictionary *)nodeDictionary
       inManagedObjectContext:(NSManagedObjectContext*)context;
 
+- (void)refreshNodeSettingsWithArray:(NSArray *)settingsArray;
+- (NSString *)apiURL;
 @end

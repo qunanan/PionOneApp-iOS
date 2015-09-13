@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="5k9-RW-jIO">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8187.4" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="5k9-RW-jIO">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8151.3"/>
         <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -357,34 +358,35 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="NodeCell" selectionStyle="default" accessoryType="detailButton" indentationWidth="10" reuseIdentifier="NodeCell" textLabel="wM1-hd-xEI" detailTextLabel="SuN-re-64c" imageView="TsM-im-gS2" rowHeight="55" style="IBUITableViewCellStyleValue1" id="lAx-Bh-cvl">
-                                <rect key="frame" x="0.0" y="86" width="600" height="44"/>
+                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="NodeCell" selectionStyle="default" accessoryType="detailButton" indentationWidth="10" reuseIdentifier="NodeCell" textLabel="wM1-hd-xEI" detailTextLabel="SuN-re-64c" imageView="TsM-im-gS2" rowHeight="55" style="IBUITableViewCellStyleSubtitle" id="lAx-Bh-cvl">
+                                <rect key="frame" x="0.0" y="86" width="600" height="55"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="lAx-Bh-cvl" id="tV5-55-3v0">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="553" height="54.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="wM1-hd-xEI">
-                                            <rect key="frame" x="15" y="2" width="33.5" height="20.5"/>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="wM1-hd-xEI">
+                                            <rect key="frame" x="79" y="7" width="33.5" height="20.5"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                             <variation key="heightClass=regular-widthClass=compact">
                                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                             </variation>
                                         </label>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="SuN-re-64c">
-                                            <rect key="frame" x="15" y="22.5" width="59" height="20.5"/>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="SuN-re-64c">
+                                            <rect key="frame" x="79" y="27.5" width="59" height="20.5"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <color key="textColor" red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                             <variation key="heightClass=regular-widthClass=compact">
-                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                             </variation>
                                         </label>
                                         <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" image="wiFiIoTNode" id="TsM-im-gS2">
+                                            <rect key="frame" x="15" y="0.0" width="49" height="54.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </imageView>
                                     </subviews>
@@ -412,7 +414,8 @@
                     <connections>
                         <segue destination="Sad-co-ArP" kind="show" identifier="ShowDriverList" id="aOn-K8-xVs"/>
                         <segue destination="opU-KB-UAg" kind="show" identifier="ShowAPconfigVC" id="lgG-gF-XMU"/>
-                        <segue destination="rnW-uT-wEn" kind="show" identifier="ShowNodeSettings" id="0p9-Kv-DVy"/>
+                        <segue destination="mOY-n8-7Ge" kind="show" identifier="ShowNodeDetail" id="4rm-VG-3Tl"/>
+                        <segue destination="rnW-uT-wEn" kind="show" identifier="ShowNodeSettings" id="SOk-GQ-VM8"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zFP-ku-VN5" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -422,7 +425,7 @@
         <!--AP Config-->
         <scene sceneID="dwd-VL-foj">
             <objects>
-                <viewController id="opU-KB-UAg" customClass="StartAPConfigVC" sceneMemberID="viewController">
+                <viewController id="opU-KB-UAg" customClass="PrepareAPConfigVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="hIR-fn-uQx"/>
                         <viewControllerLayoutGuide type="bottom" id="xWm-Qf-Xpl"/>
@@ -465,7 +468,7 @@
                                 <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="333" id="htG-ZN-Y1M">
-                                        <variation key="heightClass=regular-widthClass=compact" constant="172"/>
+                                        <variation key="heightClass=regular-widthClass=compact" constant="190"/>
                                     </constraint>
                                 </constraints>
                                 <attributedString key="attributedText">
@@ -1222,33 +1225,6 @@
             </objects>
             <point key="canvasLocation" x="1573.5" y="1603.5"/>
         </scene>
-        <!--Select Node-->
-        <scene sceneID="wRL-CR-pAE">
-            <objects>
-                <tableViewController id="PEb-1L-fvc" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="fn5-BZ-Rm1">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="lL7-Qg-aE3">
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="lL7-Qg-aE3" id="y3u-m8-3tk">
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="PEb-1L-fvc" id="aZs-oP-TFO"/>
-                            <outlet property="delegate" destination="PEb-1L-fvc" id="gUb-Rt-5d9"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" title="Select Node" id="2hx-nV-Bej"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Wax-Xo-MSa" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3135" y="1603.5"/>
-        </scene>
         <!--MenuVC-->
         <scene sceneID="jk7-Bd-hRr">
             <objects>
@@ -1520,28 +1496,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter WiFi Password &amp; Node Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uKK-PG-L69">
-                                <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="46" id="RCX-CA-9lE">
-                                        <variation key="heightClass=regular-widthClass=compact" constant="35"/>
-                                    </constraint>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="RCX-CA-9lE"/>
-                                    </mask>
-                                </variation>
-                                <variation key="heightClass=regular-widthClass=compact">
-                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                    <mask key="constraints">
-                                        <include reference="RCX-CA-9lE"/>
-                                    </mask>
-                                </variation>
-                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8HQ-xV-qG8">
                                 <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
                                 <constraints>
@@ -1651,6 +1605,28 @@
                                     </mask>
                                 </variation>
                             </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter WiFi Password &amp; Node Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uKK-PG-L69">
+                                <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="46" id="RCX-CA-9lE">
+                                        <variation key="heightClass=regular-widthClass=compact" constant="35"/>
+                                    </constraint>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="RCX-CA-9lE"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                    <mask key="constraints">
+                                        <include reference="RCX-CA-9lE"/>
+                                    </mask>
+                                </variation>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -1664,28 +1640,28 @@
                             <constraint firstItem="t3N-Fh-qhn" firstAttribute="top" secondItem="k0J-9i-O2J" secondAttribute="bottom" constant="8" id="FQw-NO-2XA"/>
                             <constraint firstAttribute="trailingMargin" secondItem="JPa-tR-tuu" secondAttribute="trailing" constant="-16" id="Fbq-s5-EWo"/>
                             <constraint firstItem="k0J-9i-O2J" firstAttribute="top" secondItem="8HQ-xV-qG8" secondAttribute="bottom" constant="8" id="Lri-NU-Mru">
-                                <variation key="heightClass=regular-widthClass=compact" constant="8"/>
+                                <variation key="heightClass=regular-widthClass=compact" constant="6"/>
                             </constraint>
                             <constraint firstItem="8HQ-xV-qG8" firstAttribute="leading" secondItem="v65-26-RNs" secondAttribute="leadingMargin" id="W8E-eN-hwj"/>
                             <constraint firstItem="uKK-PG-L69" firstAttribute="leading" secondItem="v65-26-RNs" secondAttribute="leadingMargin" id="YxZ-G2-GbW"/>
                             <constraint firstItem="k0J-9i-O2J" firstAttribute="width" secondItem="t3N-Fh-qhn" secondAttribute="width" id="ZXZ-WA-2ru"/>
                             <constraint firstAttribute="trailingMargin" secondItem="k0J-9i-O2J" secondAttribute="trailing" constant="-16" id="aUw-Y0-TPp"/>
                             <constraint firstItem="8HQ-xV-qG8" firstAttribute="top" secondItem="uKK-PG-L69" secondAttribute="bottom" constant="8" id="lF4-Ma-C7p">
-                                <variation key="heightClass=regular-widthClass=compact" constant="8"/>
+                                <variation key="heightClass=regular-widthClass=compact" constant="4"/>
                             </constraint>
                             <constraint firstAttribute="centerX" secondItem="uKK-PG-L69" secondAttribute="centerX" id="nzt-8U-eaZ"/>
                             <constraint firstItem="uKK-PG-L69" firstAttribute="top" secondItem="R8S-ea-20D" secondAttribute="bottom" constant="8" id="s6r-hQ-o1Q">
-                                <variation key="heightClass=regular-widthClass=compact" constant="44"/>
+                                <variation key="heightClass=regular-widthClass=compact" constant="50"/>
                             </constraint>
                             <constraint firstItem="k0J-9i-O2J" firstAttribute="centerX" secondItem="t3N-Fh-qhn" secondAttribute="centerX" id="x0Z-cb-hnZ"/>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
-                                <exclude reference="uKK-PG-L69"/>
                                 <exclude reference="8HQ-xV-qG8"/>
                                 <exclude reference="JPa-tR-tuu"/>
                                 <exclude reference="k0J-9i-O2J"/>
                                 <exclude reference="t3N-Fh-qhn"/>
+                                <exclude reference="uKK-PG-L69"/>
                             </mask>
                             <mask key="constraints">
                                 <exclude reference="W8E-eN-hwj"/>
@@ -1708,11 +1684,11 @@
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
                             <mask key="subviews">
-                                <include reference="uKK-PG-L69"/>
                                 <include reference="8HQ-xV-qG8"/>
                                 <include reference="JPa-tR-tuu"/>
                                 <include reference="k0J-9i-O2J"/>
                                 <include reference="t3N-Fh-qhn"/>
+                                <include reference="uKK-PG-L69"/>
                             </mask>
                             <mask key="constraints">
                                 <include reference="W8E-eN-hwj"/>
@@ -1750,12 +1726,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5bC-cP-PAN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4542" y="184.5"/>
+            <point key="canvasLocation" x="4734" y="836.25"/>
         </scene>
-        <!--Setup PionOne-->
+        <!--Node Setup-->
         <scene sceneID="2ai-hh-YkU">
             <objects>
-                <viewController id="rnW-uT-wEn" sceneMemberID="viewController">
+                <viewController id="rnW-uT-wEn" customClass="SetupNodeVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="nDb-tK-SCM"/>
                         <viewControllerLayoutGuide type="bottom" id="k1t-uV-eFx"/>
@@ -1769,18 +1745,27 @@
                                 <state key="normal" title="Grove4">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="groveButtonPushed:" destination="rnW-uT-wEn" eventType="touchUpInside" id="ZYr-44-FQC"/>
+                                </connections>
                             </button>
                             <button opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Awa-Yp-L5d">
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                 <state key="normal" title="Grove0">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="groveButtonPushed:" destination="rnW-uT-wEn" eventType="touchUpInside" id="dTj-VA-ZOk"/>
+                                </connections>
                             </button>
                             <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="va6-jX-PVl">
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                 <state key="normal" title="Grove3">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="groveButtonPushed:" destination="rnW-uT-wEn" eventType="touchUpInside" id="EfS-nb-1NM"/>
+                                </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="wiFiIoTNode" translatesAutoresizingMaskIntoConstraints="NO" id="wfW-c7-MLM">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
@@ -1810,29 +1795,79 @@
                                 <state key="normal" title="Grove2">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="groveButtonPushed:" destination="rnW-uT-wEn" eventType="touchUpInside" id="DAW-hx-bFK"/>
+                                </connections>
                             </button>
                             <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Ig-3A-MHq">
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                 <state key="normal" title="Grove5">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="groveButtonPushed:" destination="rnW-uT-wEn" eventType="touchUpInside" id="Z6x-sG-1kd"/>
+                                </connections>
                             </button>
                             <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J4P-Vi-aUK">
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                 <state key="normal" title="Grove1">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="groveButtonPushed:" destination="rnW-uT-wEn" eventType="touchUpInside" id="Kwg-me-F1m"/>
+                                </connections>
                             </button>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="RqJ-HX-nPF">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Settings" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y8p-9f-nC0">
                                 <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="RqJ-HX-nPF">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="GroveDriverCell" textLabel="pkF-Z3-G4A" detailTextLabel="TNN-hr-czQ" imageView="sq9-lx-sNR" style="IBUITableViewCellStyleSubtitle" id="3SN-Y2-3R8" customClass="GroveTableViewCell">
+                                        <rect key="frame" x="0.0" y="86" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="3SN-Y2-3R8" id="uAk-Dw-zY8">
+                                            <rect key="frame" x="0.0" y="0.0" width="287" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="pkF-Z3-G4A">
+                                                    <rect key="frame" x="74" y="2" width="33.5" height="20.5"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                    <variation key="heightClass=regular-widthClass=compact">
+                                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    </variation>
+                                                </label>
+                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" image="About" id="sq9-lx-sNR">
+                                                    <rect key="frame" x="15" y="0.0" width="44" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                </imageView>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="TNN-hr-czQ">
+                                                    <rect key="frame" x="74" y="22.5" width="59" height="20.5"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                    <variation key="heightClass=regular-widthClass=compact">
+                                                        <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                                    </variation>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <inset key="separatorInset" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="rnW-uT-wEn" id="Iyu-Hj-adc"/>
+                                    <outlet property="delegate" destination="rnW-uT-wEn" id="uOt-iD-HWE"/>
+                                </connections>
+                            </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -1866,8 +1901,8 @@
                                 <exclude reference="W04-Y2-yKd"/>
                                 <exclude reference="8Ig-3A-MHq"/>
                                 <exclude reference="J4P-Vi-aUK"/>
-                                <exclude reference="RqJ-HX-nPF"/>
                                 <exclude reference="y8p-9f-nC0"/>
+                                <exclude reference="RqJ-HX-nPF"/>
                             </mask>
                             <mask key="constraints">
                                 <exclude reference="fUc-Ir-YyO"/>
@@ -1901,8 +1936,8 @@
                                 <include reference="W04-Y2-yKd"/>
                                 <include reference="8Ig-3A-MHq"/>
                                 <include reference="J4P-Vi-aUK"/>
-                                <include reference="RqJ-HX-nPF"/>
                                 <include reference="y8p-9f-nC0"/>
+                                <include reference="RqJ-HX-nPF"/>
                             </mask>
                             <mask key="constraints">
                                 <include reference="fUc-Ir-YyO"/>
@@ -1928,11 +1963,161 @@
                             </mask>
                         </variation>
                     </view>
-                    <navigationItem key="navigationItem" title="Setup PionOne" id="9Pb-o2-lmY"/>
+                    <navigationItem key="navigationItem" title="Node Setup" id="OJv-dm-OaO">
+                        <barButtonItem key="rightBarButtonItem" title="OTA" id="Vxt-DD-0Ys">
+                            <connections>
+                                <action selector="ota:" destination="rnW-uT-wEn" id="vef-v3-UHB"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="tableView" destination="RqJ-HX-nPF" id="iqN-XP-QYC"/>
+                        <segue destination="nNv-Sg-JTt" kind="show" identifier="ShowSelectGrove" id="4jd-Ni-jSw"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Fv8-xs-HTb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2382" y="1603.5"/>
+        </scene>
+        <!--Select Grove-->
+        <scene sceneID="fGU-T8-Xup">
+            <objects>
+                <tableViewController id="nNv-Sg-JTt" customClass="SelectGroveTVC" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="85r-af-rbm">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="GroveDriverCell" textLabel="OwO-cO-m59" detailTextLabel="vxA-Vk-rGk" imageView="2pn-ke-RzI" style="IBUITableViewCellStyleSubtitle" id="A0M-dY-OoI" customClass="GroveTableViewCell">
+                                <rect key="frame" x="0.0" y="86" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="A0M-dY-OoI" id="AgR-qV-uIc">
+                                    <rect key="frame" x="0.0" y="0.0" width="567" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="OwO-cO-m59">
+                                            <rect key="frame" x="74" y="2" width="33.5" height="20.5"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                            <variation key="heightClass=regular-widthClass=compact">
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            </variation>
+                                        </label>
+                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" image="About" id="2pn-ke-RzI">
+                                            <rect key="frame" x="15" y="0.0" width="44" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </imageView>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="vxA-Vk-rGk">
+                                            <rect key="frame" x="74" y="22.5" width="59" height="20.5"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                            <variation key="heightClass=regular-widthClass=compact">
+                                                <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                            </variation>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <inset key="separatorInset" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="nNv-Sg-JTt" id="e75-kQ-rYG"/>
+                            <outlet property="delegate" destination="nNv-Sg-JTt" id="vF3-k0-Nk3"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Select Grove" id="hBw-Z2-kEx"/>
+                    <connections>
+                        <segue destination="ZeT-ul-taa" kind="show" identifier="ShowDriverDetail" id="agN-PL-T0B"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fpr-Bk-4ak" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3219" y="1603.5"/>
+        </scene>
+        <!--Node Detail-->
+        <scene sceneID="gBW-1T-7vz">
+            <objects>
+                <tableViewController id="mOY-n8-7Ge" customClass="NodeDetailTVC" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="95" sectionHeaderHeight="22" sectionFooterHeight="22" id="zhA-fx-tts">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <connections>
+                            <outlet property="dataSource" destination="mOY-n8-7Ge" id="L3f-RZ-WhY"/>
+                            <outlet property="delegate" destination="mOY-n8-7Ge" id="60t-8F-EN4"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Node Detail" id="J0Y-bj-jeN"/>
+                    <connections>
+                        <segue destination="IX9-BL-PlF" kind="show" identifier="ShowResourcesVC" id="HAL-jU-rO1"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3qu-mA-wtN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3972" y="1603.5"/>
+        </scene>
+        <!--Resources-->
+        <scene sceneID="Bwo-qn-zwy">
+            <objects>
+                <viewController id="IX9-BL-PlF" customClass="NodeResourcesVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="eKB-3e-8lA"/>
+                        <viewControllerLayoutGuide type="bottom" id="Tw4-JB-R8I"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="7ro-Db-b9T">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nh3-Ht-yzJ">
+                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="delegate" destination="IX9-BL-PlF" id="I4t-SI-aPX"/>
+                                </connections>
+                            </webView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="nh3-Ht-yzJ" firstAttribute="leading" secondItem="7ro-Db-b9T" secondAttribute="leading" id="4B0-na-JVI"/>
+                            <constraint firstItem="nh3-Ht-yzJ" firstAttribute="width" secondItem="7ro-Db-b9T" secondAttribute="width" id="wI2-jW-akN"/>
+                            <constraint firstItem="nh3-Ht-yzJ" firstAttribute="bottom" secondItem="Tw4-JB-R8I" secondAttribute="top" id="yi3-zv-llC"/>
+                            <constraint firstItem="nh3-Ht-yzJ" firstAttribute="top" secondItem="eKB-3e-8lA" secondAttribute="bottom" id="z7y-Wg-bN6"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="nh3-Ht-yzJ"/>
+                            </mask>
+                            <mask key="constraints">
+                                <exclude reference="4B0-na-JVI"/>
+                                <exclude reference="wI2-jW-akN"/>
+                                <exclude reference="yi3-zv-llC"/>
+                                <exclude reference="z7y-Wg-bN6"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=compact">
+                            <mask key="subviews">
+                                <include reference="nh3-Ht-yzJ"/>
+                            </mask>
+                            <mask key="constraints">
+                                <include reference="4B0-na-JVI"/>
+                                <include reference="wI2-jW-akN"/>
+                                <include reference="yi3-zv-llC"/>
+                                <include reference="z7y-Wg-bN6"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <navigationItem key="navigationItem" title="Resources" id="mPs-rs-sHJ"/>
+                    <connections>
+                        <outlet property="webView" destination="nh3-Ht-yzJ" id="seX-hb-moW"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ePz-OV-eIe" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4704" y="1603.5"/>
         </scene>
     </scenes>
     <resources>
@@ -1940,4 +2125,7 @@
         <image name="backImage" width="1440" height="2560"/>
         <image name="wiFiIoTNode" width="321" height="356"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="agN-PL-T0B"/>
+    </inferredMetricsTieBreakers>
 </document>

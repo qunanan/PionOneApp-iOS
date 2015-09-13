@@ -49,7 +49,6 @@
 
 - (void)startConfiguration {
     PionOneManager *manager = [PionOneManager sharedInstance];
-    [manager longDurationProcessBegin];
     if (manager.cachedNodeName && manager.cachedPassword) {
         [manager startAPConfigWithProgressHandler:^(BOOL success, NSInteger step, NSString *msg) {
             if (success) {

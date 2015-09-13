@@ -7,6 +7,9 @@
 //
 
 #import "Node+Setup.h"
+#import "PionOneManager.h"
+#import "Grove+Create.h"
+#import "PionOneManager.h"
 
 @implementation Node (Setup)
 + (Node *)nodeWithServerInfo:(NSDictionary *)nodeDictionary inManagedObjectContext:(NSManagedObjectContext *)context {
@@ -26,14 +29,37 @@
     } else {
         node = [NSEntityDescription insertNewObjectForEntityForName:@"Node"
                                              inManagedObjectContext:context];
-        
         node.sn = sn;
-        node.name = nodeDictionary[NODE_NAME];
         node.key = nodeDictionary[NODE_KEY];
-        node.online = nodeDictionary[NODE_ONLINE_STATUS];
     }
-    
+    node.name = nodeDictionary[NODE_NAME];
+    node.online = nodeDictionary[NODE_ONLINE_STATUS];
+
     return node;
+}
+
+- (void)refreshNodeSettingsWithArray:(NSArray *)settingsArray {
+    self.groves = nil; //remove all sttings
+    for (NSDictionary *settingDic in settingsArray) {
+        NSString *groveName = settingDic[@"name"];
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Driver"];
+        request.predicate = [NSPredicate predicateWithFormat:@"groveName = %@", groveName];
+        NSError *error;
+        NSArray *matches = [self.managedObjectContext executeFetchRequest:request error:&error];
+        Driver *driver = nil;
+        if (!matches || error || ([matches count] > 1 || [matches count] == 0)) {
+            // handle error
+        } else if ([matches count]) {
+            driver = [matches firstObject];
+            NSString *connectorName = [[PionOneManager sharedInstance] connectoNameForPin:settingDic[@"pin"]];
+            Grove *grove = [Grove groveForNode:self WithDriver:driver connector:connectorName inManagedContext:self.managedObjectContext];
+            [self addGrovesObject:grove];
+        }
+    }
+}
+    
+- (NSString *)apiURL {
+    return [NSString stringWithFormat:@"%@%@?access_token=%@",PionOneDefaultBaseURL,aPionOneNodeResources,self.key];
 }
 
 @end
