@@ -24,6 +24,7 @@
     self.title = self.node.name;
     self.tableView.delegate = self;
     self.fetchedResultsController.delegate = self;
+    
     [[PionOneManager sharedInstance] node:self.node getSettingsWithCompletionHandler:nil];
 }
 
@@ -199,8 +200,10 @@
             break;
             
         case NSFetchedResultsChangeMove:
-            [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            if (indexPath != newIndexPath) {
+                [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            }
             break;
     }
 }

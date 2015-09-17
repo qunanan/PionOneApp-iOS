@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D6AF140D48EA73CEED03692F"
+               BlueprintIdentifier = "165BED0ED166CBD646FC3490"
                BuildableName = "QRExt.framework"
                BlueprintName = "QRExt"
                ReferencedContainer = "container:Pods.xcodeproj">
