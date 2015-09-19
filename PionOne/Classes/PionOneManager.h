@@ -15,7 +15,8 @@
 #import "PionOneUserDefaults.h"
 
 @interface PionOneManager : NSObject
-@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext; //if you want to call the API, it must not be nil
+@property (nonatomic, strong) NSManagedObjectContext *mainMOC; //if you want to call the API, it must not be nil
+@property (nonatomic, strong) NSManagedObjectContext *backgroundMOC; //if you want to call the API, it must not be nil
 @property (nonatomic, strong) User *user;
 @property (nonatomic, strong) NSString *tmpNodeSN;
 @property (nonatomic, strong) NSString *tmpNodeKey;

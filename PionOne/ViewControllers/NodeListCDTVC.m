@@ -21,7 +21,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.managedObjectContext = [[PionOneManager sharedInstance] managedObjectContext];
+    self.managedObjectContext = [[PionOneManager sharedInstance] mainMOC];
     [[PionOneManager sharedInstance] scanDriverListWithCompletionHandler:nil];
 
     // A little trick for removing the cell separators

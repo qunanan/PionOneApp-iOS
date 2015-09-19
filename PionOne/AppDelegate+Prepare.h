@@ -9,7 +9,7 @@
 #import "AppDelegate.h"
 
 @interface AppDelegate (Prepare)
-- (void)prepareManagedObjectContext;
+//- (void)prepareManagedObjectContext;
 - (BOOL)isUserExist;
 - (void)registerAPconfigLocalNotification;
 

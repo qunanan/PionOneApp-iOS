@@ -21,7 +21,8 @@
     // Override point for customization after application launch.
     [self registerAPconfigLocalNotification];
     
-    [[PionOneManager sharedInstance] setManagedObjectContext:self.managedObjectContext];
+    [[PionOneManager sharedInstance] setBackgroundMOC:self.managedObjectContext];
+    [[PionOneManager sharedInstance] setMainMOC:self.mainMOC];
     if ([self isUserExist]) {
         self.window.rootViewController = [self.window.rootViewController.storyboard instantiateViewControllerWithIdentifier:@"MainVC"];
     } else {
@@ -104,7 +105,19 @@
     return _persistentStoreCoordinator;
 }
 
-
+- (NSManagedObjectContext *)mainMOC {
+    if (_mainMOC != nil) {
+        return _mainMOC;
+    }
+    
+    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
+    if (!coordinator) {
+        return nil;
+    }
+    _mainMOC = [[NSManagedObjectContext alloc] init];
+    [_mainMOC setPersistentStoreCoordinator:coordinator];
+    return _mainMOC;
+}
 - (NSManagedObjectContext *)managedObjectContext {
     // Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.)
     if (_managedObjectContext != nil) {

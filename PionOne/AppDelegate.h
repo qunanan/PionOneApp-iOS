@@ -13,7 +13,7 @@
 
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) UIManagedDocument *managedDocument;
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext2;
+@property (strong, nonatomic) NSManagedObjectContext *mainMOC;
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;

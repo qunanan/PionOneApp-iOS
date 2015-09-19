@@ -15,7 +15,7 @@
 @implementation DriverListCDTVC
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.managedObjectContext = [[PionOneManager sharedInstance] managedObjectContext];
+    self.managedObjectContext = [[PionOneManager sharedInstance] mainMOC];
     // A little trick for removing the cell separators
     self.tableView.tableFooterView = [UIView new];
     
@@ -26,7 +26,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self refresh:nil];
+
 }
 
 - (void)refresh:(UIRefreshControl *)refreshControl {

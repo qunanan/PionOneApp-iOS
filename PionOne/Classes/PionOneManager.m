@@ -12,6 +12,9 @@
 #import "GCDAsyncUdpSocket.h"
 #import "NodeAPI.h"
 
+
+#define PionOneManagerQueueName "PionOneManagerQueueName"
+
 @import SystemConfiguration.CaptiveNetwork;
 
 @interface PionOneManager()
@@ -20,6 +23,7 @@
 @property (atomic ,assign) __block BOOL canceled;
 @property (atomic ,assign) __block BOOL isAPConfigSuccess;
 @property (atomic ,assign) __block BOOL foundTheNodeOnServer;
+@property (nonatomic, strong) User *userBackground;
 
 @end
 @implementation PionOneManager
@@ -56,10 +60,20 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"User"];
         request.predicate = nil;
         request.sortDescriptors = nil;//@[[[NSSortDescriptor alloc] initWithKey:@"token" ascending:YES selector:@selector(localizedStandardCompare:)]];
-        NSArray *result = [self.managedObjectContext executeFetchRequest:request error:nil];
+        NSArray *result = [self.mainMOC executeFetchRequest:request error:nil];
         _user = [result lastObject];
     }
     return _user;
+}
+- (User *)userBackground {
+    if (_userBackground == nil) {
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"User"];
+        request.predicate = nil;
+        request.sortDescriptors = nil;
+        NSArray *result = [self.backgroundMOC executeFetchRequest:request error:nil];
+        _userBackground = [result lastObject];
+    }
+    return _userBackground;
 }
 
 - (void)setAPConfigurationDone:(BOOL)APConfigurationDone {
@@ -104,7 +118,7 @@
         }
         return;
     }
-    if (!self.managedObjectContext) {
+    if (!self.mainMOC) {
         NSLog(@"To call the APIs, you need to setManagedObjectContext");
         if (handler) handler(NO,nil);
         return;
@@ -115,7 +129,7 @@
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
         if (status.integerValue == 200) {
-            self.user = [User userWithInfo:responseObject inManagedObjectContext:self.managedObjectContext];
+            self.user = [User userWithInfo:responseObject inManagedObjectContext:self.mainMOC];
             [self saveContext];
             [[NSUserDefaults standardUserDefaults] setObject:self.user.token forKey:kPionOneUserToken];
             if(handler) handler(YES,msg);
@@ -148,7 +162,7 @@
         return;
     }
 
-    if (!self.managedObjectContext) {
+    if (!self.mainMOC) {
         NSLog(@"To call the APIs, you need to setManagedObjectContext");
         if (handler) handler(NO,nil);
         return;
@@ -159,7 +173,7 @@
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
         if (status.integerValue == 200) {
-            self.user = [User userWithInfo:responseObject inManagedObjectContext:self.managedObjectContext];
+            self.user = [User userWithInfo:responseObject inManagedObjectContext:self.mainMOC];
             [self saveContext];
             [[NSUserDefaults standardUserDefaults] setObject:self.user.token forKey:kPionOneUserToken];
             if(handler) handler(YES,msg);
@@ -176,7 +190,7 @@
 }
 
 - (void)logout {
-    if (!self.managedObjectContext) {
+    if (!self.mainMOC) {
         NSLog(@"To call the APIs, you need to setManagedObjectContext");
         return;
     }
@@ -184,7 +198,7 @@
         NSLog(@"It's not logined");
         return;
     }
-    [self.managedObjectContext deleteObject:self.user];
+    [self.mainMOC deleteObject:self.user];
     [self saveContext];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kPionOneUserToken];
 }
@@ -198,7 +212,7 @@
         return;
     }
 
-    if (!self.managedObjectContext) {
+    if (!self.mainMOC) {
         NSLog(@"To call the APIs, you need to setManagedObjectContext");
         if (handler) handler(NO,nil);
         return;
@@ -225,7 +239,7 @@
 - (void)changePasswordWithNewPassword:(NSString *)newPwd
                     completionHandler:(void (^)(BOOL succse, NSString *msg))handler
 {
-    if (!self.managedObjectContext) {
+    if (!self.mainMOC) {
         NSLog(@"To call the APIs, you need to setManagedObjectContext");
         if (handler) handler(NO,nil);
         return;
@@ -326,9 +340,6 @@
         if (status.integerValue == 200) {
             NSArray * nodelist = (NSArray *)[(NSDictionary *)responseObject objectForKey:@"nodes"];
             [self.user refreshNodeListWithArry:nodelist];
-            if(random() < LONG_MAX / 4) {
-                [self saveContext]; //We don't need save context every time.
-            }
             if (handler) handler(YES,msg);
         } else {
             if (handler) handler(NO,msg);
@@ -354,8 +365,7 @@
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg =[(NSDictionary *)responseObject objectForKey:@"msg"];
         if (status.integerValue == 200) {
-            [self.managedObjectContext deleteObject:node];
-            [self saveContext];
+            [self.mainMOC deleteObject:node];
             if (handler) handler(YES,msg);
         } else {
             if(handler) handler(NO,msg);
@@ -382,10 +392,9 @@
     self.httpManager.requestSerializer.timeoutInterval = 30.0f;
     [self.httpManager GET:aPionOneDriverScan parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
         for (NSDictionary *dic in (NSArray *)responseObject) {
-            Driver *driver = [Driver driverWithInfo:dic inManagedObjectContext:self.managedObjectContext];
+            Driver *driver = [Driver driverWithInfo:dic inManagedObjectContext:self.mainMOC];
             NSLog(@"%@",driver);
         }
-        [self saveContext];
         if(handler) handler(YES,nil);
         NSLog(@"JSON: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
@@ -401,7 +410,7 @@
 #pragma mark - Core Data Saving support
 
 - (void)saveContext {
-    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = self.mainMOC;
     if (managedObjectContext != nil) {
         NSError *error = nil;
         if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
@@ -487,12 +496,12 @@
     self.isAPConfigSuccess = NO;
     __block BOOL timeout = NO;
     int64_t delay = 30.0; // In seconds
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC);
+    dispatch_after(time,dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 1), ^{
+        timeout = YES;
+    });
+    dispatch_async(dispatch_queue_create(PionOneManagerQueueName, NULL), ^{
         [self openUdpObserver];
-        dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC);
-        dispatch_after(time,dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 1), ^{
-            timeout = YES;
-        });
         while (!timeout && !self.canceled && !self.isAPConfigSuccess) {
             [self udpSendPionOneConfiguration];
             [NSThread sleepForTimeInterval:3];
@@ -515,16 +524,17 @@
 }
 
 - (void)findTheConfiguringNodeFromSeverWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        self.foundTheNodeOnServer = NO;
-        __block BOOL timeout = NO;
-        int64_t delay = 60.0; // In seconds
-        dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC);
-        dispatch_after(time,dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 1), ^{
-            timeout = YES;
-        });
+    self.foundTheNodeOnServer = NO;
+    __block BOOL timeout = NO;
+    int64_t delay = 60.0; // In seconds
+    dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC);
+    dispatch_after(time,dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 1), ^{
+        timeout = YES;
+    });
+    NSString *user_token = self.user.token;
+    dispatch_async(dispatch_queue_create(PionOneManagerQueueName, NULL), ^{
         while (!timeout && !self.canceled && !self.foundTheNodeOnServer) {
-            NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token] forKeys:@[@"access_token"]];
+            NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[user_token] forKeys:@[@"access_token"]];
             [self.httpManager GET:aPionOneNodeList parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
                 NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
                 if (status.integerValue == 200) {
@@ -592,7 +602,7 @@
     dispatch_after(time,dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 1), ^{
         timeout = YES;
     });
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_async(dispatch_queue_create(PionOneManagerQueueName, NULL), ^{
         while (!timeout && ![self isConnectedToPionOne] && !self.canceled) {
             [NSThread sleepForTimeInterval:1];
         }
