@@ -14,19 +14,20 @@
 {
     self.menuPreferredStatusBarStyle = UIStatusBarStyleDefault;
     self.contentViewShadowColor = [UIColor blackColor];
-    self.contentViewShadowOffset = CGSizeMake(0, 0);
+    self.contentViewShadowOffset = CGSizeMake(-1, -1);
     self.contentViewShadowOpacity = 0.6;
     self.contentViewShadowRadius = 12;
     self.contentViewShadowEnabled = YES;
-    self.scaleContentView = NO;
+    self.scaleContentView = YES;
+    self.contentViewScaleValue = 0.9;
     self.scaleBackgroundImageView = YES;
     self.scaleMenuView = NO;
-    self.contentViewInPortraitOffsetCenterX = 10;;
+    self.contentViewInPortraitOffsetCenterX = 20;;
     
     self.contentViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"contentViewController"];
     self.leftMenuViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"MenuViewController"];
 //    self.rightMenuViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"rightMenuViewController"];
-//    self.backgroundImage = [UIImage imageNamed:@"Stars"];
+//    self.backgroundImage = [UIImage imageNamed:@"backImage"];
     self.delegate = self;
 }
 

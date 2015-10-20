@@ -13,6 +13,7 @@
 #import "Driver+Create.h"
 #import "Grove.h"
 #import "PionOneUserDefaults.h"
+#import "AFNetworking.h"
 
 @interface PionOneManager : NSObject
 @property (nonatomic, strong) NSManagedObjectContext *mainMOC; //if you want to call the API, it must not be nil
@@ -24,6 +25,8 @@
 @property (nonatomic, strong) NSString *cachedPassword;
 @property (nonatomic, strong) NSString *cachedNodeName;
 @property (nonatomic, assign) BOOL APConfigurationDone;
+
+@property (nonatomic, strong) AFHTTPRequestOperationManager *httpManager;
 
 + (instancetype)sharedInstance;
 
@@ -70,4 +73,8 @@
 #pragma -mark Node API Method
 - (void)getAPIsForNode:(Node *)node completion:(void (^)(BOOL success, NSString *msg, NSArray *apis))handler;
 
+- (void)saveContext;
+
+#pragma -mark setup Server IP
+- (void)setRegion:(NSString*)region OTAServerIP:(NSString *)otaIP andDataSeverIP:(NSString *)dataIP;
 @end

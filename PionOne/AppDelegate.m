@@ -23,6 +23,15 @@
     
     [[PionOneManager sharedInstance] setBackgroundMOC:self.managedObjectContext];
     [[PionOneManager sharedInstance] setMainMOC:self.mainMOC];
+    
+    //init Server baseURL
+    NSString *urlStr = [[NSUserDefaults standardUserDefaults] stringForKey:kPionOneOTAServerBaseURL];
+    if (urlStr == nil) {
+        [[PionOneManager sharedInstance] setRegion:PionOneRegionNameInternational
+                                       OTAServerIP:PionOneDefaultOTAServerIPAddressInternational
+                                    andDataSeverIP:PionOneDefaultDataServerIPAddressInternational];
+    }
+
     if ([self isUserExist]) {
         self.window.rootViewController = [self.window.rootViewController.storyboard instantiateViewControllerWithIdentifier:@"MainVC"];
     } else {

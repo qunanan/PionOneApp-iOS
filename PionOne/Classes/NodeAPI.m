@@ -17,10 +17,9 @@
 #pragma -mark Property methods
 - (AFHTTPRequestOperationManager *)httpManager {
     if (_httpManager == nil) {
-        NSString *urlStr = [[NSUserDefaults standardUserDefaults] stringForKey:kPionOneBaseURL];
+        NSString *urlStr = [[NSUserDefaults standardUserDefaults] stringForKey:kPionOneOTAServerBaseURL];
         if (urlStr == nil) {
-            [[NSUserDefaults standardUserDefaults] setObject:PionOneDefaultBaseURL forKey:kPionOneBaseURL];
-            urlStr = PionOneDefaultBaseURL;
+            NSLog(@"Error: Please input a valid Server IP address");
         }
         NSURL *baseURL = [NSURL URLWithString:urlStr];
         _httpManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:baseURL];

@@ -12,10 +12,11 @@
 #import "TextFieldEffects-Swift.h"
 #import "WelcomeViewController.h"
 
-@interface SignInVC () <UITextFieldDelegate>
+@interface SignInVC () <UITextFieldDelegate, UIActionSheetDelegate>
 @property (weak, nonatomic) IBOutlet HoshiTextField *emailTextField;
 @property (weak, nonatomic) IBOutlet HoshiTextField *passwordTextField;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
+@property (weak, nonatomic) IBOutlet UILabel *regionLabel;
 
 @end
 
@@ -26,8 +27,9 @@
     self.emailTextField.delegate = self;
     self.passwordTextField.delegate = self;
     
-    //[self.emailTextField becomeFirstResponder];
+    self.regionLabel.text = [[NSUserDefaults standardUserDefaults] valueForKey:kPionOneServerRegion];
 }
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self.emailTextField becomeFirstResponder];
@@ -61,6 +63,43 @@
             [alertView show];
         }
     }];
+}
+- (IBAction)switchRegion {
+    [self.emailTextField resignFirstResponder];
+    [self.passwordTextField resignFirstResponder];
+    UIActionSheet *action = [[UIActionSheet alloc] initWithTitle:@"Select region"
+                                                        delegate:self
+                                               cancelButtonTitle:@"Cancel"
+                                          destructiveButtonTitle:nil
+                                               otherButtonTitles:@"International", @"China", @"Custom", nil];
+    [action showInView:self.view];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    switch (buttonIndex) {
+        case 0:
+            //International
+            self.regionLabel.text = PionOneRegionNameInternational;
+            [[PionOneManager sharedInstance] setRegion:PionOneRegionNameInternational
+                                           OTAServerIP:PionOneDefaultOTAServerIPAddressInternational
+                                        andDataSeverIP:PionOneDefaultDataServerIPAddressInternational];
+            break;
+        case 1:
+            //China
+            self.regionLabel.text = PionOneRegionNameChina;
+            [[PionOneManager sharedInstance] setRegion:PionOneRegionNameChina
+                                           OTAServerIP:PionOneDefaultOTAServerIPAddressChina
+                                        andDataSeverIP:PionOneDefaultDataServerIPAddressChina];
+            break;
+        case 2:
+            //Custom
+            self.regionLabel.text = PionOneRegionNameCustom;
+            [self performSegueWithIdentifier:@"ShowSetupCustomServerIPSegue" sender:nil];
+            break;
+
+        default:
+            break;
+    }
 }
 
 /*

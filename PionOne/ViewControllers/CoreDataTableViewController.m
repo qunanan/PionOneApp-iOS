@@ -9,9 +9,19 @@
 
 @interface CoreDataTableViewController ()
 @property NSMutableIndexSet *deletedSections, *insertedSections;
-
+@property (nonatomic, strong) NSString *theSectionKey;
+@property BOOL changedSection;
 @end
+
+
 @implementation CoreDataTableViewController
+
+- (void)setTheSectionKey:(NSString *)theSectionKey {
+    if(theSectionKey != _theSectionKey) {
+        self.changedSection = YES;
+    }
+}
+
 
 #pragma mark - Fetching
 
@@ -87,7 +97,7 @@
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
-
+//
 //- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 //{
 //    [self.tableView beginUpdates];
@@ -98,6 +108,7 @@
 //		   atIndex:(NSUInteger)sectionIndex
 //	 forChangeType:(NSFetchedResultsChangeType)type
 //{
+//    self.changedSection = YES;
 //    switch(type)
 //    {
 //        case NSFetchedResultsChangeInsert:
@@ -120,7 +131,13 @@
 //	   atIndexPath:(NSIndexPath *)indexPath
 //	 forChangeType:(NSFetchedResultsChangeType)type
 //	  newIndexPath:(NSIndexPath *)newIndexPath
-//{		
+//{
+//    if ( (NSFetchedResultsChangeUpdate == type) && ([self changedSection]) ) {
+//        [self  setChangedSection:NO];
+//        type = NSFetchedResultsChangeMove;
+//        newIndexPath = indexPath;
+//    }
+//
 //    switch(type)
 //    {
 //        case NSFetchedResultsChangeInsert:
@@ -136,11 +153,8 @@
 //            break;
 //            
 //        case NSFetchedResultsChangeMove:
-//            if ([indexPath isEqual:newIndexPath]) {
-//                [self.tableView moveRowAtIndexPath:indexPath toIndexPath:newIndexPath];
-////                [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-////                [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-//            }
+//                [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+//                [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
 //            break;
 //    }
 //}
@@ -151,6 +165,8 @@
 //}
 
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 // ...
@@ -171,12 +187,12 @@
     
     switch(type) {
         case NSFetchedResultsChangeDelete:
-            [self.tableView deleteSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self.tableView deleteSections:indexSet withRowAnimation:UITableViewRowAnimationFade];
             [self.deletedSections addIndexes:indexSet];
             break;
             
         case NSFetchedResultsChangeInsert:
-            [self.tableView insertSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self.tableView insertSections:indexSet withRowAnimation:UITableViewRowAnimationFade];
             [self.insertedSections addIndexes:indexSet];
             break;
             
@@ -188,29 +204,35 @@
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     switch(type) {
         case NSFetchedResultsChangeDelete:
-            [self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeInsert:
-            [self.tableView insertRowsAtIndexPaths:@[ newIndexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self.tableView insertRowsAtIndexPaths:@[ newIndexPath ] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeMove:
             // iOS 9.0b5 sends the same index path twice instead of delete
             if(![indexPath isEqual:newIndexPath]) {
-                [self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
-                [self.tableView insertRowsAtIndexPaths:@[ newIndexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+                [self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView insertRowsAtIndexPaths:@[ newIndexPath ] withRowAnimation:UITableViewRowAnimationFade];
             }
             else if([self.insertedSections containsIndex:indexPath.section]) {
                 // iOS 9.0b5 bug: Moving first item from section 0 (which becomes section 1 later) to section 0
                 // Really the only way is to delete and insert the same index path...
-                [self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
-                [self.tableView insertRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+                [self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView insertRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationFade];
             }
             else if([self.deletedSections containsIndex:indexPath.section]) {
                 // iOS 9.0b5 bug: same index path reported after section was removed
                 // we can ignore item deletion here because the whole section was removed anyway
-                [self.tableView insertRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+                [self.tableView insertRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationFade];
+            } else {
+                [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                                      withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
+                                      withRowAnimation:UITableViewRowAnimationFade];
+                break;
             }
             
             break;
@@ -227,13 +249,13 @@
             break;
     }
 }
-
-- (void)configureCell:(id)cell forRowAtIndexPath:(NSIndexPath*)indexPath
-{
-    id object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-    
-    // Populate cell from the NSManagedObject instance
-}
+//
+//- (void)configureCell:(id)cell forRowAtIndexPath:(NSIndexPath*)indexPath
+//{
+//    id object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+//    
+//    // Populate cell from the NSManagedObject instance
+//}
 
 @end
 

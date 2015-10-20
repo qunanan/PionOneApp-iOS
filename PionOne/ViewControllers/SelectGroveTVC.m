@@ -17,7 +17,7 @@
 
 @implementation SelectGroveTVC
 
-#pragma -mark Properyies
+#pragma -mark Properties
 - (NSString *)interfaceType {
     if (_connectorName == nil) {
         return nil;

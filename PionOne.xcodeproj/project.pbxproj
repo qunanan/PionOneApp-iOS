@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3D1ACF31BED3DB007678738C /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1981195BC8AE806D378DF3B /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		3D1ACF31BED3DB007678738C /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1981195BC8AE806D378DF3B /* Pods.framework */; };
+		9805B1401BCFB044003DD994 /* Node+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 9805B13D1BCFB044003DD994 /* Node+CoreDataProperties.m */; settings = {ASSET_TAGS = (); }; };
+		9805B1411BCFB044003DD994 /* Node.m in Sources */ = {isa = PBXBuildFile; fileRef = 9805B13F1BCFB044003DD994 /* Node.m */; settings = {ASSET_TAGS = (); }; };
 		984DFA291BA491E2006E4DAB /* NodeDetailTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 984DFA281BA491E2006E4DAB /* NodeDetailTVC.m */; };
 		984DFA2C1BA4B944006E4DAB /* NodeResourcesVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 984DFA2B1BA4B944006E4DAB /* NodeResourcesVC.m */; };
 		984DFA321BA533E2006E4DAB /* MultilineTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 984DFA311BA533E2006E4DAB /* MultilineTextCell.m */; };
@@ -17,10 +19,12 @@
 		984DFA441BA57B7C006E4DAB /* ListImageItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 984DFA421BA57B7C006E4DAB /* ListImageItem.m */; };
 		986E01441BA3DBCF00C12BF2 /* Driver.m in Sources */ = {isa = PBXBuildFile; fileRef = 986E01431BA3DBCF00C12BF2 /* Driver.m */; };
 		986E01471BA3DBCF00C12BF2 /* Grove.m in Sources */ = {isa = PBXBuildFile; fileRef = 986E01461BA3DBCF00C12BF2 /* Grove.m */; };
-		989C9C0D1B9F40BC007E6638 /* Node.m in Sources */ = {isa = PBXBuildFile; fileRef = 989C9C0C1B9F40BC007E6638 /* Node.m */; };
+		988B06711BD48FFE00C4268E /* NSString+escapedUnicode.m in Sources */ = {isa = PBXBuildFile; fileRef = 988B06701BD48FFE00C4268E /* NSString+escapedUnicode.m */; settings = {ASSET_TAGS = (); }; };
 		98B4ED631BA13296000D6255 /* SetupNodeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 98B4ED621BA13296000D6255 /* SetupNodeVC.m */; };
 		98B4ED661BA1BF0F000D6255 /* SelectGroveTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 98B4ED651BA1BF0F000D6255 /* SelectGroveTVC.m */; };
 		98B4ED691BA1C4F7000D6255 /* Grove+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 98B4ED681BA1C4F7000D6255 /* Grove+Create.m */; };
+		98E026351BBF6B6C00D691B4 /* NodeListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 98E026341BBF6B6C00D691B4 /* NodeListCell.m */; settings = {ASSET_TAGS = (); }; };
+		98E9CF491BD0F21E00FE1F38 /* SetupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 98E9CF481BD0F21E00FE1F38 /* SetupViewController.m */; settings = {ASSET_TAGS = (); }; };
 		98F6725F1B980E6800A9292B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 98F6725E1B980E6800A9292B /* main.m */; };
 		98F672621B980E6800A9292B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 98F672611B980E6800A9292B /* AppDelegate.m */; };
 		98F672651B980E6800A9292B /* PionOne.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 98F672631B980E6800A9292B /* PionOne.xcdatamodeld */; };
@@ -52,6 +56,10 @@
 
 /* Begin PBXFileReference section */
 		243FA921D9EC0C3B3301DE1F /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		9805B13C1BCFB044003DD994 /* Node+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Node+CoreDataProperties.h"; path = "Database/Node+CoreDataProperties.h"; sourceTree = "<group>"; };
+		9805B13D1BCFB044003DD994 /* Node+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Node+CoreDataProperties.m"; path = "Database/Node+CoreDataProperties.m"; sourceTree = "<group>"; };
+		9805B13E1BCFB044003DD994 /* Node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Node.h; path = Database/Node.h; sourceTree = "<group>"; };
+		9805B13F1BCFB044003DD994 /* Node.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Node.m; path = Database/Node.m; sourceTree = "<group>"; };
 		984DFA271BA491E2006E4DAB /* NodeDetailTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NodeDetailTVC.h; sourceTree = "<group>"; };
 		984DFA281BA491E2006E4DAB /* NodeDetailTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NodeDetailTVC.m; sourceTree = "<group>"; };
 		984DFA2A1BA4B944006E4DAB /* NodeResourcesVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NodeResourcesVC.h; sourceTree = "<group>"; };
@@ -70,14 +78,18 @@
 		986E01431BA3DBCF00C12BF2 /* Driver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Driver.m; path = Database/Driver.m; sourceTree = "<group>"; };
 		986E01451BA3DBCF00C12BF2 /* Grove.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Grove.h; path = Database/Grove.h; sourceTree = "<group>"; };
 		986E01461BA3DBCF00C12BF2 /* Grove.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Grove.m; path = Database/Grove.m; sourceTree = "<group>"; };
-		989C9C0B1B9F40BC007E6638 /* Node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Node.h; path = Database/Node.h; sourceTree = "<group>"; };
-		989C9C0C1B9F40BC007E6638 /* Node.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Node.m; path = Database/Node.m; sourceTree = "<group>"; };
+		988B066F1BD48FFE00C4268E /* NSString+escapedUnicode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+escapedUnicode.h"; path = "Classes/NSString+escapedUnicode.h"; sourceTree = "<group>"; };
+		988B06701BD48FFE00C4268E /* NSString+escapedUnicode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+escapedUnicode.m"; path = "Classes/NSString+escapedUnicode.m"; sourceTree = "<group>"; };
 		98B4ED611BA13296000D6255 /* SetupNodeVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetupNodeVC.h; sourceTree = "<group>"; };
 		98B4ED621BA13296000D6255 /* SetupNodeVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetupNodeVC.m; sourceTree = "<group>"; };
 		98B4ED641BA1BF0F000D6255 /* SelectGroveTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectGroveTVC.h; sourceTree = "<group>"; };
 		98B4ED651BA1BF0F000D6255 /* SelectGroveTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectGroveTVC.m; sourceTree = "<group>"; };
 		98B4ED671BA1C4F7000D6255 /* Grove+Create.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Grove+Create.h"; path = "Database/Grove+Create.h"; sourceTree = "<group>"; };
 		98B4ED681BA1C4F7000D6255 /* Grove+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Grove+Create.m"; path = "Database/Grove+Create.m"; sourceTree = "<group>"; };
+		98E026331BBF6B6C00D691B4 /* NodeListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NodeListCell.h; path = Views/NodeListCell.h; sourceTree = "<group>"; };
+		98E026341BBF6B6C00D691B4 /* NodeListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NodeListCell.m; path = Views/NodeListCell.m; sourceTree = "<group>"; };
+		98E9CF471BD0F21E00FE1F38 /* SetupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetupViewController.h; sourceTree = "<group>"; };
+		98E9CF481BD0F21E00FE1F38 /* SetupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetupViewController.m; sourceTree = "<group>"; };
 		98F672591B980E6800A9292B /* PionOne.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PionOne.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		98F6725D1B980E6800A9292B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		98F6725E1B980E6800A9292B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -225,6 +237,8 @@
 				984DFA311BA533E2006E4DAB /* MultilineTextCell.m */,
 				98F673171B99A7FC00A9292B /* GroveTableViewCell.h */,
 				98F673181B99A7FC00A9292B /* GroveTableViewCell.m */,
+				98E026331BBF6B6C00D691B4 /* NodeListCell.h */,
+				98E026341BBF6B6C00D691B4 /* NodeListCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -239,6 +253,8 @@
 				98F672B71B9822A700A9292B /* PionOneUserDefaults.h */,
 				984DFA391BA53EAE006E4DAB /* NodeAPI.h */,
 				984DFA3A1BA53EAE006E4DAB /* NodeAPI.m */,
+				988B066F1BD48FFE00C4268E /* NSString+escapedUnicode.h */,
+				988B06701BD48FFE00C4268E /* NSString+escapedUnicode.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -252,6 +268,8 @@
 				98F672AA1B98114C00A9292B /* SignUpVC.m */,
 				98F6A3971BA07EFE005BFBA4 /* SignInVC.h */,
 				98F6A3951BA07EEC005BFBA4 /* SignInVC.m */,
+				98E9CF471BD0F21E00FE1F38 /* SetupViewController.h */,
+				98E9CF481BD0F21E00FE1F38 /* SetupViewController.m */,
 				98F672AB1B98114C00A9292B /* WelcomeViewController.h */,
 				98F672AC1B98114C00A9292B /* WelcomeViewController.m */,
 				98F672E11B9839A000A9292B /* NodeListCDTVC.h */,
@@ -287,12 +305,14 @@
 		98F672B81B98287F00A9292B /* Database */ = {
 			isa = PBXGroup;
 			children = (
+				9805B13C1BCFB044003DD994 /* Node+CoreDataProperties.h */,
+				9805B13D1BCFB044003DD994 /* Node+CoreDataProperties.m */,
+				9805B13E1BCFB044003DD994 /* Node.h */,
+				9805B13F1BCFB044003DD994 /* Node.m */,
 				986E01451BA3DBCF00C12BF2 /* Grove.h */,
 				986E01461BA3DBCF00C12BF2 /* Grove.m */,
 				986E01421BA3DBCF00C12BF2 /* Driver.h */,
 				986E01431BA3DBCF00C12BF2 /* Driver.m */,
-				989C9C0B1B9F40BC007E6638 /* Node.h */,
-				989C9C0C1B9F40BC007E6638 /* Node.m */,
 				98B4ED671BA1C4F7000D6255 /* Grove+Create.h */,
 				98B4ED681BA1C4F7000D6255 /* Grove+Create.m */,
 				98F673081B99A41900A9292B /* User.h */,
@@ -441,7 +461,9 @@
 				98B4ED691BA1C4F7000D6255 /* Grove+Create.m in Sources */,
 				98F672621B980E6800A9292B /* AppDelegate.m in Sources */,
 				986E01471BA3DBCF00C12BF2 /* Grove.m in Sources */,
+				988B06711BD48FFE00C4268E /* NSString+escapedUnicode.m in Sources */,
 				98F6A3961BA07EEC005BFBA4 /* SignInVC.m in Sources */,
+				98E9CF491BD0F21E00FE1F38 /* SetupViewController.m in Sources */,
 				98F672F21B9965A400A9292B /* RootViewController.m in Sources */,
 				984DFA2C1BA4B944006E4DAB /* NodeResourcesVC.m in Sources */,
 				98F6731C1B99A92F00A9292B /* DriverDetailVC.m in Sources */,
@@ -455,18 +477,20 @@
 				98F672E01B98290C00A9292B /* User+Create.m in Sources */,
 				98F6725F1B980E6800A9292B /* main.m in Sources */,
 				98B4ED661BA1BF0F000D6255 /* SelectGroveTVC.m in Sources */,
+				9805B1401BCFB044003DD994 /* Node+CoreDataProperties.m in Sources */,
 				98F672F81B99802200A9292B /* Driver+Create.m in Sources */,
 				984DFA291BA491E2006E4DAB /* NodeDetailTVC.m in Sources */,
 				98F673221B9A887100A9292B /* PrepareAPConfigVC.m in Sources */,
 				98F672E61B983F5300A9292B /* Node+Setup.m in Sources */,
+				9805B1411BCFB044003DD994 /* Node.m in Sources */,
 				98F672E31B9839A000A9292B /* NodeListCDTVC.m in Sources */,
 				984DFA381BA534C1006E4DAB /* MultilineTextItem.m in Sources */,
 				986E01441BA3DBCF00C12BF2 /* Driver.m in Sources */,
 				98F672F51B996E1E00A9292B /* MenuVC.m in Sources */,
 				98F672B31B98118000A9292B /* NSString+Email.m in Sources */,
 				98F672E91B98457B00A9292B /* AppDelegate+Prepare.m in Sources */,
+				98E026351BBF6B6C00D691B4 /* NodeListCell.m in Sources */,
 				98F673071B99A00700A9292B /* DriverListCDTVC.m in Sources */,
-				989C9C0D1B9F40BC007E6638 /* Node.m in Sources */,
 				98F672B01B98114C00A9292B /* WelcomeViewController.m in Sources */,
 				98F672AD1B98114C00A9292B /* CoreDataTableViewController.m in Sources */,
 				98F673271B9AE27E00A9292B /* APConfigGuideVC.m in Sources */,

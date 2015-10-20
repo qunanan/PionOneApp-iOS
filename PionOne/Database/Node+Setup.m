@@ -31,6 +31,8 @@
                                              inManagedObjectContext:context];
         node.sn = sn;
         node.key = nodeDictionary[NODE_KEY];
+        NSDate *now = [[NSDate alloc] init];
+        node.date = now;        
     }
     node.name = nodeDictionary[NODE_NAME];
     node.online = nodeDictionary[NODE_ONLINE_STATUS];
@@ -39,7 +41,7 @@
 }
 
 - (void)refreshNodeSettingsWithArray:(NSArray *)settingsArray {
-    self.groves = nil; //remove all sttings
+    [self removeGroves:self.groves];   //remove all sttings
     for (NSDictionary *settingDic in settingsArray) {
         NSString *groveName = settingDic[@"name"];
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Driver"];
@@ -59,7 +61,9 @@
 }
     
 - (NSString *)apiURL {
-    return [NSString stringWithFormat:@"%@%@?access_token=%@",PionOneDefaultBaseURL,aPionOneNodeResources,self.key];
+    NSString *otaServerAddress = [NSString stringWithFormat:@"https://%@", [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneOTAServerIPAddress]];
+    NSString *dataServerIP = [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneDataServerIPAddress];
+    return [NSString stringWithFormat:@"%@%@?access_token=%@&data_server=%@", otaServerAddress, aPionOneNodeResources,self.key, dataServerIP];
 }
 
 @end

@@ -25,6 +25,7 @@ PODS:
   - KHFlatButton (1.0.0)
   - libqrencode (3.4.2)
   - MBProgressHUD (0.9.1)
+  - MGSwipeTableCell (1.5.1)
   - QRExt (1.0.0):
     - libqrencode (~> 3.4.2)
   - REFormattedNumberField (1.1.5)
@@ -44,6 +45,7 @@ DEPENDENCIES:
   - DZNEmptyDataSet
   - KHFlatButton (~> 1.0.0)
   - MBProgressHUD (~> 0.9.1)
+  - MGSwipeTableCell (~> 1.5)
   - QRExt (~> 1.0)
   - RESideMenu (~> 4.0)
   - RETableViewManager (~> 1.6)
@@ -57,6 +59,7 @@ SPEC CHECKSUMS:
   KHFlatButton: 8fe86ab4cc7ef2e503276ad2872dc55cd985e5aa
   libqrencode: 43dc34b89af83ea4b07c409cd8e09c87aa3a1c9f
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
+  MGSwipeTableCell: a51fa670c01f0aa048f12af040acebf315223137
   QRExt: ecd38e55f107c626889cb9ea465ee8e106931ccc
   REFormattedNumberField: be3d55dd709f65541fb26b7e1709da07903147f8
   RESideMenu: f24c508404b49c667344c54aba7e590883533958
@@ -65,4 +68,4 @@ SPEC CHECKSUMS:
   SDWebImage: 1d2b1a1efda1ade1b00b6f8498865f8ddedc8a84
   TextFieldEffects: de5b2db55fd8af5d5bfe0c7ce5a023076f2835a2
 
-COCOAPODS: 0.38.1
+COCOAPODS: 0.39.0

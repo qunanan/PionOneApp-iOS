@@ -30,6 +30,15 @@
 }
 
 - (void)refresh:(UIRefreshControl *)refreshControl {
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Driver"];
+    
+    NSError *error;
+    NSArray *matches = [self.managedObjectContext executeFetchRequest:request error:&error];
+    
+    for (Driver *driver in matches) {
+        [self.managedObjectContext deleteObject:driver];
+    }
+
     [[PionOneManager sharedInstance] scanDriverListWithCompletionHandler:^(BOOL succes, NSString *msg) {
         [refreshControl endRefreshing];
     }];

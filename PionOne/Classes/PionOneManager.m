@@ -7,18 +7,17 @@
 //
 
 #import "PionOneManager.h"
-#import "AFNetworking.h"
 #import "NSString+Email.h"
 #import "GCDAsyncUdpSocket.h"
 #import "NodeAPI.h"
+#import "NSString+escapedUnicode.h"
 
-
+//#define NSLog(format, ...)
 #define PionOneManagerQueueName "PionOneManagerQueueName"
 
 @import SystemConfiguration.CaptiveNetwork;
 
 @interface PionOneManager()
-@property (nonatomic, strong) AFHTTPRequestOperationManager *httpManager;
 @property (nonatomic, strong) GCDAsyncUdpSocket *udpSocket;
 @property (atomic ,assign) __block BOOL canceled;
 @property (atomic ,assign) __block BOOL isAPConfigSuccess;
@@ -40,14 +39,15 @@
 #pragma -mark Property methods
 - (AFHTTPRequestOperationManager *)httpManager {
     if (_httpManager == nil) {
-        NSString *urlStr = [[NSUserDefaults standardUserDefaults] stringForKey:kPionOneBaseURL];
+        NSString *urlStr = [[NSUserDefaults standardUserDefaults] stringForKey:kPionOneOTAServerBaseURL];
         if (urlStr == nil) {
-            [[NSUserDefaults standardUserDefaults] setObject:PionOneDefaultBaseURL forKey:kPionOneBaseURL];
-            urlStr = PionOneDefaultBaseURL;
+            // Please Input a Valid Server IP address
+            NSLog(@"Please Input a Valid Server IP address..");
         }
         NSURL *baseURL = [NSURL URLWithString:urlStr];
         _httpManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:baseURL];
-        _httpManager.securityPolicy.allowInvalidCertificates = NO;
+        _httpManager.securityPolicy.allowInvalidCertificates = YES;
+        _httpManager.securityPolicy.validatesDomainName = NO;
         _httpManager.responseSerializer = [AFJSONResponseSerializer serializer];
         _httpManager.responseSerializer.acceptableContentTypes = [_httpManager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
         _httpManager.requestSerializer.timeoutInterval = 30.0f;
@@ -136,7 +136,7 @@
         } else {
             if(handler) handler(NO,msg);
         }
-        NSLog(@"JSON: %@", responseObject);
+        NSLog(@"JSON:SignUp: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
             handler(NO,@"SignUp:Connecting to Server failed!");
@@ -180,7 +180,7 @@
         } else {
             if(handler) handler(NO,msg);
         }
-        NSLog(@"JSON: %@", responseObject);
+        NSLog(@"JSON:SignIn: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
             handler(NO,@"SignIn:Connecting to Server failed!");
@@ -227,7 +227,7 @@
         } else {
             if (handler) handler(NO,msg);
         }
-        NSLog(@"JSON: %@", responseObject);
+        NSLog(@"JSON:RetrievePWD %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
             handler(NO,@"RetrievePWD:Connecting to Server failed!");
@@ -258,7 +258,7 @@
         } else {
             if (handler) handler(NO,msg);
         }
-        NSLog(@"JSON: %@", responseObject);
+        NSLog(@"JSON:ChangePWD %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
             handler(NO,@"ChangePWD:Connecting to Server failed!");
@@ -291,7 +291,7 @@
         } else {
             if (handler) handler(NO,msg);
         }
-        NSLog(@"JSON: %@", responseObject);
+        NSLog(@"JSON:CreatNode: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
             handler(NO,@"CreatNode:Connecting to Server failed!");
@@ -317,10 +317,10 @@
         } else {
             if (handler) handler(NO,msg);
         }
-        NSLog(@"JSON: %@", responseObject);
+        NSLog(@"JSON:renameNode: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
-            handler(NO,@"CreatNode:Connecting to Server failed!");
+            handler(NO,@"renameNode:Connecting to Server failed!");
         }
         NSLog(@"Networking error: %@", error);
     }];
@@ -344,7 +344,7 @@
         } else {
             if (handler) handler(NO,msg);
         }
-        NSLog(@"JSON: %@", responseObject);
+        NSLog(@"JSON:GetNodeList: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
             handler(NO,@"GetNodeList:Connecting to Server failed!");
@@ -370,7 +370,7 @@
         } else {
             if(handler) handler(NO,msg);
         }
-        NSLog(@"JSON: %@", responseObject);
+        NSLog(@"JSON:DeleteNode: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
             handler(NO,@"DeleteNode:Connecting to Server failed!");
@@ -396,7 +396,7 @@
             NSLog(@"%@",driver);
         }
         if(handler) handler(YES,nil);
-        NSLog(@"JSON: %@", responseObject);
+        NSLog(@"JSON:ScanDriver: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
             handler(NO,@"ScanDriver:Connecting to Server failed!");
@@ -469,7 +469,7 @@
         } else {
             if(handler) handler(NO,msg);
         }
-        NSLog(@"JSON: %@", responseObject);
+        NSLog(@"JSON:DeleteZombie: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
             handler(NO,@"DeleteZombie:Connecting to Server failed!");
@@ -549,9 +549,9 @@
                         }
                     }
                 }
-                NSLog(@"JSON: %@", responseObject);
+                NSLog(@"JSON:findTheConfiguringNode %@", responseObject);
             } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
-                NSLog(@"Networking error: %@", error);
+                NSLog(@"Networking error:findTheConfiguringNode %@", error);
             }];
             [NSThread sleepForTimeInterval:3];
         }
@@ -585,7 +585,7 @@
         } else {
             if(handler) handler(NO,msg);
         }
-        NSLog(@"JSON: %@", responseObject);
+        NSLog(@"JSON:APConfigSetNodeName: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
             handler(NO,@"APConfigSetNodeName:Connecting to Server failed!");
@@ -691,7 +691,10 @@
     [self.udpSocket pauseReceiving];
 }
 - (void)udpSendPionOneConfiguration {
-    NSString *cfg = [NSString stringWithFormat:@"APCFG: %@\t%@\t%@\t%@\t",self.cachedSSID, self.cachedPassword, self.tmpNodeKey, self.tmpNodeSN];
+    NSString * otaServerIP = [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneOTAServerIPAddress];
+    NSString * dataServerIP = [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneDataServerIPAddress];
+
+    NSString *cfg = [NSString stringWithFormat:@"APCFG: %@\t%@\t%@\t%@\t%@\t%@\t",self.cachedSSID, self.cachedPassword, self.tmpNodeKey, self.tmpNodeSN, dataServerIP, otaServerIP];
     NSData *cfgData = [cfg dataUsingEncoding:NSUTF8StringEncoding];
     [self.udpSocket sendData:cfgData toHost:PionOneConfigurationAddr port:1025 withTimeout:-1 tag:1025];
 }
@@ -727,7 +730,7 @@
                            handler(NO,msg,otaStatus,otaStatus);
                        }
                    }
-                   NSLog(@"JSON: %@", responseObject);
+                   NSLog(@"JSON:OTA: %@", responseObject);
                }
                failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
                    if (handler) {
@@ -739,7 +742,7 @@
 
 - (void)node:(Node *)node OTAStatusWithprogressHandler:(void (^)(BOOL, NSString *, NSString *, NSString *))handler {
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[node.key] forKeys:@[@"access_token"]];
-    self.httpManager.requestSerializer.timeoutInterval = 60.0f;
+    self.httpManager.requestSerializer.timeoutInterval = 180.0f;
     [self.httpManager POST:aPionOneOTAStatus
                 parameters:parameters
                    success:^(AFHTTPRequestOperation * __nonnull operation, id  __nonnull responseObject) {
@@ -759,7 +762,7 @@
                                handler(NO,msg,otaStatus,otaStatus);
                            }
                        }
-                       NSLog(@"JSON: %@", responseObject);
+                       NSLog(@"JSON:OTA: %@", responseObject);
                    }
                    failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
                        if (handler) {
@@ -786,7 +789,7 @@
                                handler(NO,msg);
                            }
                        }
-                       NSLog(@"JSON: %@", responseObject);
+                       NSLog(@"JSON:GetNodeSettings: %@", responseObject);
                    }
                    failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
                        if (handler) {
@@ -809,7 +812,7 @@
 
 - (NSString *)yamlWithGrove:(Grove *)grove {
     NSString *yaml = [NSString stringWithFormat:@"%@:\r\n",grove.instanceName];
-    yaml = [yaml stringByAppendingFormat:@"  name: %@\r\n",grove.driver.groveName];
+    yaml = [yaml stringByAppendingFormat:@"  name: %@\r\n",grove.driver.groveName.escapedUnicode];
     yaml = [yaml stringByAppendingFormat:@"  construct_arg_list:\r\n"];
     if ([grove.driver.interfaceType isEqualToString:@"GPIO"]) {
         yaml = [yaml stringByAppendingFormat:@"    pin: %@\r\n",grove.pinNum0];
@@ -823,6 +826,8 @@
     }
     return yaml;
 }
+
+
 - (NSString *)toBase64String:(NSString *)string {
     NSData *data = [string dataUsingEncoding: NSUTF8StringEncoding];
     
@@ -922,7 +927,7 @@
             dic = [[NSMutableDictionary alloc] init];
         } else {
             if ([str containsString:@"  name: "]) {
-                NSString *name = [str substringFromIndex:8];
+                NSString *name = [[str substringFromIndex:8] nonLossyASCIIString];
                 [dic setObject:name forKey:@"name"];
             }
             foundNewObject = NO;
@@ -967,7 +972,7 @@
         } else {
             if(handler) handler(NO,msg,nil);
         }
-        NSLog(@"JSON: %@", responseObject);
+        NSLog(@"JSON:well-known: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
             handler(NO,@"well-known:Connecting to Server failed!",nil);
@@ -976,5 +981,14 @@
     }];
 }
 
+#pragma -mark setup Server IP
+- (void)setRegion:(NSString*)region OTAServerIP:(NSString *)otaIP andDataSeverIP:(NSString *)dataIP {
+    [[NSUserDefaults standardUserDefaults] setValue:region forKey:kPionOneServerRegion];
+    [[NSUserDefaults standardUserDefaults] setValue:otaIP forKey:kPionOneOTAServerIPAddress];
+    [[NSUserDefaults standardUserDefaults] setValue:dataIP forKey:kPionOneDataServerIPAddress];
+    NSString *baseURL = [NSString stringWithFormat:@"https://%@",otaIP];
+    [[NSUserDefaults standardUserDefaults] setValue:baseURL forKey:kPionOneOTAServerBaseURL];
+    [[PionOneManager sharedInstance] setHttpManager:nil];
+}
 
 @end

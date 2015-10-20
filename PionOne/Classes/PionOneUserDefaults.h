@@ -9,10 +9,18 @@
 #ifndef PionOne_PionOneUserDefaults_h
 #define PionOne_PionOneUserDefaults_h
 
-//apis
-#define PionOneDefaultBaseURL @"https://iot.seeed.cc"
+//#define PionOneDefaultBaseURL @"https://iot.seeed.cc"
+#define PionOneDefaultBaseURL @"https://45.79.4.239"
+#define PionOneDefaultOTAServerIPAddressChina @"120.25.216.117"
+#define PionOneDefaultDataServerIPAddressChina @"120.25.216.117"
+#define PionOneDefaultOTAServerIPAddressInternational @"45.79.4.239"
+#define PionOneDefaultDataServerIPAddressInternational @"45.79.4.239"
 #define PionOneConfigurationAddr @"192.168.4.1"
+#define PionOneRegionNameInternational @"International"
+#define PionOneRegionNameChina @"China"
+#define PionOneRegionNameCustom @"Custom"
 
+//apis
 #define aPionOneUserCreate @"/v1/user/create"
 #define aPionOneUserLogin @"/v1/user/login"
 #define aPionOneUserRetrievepassword @"/v1/user/retrievepassword"
@@ -30,7 +38,12 @@
 #define aPionOneNodeResources @"/v1/node/resources"
 #define aPionOneNodeAPIs @"/v1/node/.well-known"
 
-#define kPionOneBaseURL @"PionOneBaseURL"
+//default keys
+#define kPionOneOTAServerBaseURL @"PionOneOTAServerBaseURL"
+#define kPionOneDataServerBaseURL @"PionOneDataServerBaseURL"
+#define kPionOneOTAServerIPAddress @"PionOneOTAServerIPAddress"
+#define kPionOneDataServerIPAddress @"PionOneDataServerIPAddress"
+#define kPionOneServerRegion @"PionOneServerRegion"
 #define kPionOneUserToken @"PionOneUserToken"
 #define kPionOneTmpNodeSN @"PionOneTmpNodeSN"
 #define kPionOneTmpNodeKey @"PionOneTmpNodeKey"
