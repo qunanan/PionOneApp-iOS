@@ -95,7 +95,7 @@
     cell.textLabel.text = grove.driver.groveName;
     cell.detailTextLabel.text = grove.driver.interfaceType;
     NSURL *url = [NSURL URLWithString:grove.driver.imageURL];
-    [cell.imageView sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"About"]];
+    [cell.imageView sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"ic_extension_36pt"]];
     return cell;
 }
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {

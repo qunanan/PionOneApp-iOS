@@ -52,7 +52,7 @@
     cell.textLabel.text = driver.groveName;
     cell.detailTextLabel.text = driver.interfaceType;
     NSURL *url = [NSURL URLWithString:driver.imageURL];
-    [cell.imageView sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"About"]];
+    [cell.imageView sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"ic_extension_36pt"]];
     return cell;
 }
 
