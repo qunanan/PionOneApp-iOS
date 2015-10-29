@@ -60,7 +60,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    [self registerAPconfigLocalNotification];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -186,6 +186,14 @@
                       otherButtonTitles:nil];
     alart.opaque = NO;
     [alart show];
+}
+- (void)registerAPconfigLocalNotification{
+    
+    UIUserNotificationType types = UIUserNotificationTypeAlert | UIUserNotificationTypeSound;
+    UIUserNotificationSettings *connectToNodeSettings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
+    
+    [[UIApplication sharedApplication] registerUserNotificationSettings:connectToNodeSettings];
+    
 }
 
 

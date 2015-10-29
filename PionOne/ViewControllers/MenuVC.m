@@ -13,8 +13,11 @@
 #import <GoogleMaterialIconFont/GoogleMaterialIconFont-Swift.h>
 #import "MBProgressHUD.h"
 #import "NodeListCDTVC.h"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
+#import <FBSDKShareKit/FBSDKShareKit.h>
 
-@interface MenuVC () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
+@interface MenuVC () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, FBSDKSharingDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) NSArray *menuList;
 @property (strong, nonatomic) UIAlertController *changePasswordDialog;
@@ -75,8 +78,17 @@
 
 - (UIAlertController *)shareDialog {
     if (_shareDialog == nil) {
-        _shareDialog = [UIAlertController alertControllerWithTitle:@"title" message:@"msg" preferredStyle:UIAlertControllerStyleActionSheet];
-        [_shareDialog addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:nil]];
+        _shareDialog = [UIAlertController alertControllerWithTitle:@"Share this App to your freinds." message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        UIAlertAction *facebook = [UIAlertAction actionWithTitle:@"Facebook" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
+            content.contentURL = [NSURL URLWithString:@"http://iot.seeed.cc"];
+            [FBSDKShareDialog showFromViewController:self
+                                         withContent:content
+                                            delegate:nil];
+        }];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+        [_shareDialog addAction:facebook];
+        [_shareDialog addAction:cancel];
     }
     return _shareDialog;
 }

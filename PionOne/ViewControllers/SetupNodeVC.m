@@ -26,7 +26,6 @@
     [super viewDidLoad];
     self.title = self.node.name;
     self.tableView.delegate = self;
-    self.fetchedResultsController.delegate = self;
     [self refreshGroveButtonConfiguration];
     
     //Init headerView
@@ -54,6 +53,7 @@
     self.refreshControl = refreshControl;
 }
 - (void)refresh:(UIRefreshControl *)refreshControl {
+    
     [[PionOneManager sharedInstance] node:self.node getSettingsWithCompletionHandler:^(BOOL success, NSString *msg) {
         [[PionOneManager sharedInstance] saveContext];
         [self.refreshControl endRefreshing];
@@ -213,4 +213,13 @@
     }
 }
 
+- (void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [_managedObjectContext performBlock:^{
+        NSError *childError = nil;
+        if (![_managedObjectContext save:&childError]) {
+            NSLog(@"Error saving child");
+        }
+    }];
+}
 @end

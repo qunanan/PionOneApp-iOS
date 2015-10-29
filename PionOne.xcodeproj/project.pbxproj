@@ -19,6 +19,10 @@
 		984DFA3B1BA53EAE006E4DAB /* NodeAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 984DFA3A1BA53EAE006E4DAB /* NodeAPI.m */; };
 		984DFA431BA57B7C006E4DAB /* ListImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 984DFA401BA57B7C006E4DAB /* ListImageCell.m */; };
 		984DFA441BA57B7C006E4DAB /* ListImageItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 984DFA421BA57B7C006E4DAB /* ListImageItem.m */; };
+		98643D311BE222B400DF2CF5 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 98643D2E1BE222B400DF2CF5 /* FBSDKCoreKit.framework */; };
+		98643D321BE222B400DF2CF5 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 98643D2F1BE222B400DF2CF5 /* FBSDKLoginKit.framework */; };
+		98643D331BE222B400DF2CF5 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 98643D301BE222B400DF2CF5 /* FBSDKShareKit.framework */; };
+		98643D361BE224A000DF2CF5 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 98643D351BE224A000DF2CF5 /* AboutViewController.m */; };
 		986E01441BA3DBCF00C12BF2 /* Driver.m in Sources */ = {isa = PBXBuildFile; fileRef = 986E01431BA3DBCF00C12BF2 /* Driver.m */; };
 		986E01471BA3DBCF00C12BF2 /* Grove.m in Sources */ = {isa = PBXBuildFile; fileRef = 986E01461BA3DBCF00C12BF2 /* Grove.m */; };
 		988B06711BD48FFE00C4268E /* NSString+escapedUnicode.m in Sources */ = {isa = PBXBuildFile; fileRef = 988B06701BD48FFE00C4268E /* NSString+escapedUnicode.m */; };
@@ -27,7 +31,6 @@
 		98B4ED691BA1C4F7000D6255 /* Grove+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 98B4ED681BA1C4F7000D6255 /* Grove+Create.m */; };
 		98E026351BBF6B6C00D691B4 /* NodeListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 98E026341BBF6B6C00D691B4 /* NodeListCell.m */; };
 		98E9CF491BD0F21E00FE1F38 /* SetupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 98E9CF481BD0F21E00FE1F38 /* SetupViewController.m */; };
-		98EA766D1BE091AE001536D0 /* MenuVC.plist in Resources */ = {isa = PBXBuildFile; fileRef = 98EA766C1BE091AE001536D0 /* MenuVC.plist */; };
 		98F6725F1B980E6800A9292B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 98F6725E1B980E6800A9292B /* main.m */; };
 		98F672621B980E6800A9292B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 98F672611B980E6800A9292B /* AppDelegate.m */; };
 		98F672651B980E6800A9292B /* PionOne.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 98F672631B980E6800A9292B /* PionOne.xcdatamodeld */; };
@@ -79,6 +82,11 @@
 		984DFA401BA57B7C006E4DAB /* ListImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ListImageCell.m; path = Views/ListImageCell.m; sourceTree = "<group>"; };
 		984DFA411BA57B7C006E4DAB /* ListImageItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ListImageItem.h; path = Views/ListImageItem.h; sourceTree = "<group>"; };
 		984DFA421BA57B7C006E4DAB /* ListImageItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ListImageItem.m; path = Views/ListImageItem.m; sourceTree = "<group>"; };
+		98643D2E1BE222B400DF2CF5 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		98643D2F1BE222B400DF2CF5 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		98643D301BE222B400DF2CF5 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
+		98643D341BE224A000DF2CF5 /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
+		98643D351BE224A000DF2CF5 /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
 		986E01421BA3DBCF00C12BF2 /* Driver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Driver.h; path = Database/Driver.h; sourceTree = "<group>"; };
 		986E01431BA3DBCF00C12BF2 /* Driver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Driver.m; path = Database/Driver.m; sourceTree = "<group>"; };
 		986E01451BA3DBCF00C12BF2 /* Grove.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Grove.h; path = Database/Grove.h; sourceTree = "<group>"; };
@@ -96,7 +104,6 @@
 		98E026341BBF6B6C00D691B4 /* NodeListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NodeListCell.m; path = Views/NodeListCell.m; sourceTree = "<group>"; };
 		98E9CF471BD0F21E00FE1F38 /* SetupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetupViewController.h; sourceTree = "<group>"; };
 		98E9CF481BD0F21E00FE1F38 /* SetupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetupViewController.m; sourceTree = "<group>"; };
-		98EA766C1BE091AE001536D0 /* MenuVC.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MenuVC.plist; sourceTree = "<group>"; };
 		98F672591B980E6800A9292B /* PionOne.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PionOne.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		98F6725D1B980E6800A9292B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		98F6725E1B980E6800A9292B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -155,7 +162,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98643D331BE222B400DF2CF5 /* FBSDKShareKit.framework in Frameworks */,
 				3D1ACF31BED3DB007678738C /* Pods.framework in Frameworks */,
+				98643D311BE222B400DF2CF5 /* FBSDKCoreKit.framework in Frameworks */,
+				98643D321BE222B400DF2CF5 /* FBSDKLoginKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -174,6 +184,9 @@
 		6437B1C9D2B17EC71581EC7D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				98643D2E1BE222B400DF2CF5 /* FBSDKCoreKit.framework */,
+				98643D2F1BE222B400DF2CF5 /* FBSDKLoginKit.framework */,
+				98643D301BE222B400DF2CF5 /* FBSDKShareKit.framework */,
 				98F673231B9A956000A9292B /* SystemConfiguration.framework */,
 				C1981195BC8AE806D378DF3B /* Pods.framework */,
 			);
@@ -288,7 +301,6 @@
 				98F672F11B9965A400A9292B /* RootViewController.m */,
 				98F672F31B996E1E00A9292B /* MenuVC.h */,
 				98F672F41B996E1E00A9292B /* MenuVC.m */,
-				98EA766C1BE091AE001536D0 /* MenuVC.plist */,
 				98F673051B99A00700A9292B /* DriverListCDTVC.h */,
 				98F673061B99A00700A9292B /* DriverListCDTVC.m */,
 				98F6731A1B99A92F00A9292B /* DriverDetailVC.h */,
@@ -303,6 +315,8 @@
 				984DFA281BA491E2006E4DAB /* NodeDetailTVC.m */,
 				984DFA2A1BA4B944006E4DAB /* NodeResourcesVC.h */,
 				984DFA2B1BA4B944006E4DAB /* NodeResourcesVC.m */,
+				98643D341BE224A000DF2CF5 /* AboutViewController.h */,
+				98643D351BE224A000DF2CF5 /* AboutViewController.m */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -398,7 +412,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				98EA766D1BE091AE001536D0 /* MenuVC.plist in Resources */,
 				98F6726B1B980E6800A9292B /* Main.storyboard in Resources */,
 				98F672701B980E6800A9292B /* LaunchScreen.xib in Resources */,
 				98F6726D1B980E6800A9292B /* Images.xcassets in Resources */,
@@ -484,6 +497,7 @@
 				98F6725F1B980E6800A9292B /* main.m in Sources */,
 				98B4ED661BA1BF0F000D6255 /* SelectGroveTVC.m in Sources */,
 				9805B1401BCFB044003DD994 /* Node+CoreDataProperties.m in Sources */,
+				98643D361BE224A000DF2CF5 /* AboutViewController.m in Sources */,
 				98F672F81B99802200A9292B /* Driver+Create.m in Sources */,
 				984DFA291BA491E2006E4DAB /* NodeDetailTVC.m in Sources */,
 				98F673221B9A887100A9292B /* PrepareAPConfigVC.m in Sources */,
@@ -615,6 +629,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/$(PRODUCT_NAME)/PionOne PrefixHeader.pch";
 				INFOPLIST_FILE = PionOne/Info.plist;
@@ -634,6 +652,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/$(PRODUCT_NAME)/PionOne PrefixHeader.pch";
 				INFOPLIST_FILE = PionOne/Info.plist;

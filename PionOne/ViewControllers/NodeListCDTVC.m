@@ -22,6 +22,7 @@
 @property (strong, nonatomic) Node *configuringNode;
 @property (assign, nonatomic) BOOL cellCanBeSelected;
 @property (assign, nonatomic) BOOL isReloading;
+@property (strong, nonatomic) NSFetchedResultsController *cachedFRC;
 
 @end
 
@@ -52,6 +53,8 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+    self.fetchedResultsController.delegate = self;
+    [self performFetch];
 }
 
 
@@ -382,6 +385,7 @@
             [(SetupNodeVC *)dVC setNode:sender];
             [(SetupNodeVC *)dVC setManagedObjectContext:self.managedObjectContext];
             [[(SetupNodeVC *)dVC navigationController] setTitle:[(Node *)sender name]];
+            self.fetchedResultsController.delegate = nil;
         }
     } else if ([dVC isKindOfClass:[NodeDetailTVC class]]) {
         if ([sender isKindOfClass:[Node class]]) {
