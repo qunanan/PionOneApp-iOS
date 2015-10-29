@@ -18,6 +18,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.driverImageView.image = self.driverImage;
+    self.navigationItem.title = self.driver.groveName;
+    NSURL *url = [NSURL URLWithString:self.driver.imageURL];
+    [self.driverImageView sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"About"]];
 }
 @end

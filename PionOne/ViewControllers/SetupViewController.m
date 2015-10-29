@@ -20,6 +20,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+
     self.otaServerIP.delegate = self;
     self.dataServerIP.delegate = self;
     [self.otaServerIP becomeFirstResponder];
@@ -29,6 +30,11 @@
     self.dataServerIP.text = [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneDataServerIPAddress];
     [self.otaServerIP becomeFirstResponder];
 
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.tintColor = self.navigationItem.rightBarButtonItem.tintColor;
 }
 
 - (void)didReceiveMemoryWarning {

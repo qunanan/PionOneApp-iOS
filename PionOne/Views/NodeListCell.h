@@ -10,11 +10,7 @@
 #import "MGSwipeTableCell.h"
 
 @interface NodeListCell : MGSwipeTableCell
-@property (weak, nonatomic) IBOutlet UILabel *timeLabel;
-@property (weak, nonatomic) IBOutlet UILabel *locationLabel;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
-@property (weak, nonatomic) IBOutlet UIImageView *groveIconView;
-@property (weak, nonatomic) IBOutlet UIImageView *favoritIconView;
 @property (weak, nonatomic) IBOutlet UIView *onlineIndicator;
 @property (strong, nonatomic) NSArray *groves;
 @property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *groveIcons;

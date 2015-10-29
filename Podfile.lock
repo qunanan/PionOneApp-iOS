@@ -22,6 +22,7 @@ PODS:
     - AFNetworking/NSURLSession
   - CocoaAsyncSocket (7.4.2)
   - DZNEmptyDataSet (1.7.1)
+  - GoogleMaterialIconFont (0.2.1)
   - KHFlatButton (1.0.0)
   - libqrencode (3.4.2)
   - MBProgressHUD (0.9.1)
@@ -43,6 +44,7 @@ DEPENDENCIES:
   - AFNetworking (~> 2.0)
   - CocoaAsyncSocket
   - DZNEmptyDataSet
+  - GoogleMaterialIconFont
   - KHFlatButton (~> 1.0.0)
   - MBProgressHUD (~> 0.9.1)
   - MGSwipeTableCell (~> 1.5)
@@ -56,6 +58,7 @@ SPEC CHECKSUMS:
   AFNetworking: 79f7eb1a0fcfa7beb409332b2ca49afe9ce53b05
   CocoaAsyncSocket: f5783bdedd232d91b89769bc4b5a1580aed518ad
   DZNEmptyDataSet: 2a398066c2bf5848f7f693fb50954b5064debd12
+  GoogleMaterialIconFont: 32dd19dcad83d8a68d41820bb83902b942b2b7c9
   KHFlatButton: 8fe86ab4cc7ef2e503276ad2872dc55cd985e5aa
   libqrencode: 43dc34b89af83ea4b07c409cd8e09c87aa3a1c9f
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad

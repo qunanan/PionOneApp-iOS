@@ -26,13 +26,12 @@
         driver = [NSEntityDescription insertNewObjectForEntityForName:@"Driver"
                                              inManagedObjectContext:context];
         
-        driver.driverID = driverID;
-        driver.groveName = dic[kJsonGroveName];
-        driver.driverName = dic[kJsonDriverName];
-        driver.imageURL = dic[kJsonImageURL];
-        driver.interfaceType = dic[kJsonDriverInterfaceType];
     }
-    
+    driver.driverID = driverID;
+    driver.groveName = dic[kJsonGroveName];
+    driver.driverName = dic[kJsonDriverName];
+    driver.imageURL = dic[kJsonImageURL];
+    driver.interfaceType = dic[kJsonDriverInterfaceType];
     return driver;
 }
 

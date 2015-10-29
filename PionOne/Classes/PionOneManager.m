@@ -19,10 +19,13 @@
 
 @interface PionOneManager()
 @property (nonatomic, strong) GCDAsyncUdpSocket *udpSocket;
-@property (atomic ,assign) __block BOOL canceled;
-@property (atomic ,assign) __block BOOL isAPConfigSuccess;
-@property (atomic ,assign) __block BOOL foundTheNodeOnServer;
-@property (nonatomic, strong) User *userBackground;
+@property (atomic, assign) __block BOOL canceled;
+@property (atomic, assign) __block BOOL isAPConfigSuccess;
+@property (atomic, assign) __block BOOL isGetMacAddressSuccess;
+@property (atomic, assign) __block BOOL foundTheNodeOnServer;
+@property (atomic, strong) __block NSString *macAddress;
+@property (nonatomic, strong) NSManagedObjectContext *tmpMOC;
+
 
 @end
 @implementation PionOneManager
@@ -65,16 +68,6 @@
     }
     return _user;
 }
-- (User *)userBackground {
-    if (_userBackground == nil) {
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"User"];
-        request.predicate = nil;
-        request.sortDescriptors = nil;
-        NSArray *result = [self.backgroundMOC executeFetchRequest:request error:nil];
-        _userBackground = [result lastObject];
-    }
-    return _userBackground;
-}
 
 - (void)setAPConfigurationDone:(BOOL)APConfigurationDone {
     _APConfigurationDone = APConfigurationDone;
@@ -99,6 +92,11 @@
     return _udpSocket;
 }
 
+- (NSManagedObjectContext *)tmpMOC {
+    _tmpMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    _tmpMOC.parentContext = self.mainMOC;
+    return _tmpMOC;
+}
 
 #pragma -mark User Management API
 
@@ -244,8 +242,8 @@
         if (handler) handler(NO,nil);
         return;
     }
-    NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[newPwd] forKeys:@[@"password"]];
-    self.httpManager.requestSerializer.timeoutInterval = 30.0f;
+    NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[newPwd, self.user.token] forKeys:@[@"password", @"access_token"]];
+    self.httpManager.requestSerializer.timeoutInterval = 10.0f;
     [self.httpManager POST:aPionOneUserChangePassword parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
@@ -339,7 +337,11 @@
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
         if (status.integerValue == 200) {
             NSArray * nodelist = (NSArray *)[(NSDictionary *)responseObject objectForKey:@"nodes"];
-            [self.user refreshNodeListWithArry:nodelist];
+            [self.tmpMOC performBlock:^{
+                User *tmpUser = [_tmpMOC objectWithID:self.user.objectID];
+                [tmpUser refreshNodeListWithArry:nodelist];
+            }];
+            [self saveContext];
             if (handler) handler(YES,msg);
         } else {
             if (handler) handler(NO,msg);
@@ -352,6 +354,52 @@
         NSLog(@"Networking error: %@", error);
     }];
 }
+
+- (void)getNodeListAndNodeSettingsWithCompletionHandler:(void (^)(BOOL, NSString *))handler {
+    if (!self.user) {
+        NSLog(@"To call the APIs, you need to set User.");
+        if (handler) handler(NO,nil);
+        return;
+    }
+    NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token] forKeys:@[@"access_token"]];
+    self.httpManager.requestSerializer.timeoutInterval = 10.0f;
+    [self.httpManager GET:aPionOneNodeList parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
+        NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
+        if (status.integerValue == 200) {
+            NSArray * nodelist = (NSArray *)[(NSDictionary *)responseObject objectForKey:@"nodes"];
+            [self.tmpMOC performBlock:^{
+                User *tmpUser = [_tmpMOC objectWithID:self.user.objectID];
+                [tmpUser refreshNodeListWithArry:nodelist];
+                __block NSInteger count = tmpUser.nodes.count;
+                if (count == 0) {
+                    [self saveContext];
+                    if (handler) handler(YES,msg);
+                } else {
+                    for (Node *tmpNode in tmpUser.nodes) {
+                        [self node:tmpNode getSettingsWithCompletionHandler:^(BOOL success, NSString *msg) {
+                            if (--count == 0) {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [self saveContext];
+                                    if (handler) handler(success,msg);
+                                });
+                            }
+                        }];
+                    }
+                }
+            }];
+        } else {
+            if (handler) handler(NO,msg);
+        }
+        NSLog(@"JSON:GetNodeList: %@", responseObject);
+    } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
+        if (handler) {
+            handler(NO,@"GetNodeList:Connecting to Server failed!");
+        }
+        NSLog(@"Networking error: %@", error);
+    }];
+}
+
 
 - (void)removeNode:(Node *)node completionHandler:(void (^)(BOOL, NSString *))handler {
     if (!self.user) {
@@ -391,10 +439,12 @@
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token] forKeys:@[@"access_token"]];
     self.httpManager.requestSerializer.timeoutInterval = 30.0f;
     [self.httpManager GET:aPionOneDriverScan parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        for (NSDictionary *dic in (NSArray *)responseObject) {
-            Driver *driver = [Driver driverWithInfo:dic inManagedObjectContext:self.mainMOC];
-            NSLog(@"%@",driver);
-        }
+        [self.tmpMOC performBlock:^{
+            for (NSDictionary *dic in (NSArray *)responseObject) {
+                [Driver driverWithInfo:dic inManagedObjectContext:_tmpMOC];
+            }
+            [self saveContext];
+        }];
         if(handler) handler(YES,nil);
         NSLog(@"JSON:ScanDriver: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
@@ -409,17 +459,32 @@
 
 #pragma mark - Core Data Saving support
 
+//- (void)saveContext {
+//    NSManagedObjectContext *managedObjectContext = self.mainMOC;
+//    if (managedObjectContext != nil) {
+//        NSError *error = nil;
+//        if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
+//            // Replace this implementation with code to handle the error appropriately.
+//            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+//            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+//            abort();
+//        }
+//    }
+//}
 - (void)saveContext {
-    NSManagedObjectContext *managedObjectContext = self.mainMOC;
-    if (managedObjectContext != nil) {
-        NSError *error = nil;
-        if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
-            // Replace this implementation with code to handle the error appropriately.
-            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
+    [_tmpMOC performBlock:^{
+        NSError *childError = nil;
+        if ([_tmpMOC save:&childError]) {
+            [_mainMOC performBlock:^{
+                NSError *parentError = nil;
+                if (![_mainMOC save:&parentError]) {
+                    NSLog(@"Error saving parent");
+                }
+            }];
+        } else {
+            NSLog(@"Error saving child");
         }
-    }
+    }];
 }
 
 #pragma -mark AP Config Method
@@ -445,6 +510,14 @@
     return NO;
 }
 
+- (void)rebootPionOne {
+    [self openUdpObserver];
+    NSString *cfg = @"REBOOT";
+    NSData *cfgData = [cfg dataUsingEncoding:NSUTF8StringEncoding];
+    [self.udpSocket sendData:cfgData toHost:PionOneConfigurationAddr port:1025 withTimeout:-1 tag:1025];
+    [self closeUdpObserver];
+}
+
 - (void)deleteZombieNodeWithCompletionHandler:(void (^)(BOOL, NSString *))handler {
     NSString *zombieNodeSN = [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneTmpNodeSN];
     if (zombieNodeSN == nil) {
@@ -458,7 +531,7 @@
         return;
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token, zombieNodeSN] forKeys:@[@"access_token", @"node_sn"]];
-    self.httpManager.requestSerializer.timeoutInterval = 30.0f;
+    self.httpManager.requestSerializer.timeoutInterval = 6.0f;
     [self.httpManager POST:aPionOneNodeDelete parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg =[(NSDictionary *)responseObject objectForKey:@"msg"];
@@ -482,6 +555,49 @@
     NSDictionary *nwkInfo = [self fetchSSIDInfo];
     self.cachedSSID = nwkInfo[@"SSID"];
     NSLog(@"CachedSSID: %@", self.cachedSSID);
+}
+
+- (void)getNodeMacAddressWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler {
+    NSDictionary *nwkInfo = [self fetchSSIDInfo];
+    NSString *ssid = nwkInfo[@"SSID"];
+    if (![ssid containsString:@"PionOne_"]) {
+        NSString *error = @"This api only works with PionOne configuration network!";
+        NSLog(@"%@",error);
+        if (handler) {
+            handler(NO,error);
+        }
+        return;
+    }
+    self.isGetMacAddressSuccess = NO;
+    __block BOOL timeout = NO;
+    int64_t delay = 10.0; // In seconds
+    dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC);
+    dispatch_after(time,dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 1), ^{
+        timeout = YES;
+    });
+    dispatch_async(dispatch_queue_create(PionOneManagerQueueName, NULL), ^{
+        [self openUdpObserver];
+        while (!timeout && !self.canceled && !self.isGetMacAddressSuccess) {
+            NSString *cfg = @"Node?";
+            NSData *cfgData = [cfg dataUsingEncoding:NSUTF8StringEncoding];
+            [self.udpSocket sendData:cfgData toHost:PionOneConfigurationAddr port:1025 withTimeout:-1 tag:1025];
+            [NSThread sleepForTimeInterval:3];
+        }
+        [self closeUdpObserver];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if(self.isGetMacAddressSuccess == YES) {
+                if (handler) {
+                    handler(YES,self.macAddress);
+                }
+            } else {
+                if (handler) {
+                    if (handler && !self.canceled) {
+                        handler(NO,@"getMacAddress:setup canceled or time out!");
+                    }
+                }
+            }
+        });
+    });
 }
 
 - (void)APConfigNodeWithCompletionHandler:(void (^)(BOOL, NSString *))handler {
@@ -704,6 +820,9 @@
     NSString* str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     if ([str containsString:@"ok"]) {
         self.isAPConfigSuccess = YES;
+    } else if ([str containsString:@"Node:"]) {
+        self.macAddress = [[str componentsSeparatedByString:@","] objectAtIndex:1];
+        self.isGetMacAddressSuccess = YES;
     }
 }
 
@@ -775,7 +894,7 @@
 
 - (void)node:(Node *)node getSettingsWithCompletionHandler:(void (^)(BOOL, NSString *))handler {
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[node.key] forKeys:@[@"access_token"]];
-    self.httpManager.requestSerializer.timeoutInterval = 50.0f;
+    self.httpManager.requestSerializer.timeoutInterval = 6.0f;
     [self.httpManager GET:aPionOneNodeGetSettings
                 parameters:parameters
                    success:^(AFHTTPRequestOperation * __nonnull operation, id  __nonnull responseObject) {
@@ -783,7 +902,25 @@
                        NSString *status =(NSString *)[(NSDictionary *)responseObject objectForKey:@"status"];
                        if (status.integerValue == 200) {
                            NSArray *array = [self nodeSettingsFromYamlString:msg];
-                           [node refreshNodeSettingsWithArray:array];
+                           [_tmpMOC performBlock:^{
+                               Node *tmpNode = [_tmpMOC objectWithID:node.objectID];
+                               [tmpNode refreshNodeSettingsWithArray:array];
+                           }];
+                           if (handler) {
+                               handler(YES,msg);
+                           }
+                       } else if (status.integerValue == 404) {
+                           [_tmpMOC performBlock:^{
+                               Node *tmpNode = [_tmpMOC objectWithID:node.objectID];
+                               NSInteger count = tmpNode.groves.count;
+                               NSLog(@"%ld", (long)count);
+                               [tmpNode refreshNodeSettingsWithArray:nil];
+                               count = tmpNode.groves.count;
+                               NSLog(@"%ld", (long)count);
+                           }];
+                           if (handler) {
+                               handler(YES,msg);
+                           }
                        } else {
                            if (handler) {
                                handler(NO,msg);
@@ -846,43 +983,43 @@
 }
 
 - (NSString *)interfaceTypeForCntName:(NSString *)cntName {
-    if ([cntName isEqualToString:@"Grove0"]) {
+    if ([cntName isEqualToString:@"Digital0"]) {
         return @"GPIO";
     }
-    if ([cntName isEqualToString:@"Grove1"]) {
+    if ([cntName isEqualToString:@"Digital1"]) {
         return @"GPIO";
     }
-    if ([cntName isEqualToString:@"Grove2"]) {
+    if ([cntName isEqualToString:@"Digital2"]) {
         return @"GPIO";
     }
-    if ([cntName isEqualToString:@"Grove3"]) {
+    if ([cntName isEqualToString:@"Analog"]) {
         return @"ANALOG";
     }
-    if ([cntName isEqualToString:@"Grove4"]) {
+    if ([cntName isEqualToString:@"UART"]) {
         return @"UART";
     }
-    if ([cntName isEqualToString:@"Grove5"]) {
+    if ([cntName isEqualToString:@"I2C"]) {
         return @"I2C";
     }
     return nil;
 }
 - (NSArray *)pinNumberWithconnectorName:(NSString *)name {
-    if ([name isEqualToString:@"Grove0"]) {
+    if ([name isEqualToString:@"Digital0"]) {
         return @[@"14",@"12"];
     }
-    if ([name isEqualToString:@"Grove1"]) {
+    if ([name isEqualToString:@"Digital1"]) {
         return @[@"12",@"13"];
     }
-    if ([name isEqualToString:@"Grove2"]) {
+    if ([name isEqualToString:@"Digital2"]) {
         return @[@"13",@"2"];
     }
-    if ([name isEqualToString:@"Grove3"]) {
+    if ([name isEqualToString:@"Analog"]) {
         return @[@"17"];
     }
-    if ([name isEqualToString:@"Grove4"]) {
+    if ([name isEqualToString:@"UART"]) {
         return @[@"1",@"3"];
     }
-    if ([name isEqualToString:@"Grove5"]) {
+    if ([name isEqualToString:@"I2C"]) {
         return @[@"5",@"4"];
     }
     return nil;
@@ -890,23 +1027,23 @@
 - (NSString *)connectoNameForPin:(NSString *)pin {
     switch (pin.integerValue) {
         case 14:
-            return @"Grove0";
+            return @"Digital0";
             break;
         case 12:
-            return @"Grove1";
+            return @"Digital1";
             break;
         case 13:
         case 2:
-            return @"Grove2";
+            return @"Digital2";
             break;
         case 17:
-            return @"Grove3";
+            return @"Analog";
         case 1:
         case 3:
-            return @"Grove4";
+            return @"UART";
         case 5:
         case 4:
-            return @"Grove5";
+            return @"I2C";
             break;
             
         default:
@@ -934,13 +1071,17 @@
             if ([str containsString:@"    pin: "]) {
                 NSString *pin = [str substringFromIndex:9];
                 [dic setObject:pin forKey:@"pin"];
-                [array addObject:dic.copy];
-                dic = nil;
+                if (dic) {
+                    [array addObject:dic.copy];
+                    dic = nil;
+                }
             } else if ([str containsString:@"    pinscl: "]) {
                 NSString *pin = [str substringFromIndex:12];
                 [dic setObject:pin forKey:@"pin"];
-                [array addObject:dic.copy];
-                dic = nil;
+                if (dic) {
+                    [array addObject:dic.copy];
+                    dic = nil;
+                }
             }
         }
     }

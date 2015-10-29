@@ -1,8 +1,8 @@
 //
 //  Node+CoreDataProperties.m
-//  PionOne
+//  Pion One
 //
-//  Created by Qxn on 15/10/15.
+//  Created by Qxn on 15/10/24.
 //  Copyright © 2015年 SeeedStudio. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -13,12 +13,13 @@
 
 @implementation Node (CoreDataProperties)
 
+@dynamic date;
 @dynamic key;
 @dynamic name;
 @dynamic nodeID;
 @dynamic online;
 @dynamic sn;
-@dynamic date;
+@dynamic macAddress;
 @dynamic groves;
 @dynamic user;
 

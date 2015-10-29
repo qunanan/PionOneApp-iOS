@@ -17,7 +17,7 @@
 
 @interface PionOneManager : NSObject
 @property (nonatomic, strong) NSManagedObjectContext *mainMOC; //if you want to call the API, it must not be nil
-@property (nonatomic, strong) NSManagedObjectContext *backgroundMOC; //if you want to call the API, it must not be nil
+@property (nonatomic, strong) NSManagedObjectContext *backgroundMOC;
 @property (nonatomic, strong) User *user;
 @property (nonatomic, strong) NSString *tmpNodeSN;
 @property (nonatomic, strong) NSString *tmpNodeKey;
@@ -44,6 +44,7 @@
 #pragma -mark Node Management API
 - (void)createNodeWithName:(NSString *)name completionHandler:(void (^)(BOOL success, NSString *msg))handler;
 - (void)getNodeListWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
+- (void)getNodeListAndNodeSettingsWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
 - (void)removeNode:(Node *)node completionHandler:(void (^)(BOOL success, NSString *msg))handler;
 - (void)renameNode:(Node *)node withName:(NSString *)name completionHandler:(void (^)(BOOL success, NSString *msg))handler;
 
@@ -52,11 +53,13 @@
 
 #pragma -mark AP Config Method
 - (BOOL)isConnectedToPionOne;
+- (void)rebootPionOne;
 - (void)deleteZombieNodeWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
 - (void)cacheCurrentSSID;
 //************private method called by startAPConfigWithProgressHandler: **************
 //- (void)findTheConfiguringNodeFromSeverWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
 //- (void)setNodeName:(NSString *)name withNodeSN:(NSString *)sn completionHandler:(void (^)(BOOL success, NSString *msg))handler;
+- (void)getNodeMacAddressWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
 - (void)checkIfConnectedToPionOneWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
 - (void)startAPConfigWithProgressHandler:(void (^)(BOOL success, NSInteger step, NSString *msg))handler;
 - (void)longDurationProcessBegin;

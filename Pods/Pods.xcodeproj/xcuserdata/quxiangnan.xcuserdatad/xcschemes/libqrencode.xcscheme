@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '0A950D93E288D90351083CD4'
+               BlueprintIdentifier = '72B0A238D1E7C47D5A934A0E'
                BlueprintName = 'libqrencode'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'libqrencode.framework'>

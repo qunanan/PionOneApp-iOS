@@ -12,35 +12,30 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "DriverDetailVC.h"
 
+@interface DriverListCDTVC ()
+
+@end
+
 @implementation DriverListCDTVC
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.managedObjectContext = [[PionOneManager sharedInstance] mainMOC];
     // A little trick for removing the cell separators
     self.tableView.tableFooterView = [UIView new];
     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    UIFont * font = [UIFont systemFontOfSize:14.0];
+    NSDictionary *attributes = @{NSFontAttributeName:font, NSForegroundColorAttributeName : [UIColor blackColor]};
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to refresh" attributes:attributes];
     [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
-    [self.tableView addSubview:refreshControl];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-
+    self.refreshControl = refreshControl;
 }
 
 - (void)refresh:(UIRefreshControl *)refreshControl {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Driver"];
-    
-    NSError *error;
-    NSArray *matches = [self.managedObjectContext executeFetchRequest:request error:&error];
-    
-    for (Driver *driver in matches) {
-        [self.managedObjectContext deleteObject:driver];
-    }
-
-    [[PionOneManager sharedInstance] scanDriverListWithCompletionHandler:^(BOOL succes, NSString *msg) {
-        [refreshControl endRefreshing];
+    [[PionOneManager sharedInstance] scanDriverListWithCompletionHandler:^(BOOL success, NSString *msg) {
+        [self.refreshControl endRefreshing];
     }];
 }
 
@@ -78,8 +73,10 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    Driver *driver = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [self performSegueWithIdentifier:@"ShowDriverDetail" sender:driver];
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    [self performSegueWithIdentifier:@"ShowDriverDetail" sender:cell.imageView.image];
+    [cell setSelected:NO animated:YES];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -88,9 +85,9 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     id dVC = [segue destinationViewController];
     if ([dVC isKindOfClass:[DriverDetailVC class]]) {
-        if ([sender isKindOfClass:[UIImage class]]) {
-            [(DriverDetailVC *)dVC setDriverImage:sender];;
-         }
+        if ([sender isKindOfClass:[Driver class]]) {
+            [(DriverDetailVC *)dVC setDriver:sender];;
+        }
     }
 }
 

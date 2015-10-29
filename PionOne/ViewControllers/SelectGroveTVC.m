@@ -40,6 +40,11 @@
                                                                                    cacheName:nil];
 }
 
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.navigationItem.title = self.connectorName;
+}
+
 #pragma -mark TableVew Delegate
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"GroveDriverCell" forIndexPath:indexPath];

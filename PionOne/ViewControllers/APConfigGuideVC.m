@@ -10,14 +10,12 @@
 #import "KHFlatButton.h"
 #import "PionOneManager.h"
 #import "WiFiPasswordVC.h"
-
-#define IN_STEP_1   self.step1Label.hidden == NO && self.step2Label.hidden == YES
-#define IN_STEP_2   self.step2Label.hidden == NO && self.step3Label.hidden == YES
-#define IN_STEP_3   self.step3Label.hidden == NO && self.step4Label.hidden == YES
-#define IN_STEP_4   self.step4Label.hidden == NO
+#import "MBProgressHUD.h"
 
 
-@interface APConfigGuideVC ()
+@interface APConfigGuideVC () <UIAlertViewDelegate>
+@property (strong, nonatomic) MBProgressHUD *progressHUD;
+
 @property (weak, nonatomic) IBOutlet UILabel *step1Label;
 @property (weak, nonatomic) IBOutlet UILabel *step2Label;
 @property (weak, nonatomic) IBOutlet UILabel *step3Label;
@@ -28,6 +26,16 @@
 @end
 
 @implementation APConfigGuideVC
+- (MBProgressHUD *)progressHUD {
+    if (_progressHUD == nil) {
+        _progressHUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
+        [self.navigationController.view addSubview:_progressHUD];
+        _progressHUD.dimBackground = YES;
+    }
+    return _progressHUD;
+}
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.step1Label.hidden = YES;
@@ -54,15 +62,26 @@
             if (success) {
                 switch (step) {
                     case 1:
+                        //connecting wifi
                         self.step1Label.hidden = NO;
+                        self.progressHUD.labelText = @"Connecting WiFi..";
+                        [self.progressHUD show:YES];
+                        self.progressHUD.animationType = MBProgressHUDModeDeterminate;
+                    
                         break;
                     case 2:
+                        //connecting server
+                        self.progressHUD.labelText = @"Connecting Server..";
                         self.step2Label.hidden = NO;
                         break;
                     case 3:
+                        //rename device
+                        self.progressHUD.labelText = @"Rename Device..";
                         self.step3Label.hidden = NO;
                         break;
                     case 4:
+                        //done
+                        self.progressHUD.labelText = @"Done";
                         self.step4Label.hidden = NO;
                         [self configurationgDone];
                         break;
@@ -76,6 +95,7 @@
         }];
     }
 }
+
 - (void)cancelConfiguration {
     PionOneManager *manager = [PionOneManager sharedInstance];
     manager.APConfigurationDone = NO;
@@ -84,19 +104,28 @@
     self.step2Label.hidden = YES;
     self.step3Label.hidden = YES;
     self.step4Label.hidden = YES;
+    [self.progressHUD hide:YES];
+
     [self.indicator stopAnimating];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 
 - (void)configurationgDone {
+    [self.progressHUD hide:YES];
     PionOneManager *manager = [PionOneManager sharedInstance];
     manager.APConfigurationDone = NO;
     manager.cachedPassword = nil;
     [self.indicator stopAnimating];
     [self.button setTitle:@"Done" forState:UIControlStateNormal];
+    [[[UIAlertView alloc] initWithTitle:@"Success!" message:nil delegate:self cancelButtonTitle:@"Done" otherButtonTitles: nil] show];
 }
 
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+}
 
 - (void)showAlertMsg:(NSString *)msg {
     [[[UIAlertView alloc] initWithTitle:@"Failed"

@@ -14,11 +14,21 @@
 @implementation NodeListCell
 
 - (void)awakeFromNib {
+    [super awakeFromNib];
     // Initialization code
+    self.contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     for (UIImageView *icon in self.groveIcons) {
         icon.layer.masksToBounds = YES;
         icon.layer.cornerRadius = 17.5;
         icon.layer.borderColor = [[UIColor lightGrayColor] CGColor];
+    }
+}
+
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    for (UIImageView *icon in self.groveIcons) {
+        icon.image = nil;
+        icon.layer.borderWidth = 0;
     }
 }
 
@@ -28,15 +38,9 @@
     // Configure the view for the selected state
 }
 
-
 - (void)setGroves:(NSArray *)groves {
     if (_groves != groves && groves != nil) {
         _groves = groves;
-        for (UIImageView *icon in self.groveIcons) {
-            icon.image = nil;
-            icon.layer.borderWidth = 0;
-        }
-
         for (Grove *grove in groves) {
             if ([groves indexOfObject:grove] >= 5) {
                 break;

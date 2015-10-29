@@ -7,8 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PionOneManager.h"
 
 @interface DriverDetailVC : UIViewController
 @property (nonatomic, strong) UIImage *driverImage;
+@property (nonatomic, strong) Driver *driver;
 
 @end

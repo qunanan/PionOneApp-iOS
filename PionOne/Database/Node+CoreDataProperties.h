@@ -1,8 +1,8 @@
 //
 //  Node+CoreDataProperties.h
-//  PionOne
+//  Pion One
 //
-//  Created by Qxn on 15/10/15.
+//  Created by Qxn on 15/10/24.
 //  Copyright © 2015年 SeeedStudio. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -15,12 +15,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface Node (CoreDataProperties)
 
+@property (nullable, nonatomic, retain) NSDate *date;
 @property (nullable, nonatomic, retain) NSString *key;
 @property (nullable, nonatomic, retain) NSString *name;
 @property (nullable, nonatomic, retain) NSNumber *nodeID;
 @property (nullable, nonatomic, retain) NSNumber *online;
 @property (nullable, nonatomic, retain) NSString *sn;
-@property (nullable, nonatomic, retain) NSDate *date;
+@property (nullable, nonatomic, retain) NSString *macAddress;
 @property (nullable, nonatomic, retain) NSSet<Grove *> *groves;
 @property (nullable, nonatomic, retain) User *user;
 

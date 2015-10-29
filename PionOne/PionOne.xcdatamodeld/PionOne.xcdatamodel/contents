@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="8195" systemVersion="15A284" minimumToolsVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9057" systemVersion="15B42" minimumToolsVersion="Automatic">
     <entity name="Driver" representedClassName="Driver" syncable="YES">
         <attribute name="driverID" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="driverName" optional="YES" attributeType="String" syncable="YES"/>
@@ -19,6 +19,7 @@
     <entity name="Node" representedClassName="Node" syncable="YES">
         <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="key" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="macAddress" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="nodeID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="online" optional="YES" attributeType="Boolean" syncable="YES"/>
@@ -34,7 +35,7 @@
     <elements>
         <element name="Driver" positionX="18" positionY="-223" width="128" height="133"/>
         <element name="Grove" positionX="-162" positionY="-223" width="128" height="133"/>
-        <element name="Node" positionX="-335" positionY="-223" width="128" height="163"/>
+        <element name="Node" positionX="-335" positionY="-223" width="128" height="178"/>
         <element name="User" positionX="-513" positionY="-225" width="128" height="88"/>
     </elements>
 </model>

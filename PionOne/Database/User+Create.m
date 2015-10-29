@@ -8,6 +8,7 @@
 
 #import "User+Create.h"
 #import "Node+Setup.h"
+#import "Node+CoreDataProperties.h"
 
 @implementation User (Create)
 + (User *)userWithInfo:(NSDictionary *)dic inManagedObjectContext:(NSManagedObjectContext *)context {

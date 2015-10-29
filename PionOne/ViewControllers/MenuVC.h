@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RESideMenu.h"
 
-@interface MenuVC : UIViewController
 
+#define kTitle @"Title"
+#define kIcon @"Icon"
+#define kControllerID @"ControllerID"
+
+@interface MenuVC : UIViewController <RESideMenuDelegate>
+@property (nonatomic, strong) RESideMenu *rootViewController;
 @end

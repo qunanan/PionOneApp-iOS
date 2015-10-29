@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'BAFA27606EF9F4D4A2129BEE'
+               BlueprintIdentifier = 'FF092B97D96AE9B4C15F12AB'
                BlueprintName = 'QRExt'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'QRExt.framework'>

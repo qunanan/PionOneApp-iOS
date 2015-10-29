@@ -123,7 +123,7 @@
     if (!coordinator) {
         return nil;
     }
-    _mainMOC = [[NSManagedObjectContext alloc] init];
+    _mainMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
     [_mainMOC setPersistentStoreCoordinator:coordinator];
     return _mainMOC;
 }

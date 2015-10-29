@@ -23,8 +23,14 @@
 
 @implementation SignUpVC
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.tintColor = self.navigationItem.rightBarButtonItem.tintColor;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.emailTextField.delegate = self;
     self.passwordTextField.delegate = self;
     

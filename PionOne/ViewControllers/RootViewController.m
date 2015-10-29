@@ -7,6 +7,8 @@
 //
 
 #import "RootViewController.h"
+#import "MenuVC.h"
+
 @interface RootViewController() <RESideMenuDelegate>
 @end
 @implementation RootViewController
@@ -14,18 +16,27 @@
 {
     self.menuPreferredStatusBarStyle = UIStatusBarStyleDefault;
     self.contentViewShadowColor = [UIColor blackColor];
-    self.contentViewShadowOffset = CGSizeMake(-1, -1);
+    self.contentViewShadowOffset = CGSizeMake(4, 1);
     self.contentViewShadowOpacity = 0.6;
-    self.contentViewShadowRadius = 12;
+    self.contentViewShadowRadius = 4;
     self.contentViewShadowEnabled = YES;
-    self.scaleContentView = YES;
+    self.scaleContentView = NO;
     self.contentViewScaleValue = 0.9;
-    self.scaleBackgroundImageView = YES;
+    self.scaleBackgroundImageView = NO;
     self.scaleMenuView = NO;
-    self.contentViewInPortraitOffsetCenterX = 20;;
-    
+    self.backgroundImage = nil;
+    self.fadeMenuView = NO;
+    self.parallaxEnabled = NO;
+    self.interactivePopGestureRecognizerEnabled = NO;
+
+    float offset = - ([UIScreen mainScreen].applicationFrame.size.width / 2 - 80);
+    self.contentViewInPortraitOffsetCenterX = offset;
+    self.panGestureEnabled = YES;
     self.contentViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"contentViewController"];
-    self.leftMenuViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"MenuViewController"];
+    MenuVC *menuViewVC = [self.storyboard instantiateViewControllerWithIdentifier:@"MenuViewController"];
+    self.leftMenuViewController = menuViewVC;
+    menuViewVC.rootViewController = self;
+    
 //    self.rightMenuViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"rightMenuViewController"];
 //    self.backgroundImage = [UIImage imageNamed:@"backImage"];
     self.delegate = self;
@@ -53,5 +64,6 @@
 {
     NSLog(@"didHideMenuViewController: %@", NSStringFromClass([menuViewController class]));
 }
+
 
 @end

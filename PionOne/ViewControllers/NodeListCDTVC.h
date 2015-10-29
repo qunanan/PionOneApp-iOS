@@ -7,7 +7,10 @@
 //
 
 #import "CoreDataTableViewController.h"
+#import "MBProgressHUD.h"
 
 @interface NodeListCDTVC : CoreDataTableViewController
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, strong) MBProgressHUD *HUD;
+
 @end

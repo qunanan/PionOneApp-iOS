@@ -35,4 +35,6 @@
 // Set to YES to get some debugging output in the console.
 @property BOOL debug;
 
+@property BOOL userDrivingReload;
+
 @end

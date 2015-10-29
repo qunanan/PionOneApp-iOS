@@ -11,6 +11,7 @@
 #import "AFNetworking.h"
 #import "NSString+Email.h"
 #import "PionOneManager.h"
+#import "SignUpVC.h"
 
 @interface WelcomeViewController () <UIScrollViewDelegate, UIGestureRecognizerDelegate>
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImage;
@@ -56,11 +57,11 @@
 -(void)createViewOne{
     
     UIView *view = [[UIView alloc] initWithFrame:self.scrollView.frame];
-    
-    
-    UIImageView *imageview = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.scrollView.frame.size.height*.1, self.scrollView.frame.size.width, self.scrollView.frame.size.height*.7)];
+    CGRect screenFrame = [UIScreen mainScreen].applicationFrame;
+    CGRect imageFrame = CGRectMake((screenFrame.size.width - 272)/2, (screenFrame.size.height - 331) /2 - 20, 272, 331);
+    UIImageView *imageview = [[UIImageView alloc] initWithFrame:imageFrame];
     imageview.contentMode = UIViewContentModeScaleAspectFill;
-    imageview.image = [UIImage imageNamed:@"Open APP (intro IoT Node)"];
+    imageview.image = [UIImage imageNamed:@"Intro1"];
     [view addSubview:imageview];
     
     
@@ -83,10 +84,11 @@
     
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(originWidth, 0, originWidth, originHeight)];
     
-    
-    UIImageView *imageview = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.scrollView.frame.size.height*.1, self.scrollView.frame.size.width, self.scrollView.frame.size.height*.7)];
+    CGRect screenFrame = [UIScreen mainScreen].applicationFrame;
+    CGRect imageFrame = CGRectMake((screenFrame.size.width - 270)/2, (screenFrame.size.height - 308) /2 - 20, 270, 308);
+    UIImageView *imageview = [[UIImageView alloc] initWithFrame:imageFrame];
     imageview.contentMode = UIViewContentModeScaleAspectFit;
-    imageview.image = [UIImage imageNamed:@"Open APP 2 (Smart Config)"];
+    imageview.image = [UIImage imageNamed:@"Intro2"];
     [view addSubview:imageview];
     
     
@@ -101,10 +103,11 @@
     
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(originWidth*2, 0, originWidth, originHeight)];
     
-    
-    UIImageView *imageview = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.scrollView.frame.size.height*.1, self.scrollView.frame.size.width, self.scrollView.frame.size.height*.7)];
+    CGRect screenFrame = [UIScreen mainScreen].applicationFrame;
+    CGRect imageFrame = CGRectMake((screenFrame.size.width - 272)/2, (screenFrame.size.height - 343) /2 - 20, 272, 343);
+    UIImageView *imageview = [[UIImageView alloc] initWithFrame:imageFrame];
     imageview.contentMode = UIViewContentModeScaleAspectFit;
-    imageview.image = [UIImage imageNamed:@"Open APP 3 (Node&Groves)"];
+    imageview.image = [UIImage imageNamed:@"Intro3"];
     [view addSubview:imageview];
     
     
@@ -112,6 +115,13 @@
     
 }
 
+- (IBAction)signUpButtonPushed:(id)sender {
+    UIStoryboard*  mainStoryboard = [UIStoryboard storyboardWithName:@"Main"
+                                                  bundle:nil];
+    SignUpVC *dVC = [mainStoryboard instantiateViewControllerWithIdentifier:@"SignUpNVC"];
+    [self presentViewController:dVC animated:YES completion:nil];
+    dVC = nil;
+}
 
 
 #pragma mark - Navigation

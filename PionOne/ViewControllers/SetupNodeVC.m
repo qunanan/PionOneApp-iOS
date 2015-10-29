@@ -11,22 +11,53 @@
 #import "SelectGroveTVC.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "MBProgressHUD.h"
+#import "GroveButton.h"
 
 
-@interface SetupNodeVC () <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate, UIAlertViewDelegate>
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@interface SetupNodeVC () <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate>
+@property (strong, nonatomic) IBOutletCollection(GroveButton) NSArray *groveButtons;
+
 @property (nonatomic, strong) MBProgressHUD *HUD;
-@property NSMutableIndexSet *deletedSections, *insertedSections;
 @end
 
 @implementation SetupNodeVC
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = self.node.name;
     self.tableView.delegate = self;
     self.fetchedResultsController.delegate = self;
+    [self refreshGroveButtonConfiguration];
     
-    [[PionOneManager sharedInstance] node:self.node getSettingsWithCompletionHandler:nil];
+    //Init headerView
+    UIView *headerView = self.tableView.tableHeaderView;
+    [headerView setNeedsLayout];
+    [headerView layoutIfNeeded];
+    CGRect frame = headerView.frame;
+    frame.size.height = 210;
+    headerView.frame = frame;
+    self.tableView.tableHeaderView = headerView;
+    
+    UIView *footerView = self.tableView.tableFooterView;
+    [footerView setNeedsLayout];
+    [footerView layoutIfNeeded];
+    frame = footerView.frame;
+    frame.size.height = 60;
+    footerView.frame = frame;
+    self.tableView.tableFooterView = footerView;
+    
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    UIFont * font = [UIFont systemFontOfSize:14.0];
+    NSDictionary *attributes = @{NSFontAttributeName:font, NSForegroundColorAttributeName : [UIColor blackColor]};
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to refresh" attributes:attributes];
+    [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+    self.refreshControl = refreshControl;
+}
+- (void)refresh:(UIRefreshControl *)refreshControl {
+    [[PionOneManager sharedInstance] node:self.node getSettingsWithCompletionHandler:^(BOOL success, NSString *msg) {
+        [[PionOneManager sharedInstance] saveContext];
+        [self.refreshControl endRefreshing];
+    }];
 }
 
 
@@ -67,170 +98,14 @@
     [cell.imageView sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"About"]];
     return cell;
 }
-
-
-
-//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-//    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-//    [self performSegueWithIdentifier:@"ShowSelectGrove" sender:cell.imageView.image];
-//}
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
+    view.tintColor = [UIColor colorWithWhite:0.95 alpha:1.0];
+}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 55.0;
 }
 
-
-#pragma mark - Fetching
-
-- (void)performFetch
-{
-    if (self.fetchedResultsController) {
-        if (self.fetchedResultsController.fetchRequest.predicate) {
-            if (self.debug) NSLog(@"[%@ %@] fetching %@ with predicate: %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd), self.fetchedResultsController.fetchRequest.entityName, self.fetchedResultsController.fetchRequest.predicate);
-        } else {
-            if (self.debug) NSLog(@"[%@ %@] fetching all %@ (i.e., no predicate)", NSStringFromClass([self class]), NSStringFromSelector(_cmd), self.fetchedResultsController.fetchRequest.entityName);
-        }
-        NSError *error;
-        BOOL success = [self.fetchedResultsController performFetch:&error];
-        if (!success) NSLog(@"[%@ %@] performFetch: failed", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-        if (error) NSLog(@"[%@ %@] %@ (%@)", NSStringFromClass([self class]), NSStringFromSelector(_cmd), [error localizedDescription], [error localizedFailureReason]);
-    } else {
-        if (self.debug) NSLog(@"[%@ %@] no NSFetchedResultsController (yet?)", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    }
-    [self.tableView reloadData];
-}
-
-- (void)setFetchedResultsController:(NSFetchedResultsController *)newfrc
-{
-    NSFetchedResultsController *oldfrc = _fetchedResultsController;
-    if (newfrc != oldfrc) {
-        _fetchedResultsController = newfrc;
-        newfrc.delegate = self;
-        if ((!self.title || [self.title isEqualToString:oldfrc.fetchRequest.entity.name]) && (!self.navigationController || !self.navigationItem.title)) {
-            self.title = newfrc.fetchRequest.entity.name;
-        }
-        if (newfrc) {
-            if (self.debug) NSLog(@"[%@ %@] %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd), oldfrc ? @"updated" : @"set");
-            [self performFetch];
-        } else {
-            if (self.debug) NSLog(@"[%@ %@] reset to nil", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-            [self.tableView reloadData];
-        }
-    }
-}
-
-#pragma mark - UITableViewDataSource
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    NSInteger sections = [[self.fetchedResultsController sections] count];
-    return sections;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    NSInteger rows = 0;
-    if ([[self.fetchedResultsController sections] count] > 0) {
-        id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
-        rows = [sectionInfo numberOfObjects];
-    }
-    return rows;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    return [[[self.fetchedResultsController sections] objectAtIndex:section] name];
-}
-
-- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index
-{
-    return [self.fetchedResultsController sectionForSectionIndexTitle:title atIndex:index];
-}
-
-//- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
-//{
-//    return [self.fetchedResultsController sectionIndexTitles];
-//}
-
-#pragma mark - NSFetchedResultsControllerDelegate
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-    [self.tableView beginUpdates];
-    
-    self.deletedSections = [[NSMutableIndexSet alloc] init];
-    self.insertedSections = [[NSMutableIndexSet alloc] init];
-}
-
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    [self.tableView endUpdates];
-}
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
-    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:sectionIndex];
-    
-    switch(type) {
-        case NSFetchedResultsChangeDelete:
-            [self.tableView deleteSections:indexSet withRowAnimation:UITableViewRowAnimationFade];
-            [self.deletedSections addIndexes:indexSet];
-            break;
-            
-        case NSFetchedResultsChangeInsert:
-            [self.tableView insertSections:indexSet withRowAnimation:UITableViewRowAnimationFade];
-            [self.insertedSections addIndexes:indexSet];
-            break;
-            
-        default:
-            break;
-    }
-}
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-    switch(type) {
-        case NSFetchedResultsChangeDelete:
-            [self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeInsert:
-            [self.tableView insertRowsAtIndexPaths:@[ newIndexPath ] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeMove:
-            // iOS 9.0b5 sends the same index path twice instead of delete
-            if(![indexPath isEqual:newIndexPath]) {
-                [self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView insertRowsAtIndexPaths:@[ newIndexPath ] withRowAnimation:UITableViewRowAnimationFade];
-            }
-            else if([self.insertedSections containsIndex:indexPath.section]) {
-                // iOS 9.0b5 bug: Moving first item from section 0 (which becomes section 1 later) to section 0
-                // Really the only way is to delete and insert the same index path...
-                [self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView insertRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationFade];
-            }
-            else if([self.deletedSections containsIndex:indexPath.section]) {
-                // iOS 9.0b5 bug: same index path reported after section was removed
-                // we can ignore item deletion here because the whole section was removed anyway
-                [self.tableView insertRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationFade];
-            } else {
-                [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                                 withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
-                                 withRowAnimation:UITableViewRowAnimationFade];
-                break;
-            }
-            
-            break;
-            
-        case NSFetchedResultsChangeUpdate:
-            // On iOS 9.0b5 NSFetchedResultsController may not even contain such indexPath anymore
-            // when removing last item from section.
-            if(![self.deletedSections containsIndex:indexPath.section] && ![self.insertedSections containsIndex:indexPath.section]) {
-                // iOS 9.0b5 sends update before delete therefore we cannot use reload
-                // this will never work correctly but at least no crash.
-                [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            }
-            
-            break;
-    }
-}
 
 #pragma -mark private methods
 - (void)startOTA {
@@ -273,7 +148,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     Grove *grove = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    [self performSegueWithIdentifier:@"ShowSelectGrove" sender:grove.connectorName];
+    [self performSegueWithIdentifier:@"ShowDriverDetail" sender:grove.driver];
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    [cell setSelected:NO animated:YES];
 }
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -286,11 +163,18 @@
     }
 }
 
+#pragma mark - NSFetchedResultsControllerDelegate
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+{
+    [super controllerDidChangeContent:controller];
+    [self refreshGroveButtonConfiguration];
+}
+
 #pragma -mark Actions
 - (IBAction)groveButtonPushed:(UIButton *)sender {
     [self performSegueWithIdentifier:@"ShowSelectGrove" sender:sender.titleLabel.text];
 }
-- (IBAction)ota:(id)sender {
+- (IBAction)updateFirmware:(id)sender {
     [[[UIAlertView alloc] initWithTitle:@"Are you sure?"
                                message:@"It will reset the node settings."
                               delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK",nil] show];
@@ -303,6 +187,28 @@
             [(SelectGroveTVC *)dVC setConnectorName:sender];
             [(SelectGroveTVC *)dVC setManagedObjectContext:self.managedObjectContext];
             [(SelectGroveTVC *)dVC setNode:self.node];
+        }
+    } else if ([dVC isKindOfClass:[DriverDetailVC class]]) {
+        if ([sender isKindOfClass:[Driver class]]) {
+            [(DriverDetailVC *)dVC setDriver:sender];;
+        }
+    }
+}
+
+
+- (void)refreshGroveButtonConfiguration {
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Grove"];
+    request.predicate = [NSPredicate predicateWithFormat:@"node = %@", self.node];
+    NSError *error;
+    NSArray *matches = [self.managedObjectContext executeFetchRequest:request error:&error];
+    for (GroveButton *button in self.groveButtons) {
+        button.selected = NO;
+    }
+    for (Grove *grove in matches) {
+        for (GroveButton *button in self.groveButtons) {
+            if ([button.titleLabel.text isEqualToString: grove.connectorName]) {
+                button.selected = YES;
+            }
         }
     }
 }
