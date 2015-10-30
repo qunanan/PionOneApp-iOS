@@ -18,6 +18,7 @@
 @interface PionOneManager : NSObject
 @property (nonatomic, strong) NSManagedObjectContext *mainMOC; //if you want to call the API, it must not be nil
 @property (nonatomic, strong) NSManagedObjectContext *backgroundMOC;
+@property (nonatomic, strong) NSManagedObjectContext *tmpMOC;
 @property (nonatomic, strong) User *user;
 @property (nonatomic, strong) NSString *tmpNodeSN;
 @property (nonatomic, strong) NSString *tmpNodeKey;

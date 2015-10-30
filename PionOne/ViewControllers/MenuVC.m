@@ -78,7 +78,7 @@
 
 - (UIAlertController *)shareDialog {
     if (_shareDialog == nil) {
-        _shareDialog = [UIAlertController alertControllerWithTitle:@"Share this App to your freinds." message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        _shareDialog = [UIAlertController alertControllerWithTitle:@"Share this App to your friends" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
         UIAlertAction *facebook = [UIAlertAction actionWithTitle:@"Facebook" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
             content.contentURL = [NSURL URLWithString:@"http://iot.seeed.cc"];
@@ -112,11 +112,20 @@
 }
 
 - (IBAction)logout {
-    [[PionOneManager sharedInstance] logout];
-    UIWindow *window = [[[UIApplication sharedApplication] windows] firstObject];
-    [window.rootViewController removeFromParentViewController];
-    window.rootViewController = [window.rootViewController.storyboard instantiateViewControllerWithIdentifier:@"WelcomeVC"];
+    UIAlertController *logoutAction = [UIAlertController alertControllerWithTitle:@"Logged in as qunanan" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    [logoutAction addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [logoutAction addAction:[UIAlertAction actionWithTitle:@"Log Out" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [[PionOneManager sharedInstance] logout];
+        UIWindow *window = [[[UIApplication sharedApplication] windows] firstObject];
+        [UIView transitionWithView:window
+                          duration:0.5
+                           options:UIViewAnimationOptionTransitionFlipFromRight
+                        animations:^{ window.rootViewController = [window.rootViewController.storyboard instantiateViewControllerWithIdentifier:@"WelcomeVC"]; }
+                        completion:nil];
+    }]];
+    [self presentViewController:logoutAction animated:YES completion:nil];
 }
+
 - (IBAction)showDriverList {
     UITableViewController *controller = (UITableViewController *)self.sideMenuViewController.contentViewController;
     NSArray *controllers = [controller childViewControllers];

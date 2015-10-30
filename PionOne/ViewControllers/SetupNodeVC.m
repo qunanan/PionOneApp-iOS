@@ -53,7 +53,7 @@
     self.refreshControl = refreshControl;
 }
 - (void)refresh:(UIRefreshControl *)refreshControl {
-    
+    [[PionOneManager sharedInstance] tmpMOC]; //get a new child MOC of MainMOC
     [[PionOneManager sharedInstance] node:self.node getSettingsWithCompletionHandler:^(BOOL success, NSString *msg) {
         [[PionOneManager sharedInstance] saveContext];
         [self.refreshControl endRefreshing];

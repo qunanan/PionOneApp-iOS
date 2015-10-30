@@ -17,6 +17,8 @@
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImage;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UIPageControl *pageControl;
+@property (weak, nonatomic) IBOutlet UIButton *signUpButton;
+@property (weak, nonatomic) IBOutlet UIButton *signInButton;
 
 @property (strong, nonatomic) PionOneManager *manager;
 @end
@@ -135,19 +137,28 @@
 
 - (void)login {
 //    [self performSegueWithIdentifier:@"LoginSegue" sender:nil];
-    [[PionOneManager sharedInstance] getNodeListWithCompletionHandler:^(BOOL succse, NSString *msg) {
-        if (succse) {
-            [self performSegueWithIdentifier:@"LoginToMainVC" sender:nil];
-        } else {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
-                                                                message:msg
-                                                               delegate:nil
-                                                      cancelButtonTitle:@"Ok"
-                                                      otherButtonTitles:nil];
-            [alertView show];
-        }
-
-    }];
+    self.signInButton.enabled = NO;
+    self.signUpButton.enabled = NO;
+//    [[PionOneManager sharedInstance] getNodeListWithCompletionHandler:^(BOOL succse, NSString *msg) {
+//        if (succse) {
+//        } else {
+//            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
+//                                                                message:msg
+//                                                               delegate:nil
+//                                                      cancelButtonTitle:@"Ok"
+//                                                      otherButtonTitles:nil];
+//            [alertView show];
+//            self.signInButton.enabled = YES;
+//            self.signUpButton.enabled = YES;
+//        }
+//
+//    }];
+    UIWindow *window = [[[UIApplication sharedApplication] windows] firstObject];
+    [UIView transitionWithView:window
+                      duration:0.5
+                       options:UIViewAnimationOptionTransitionFlipFromLeft
+                    animations:^{ window.rootViewController = [window.rootViewController.storyboard instantiateViewControllerWithIdentifier:@"MainVC"]; }
+                    completion:nil];
 }
 
 

@@ -24,7 +24,6 @@
 @property (atomic, assign) __block BOOL isGetMacAddressSuccess;
 @property (atomic, assign) __block BOOL foundTheNodeOnServer;
 @property (atomic, strong) __block NSString *macAddress;
-@property (nonatomic, strong) NSManagedObjectContext *tmpMOC;
 
 
 @end

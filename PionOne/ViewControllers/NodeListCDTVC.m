@@ -61,9 +61,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-//    [self.tableView registerClass:[NodeListCell class] forCellReuseIdentifier:@"NodeListTVCell"];
-//    [self.tableView registerNib:[UINib nibWithNibName:@"NodeListCell" bundle:nil] forCellReuseIdentifier:@"NodeListTVCell"];
-    
     self.managedObjectContext = [[PionOneManager sharedInstance] mainMOC];
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     self.cellCanBeSelected = YES;
