@@ -93,6 +93,17 @@
     return _shareDialog;
 }
 
+- (void)sharer:(id<FBSDKSharing>)sharer didCompleteWithResults:(NSDictionary *)results {
+    
+}
+
+- (void)sharer:(id<FBSDKSharing>)sharer didFailWithError:(NSError *)error {
+    
+}
+
+- (void)sharerDidCancel:(id<FBSDKSharing>)sharer {
+    
+}
 - (MBProgressHUD *)HUD {
     if (_HUD == nil) {
         UITableViewController *controller = (UITableViewController *)self.sideMenuViewController.contentViewController;

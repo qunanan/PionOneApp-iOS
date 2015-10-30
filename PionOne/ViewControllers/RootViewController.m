@@ -21,7 +21,9 @@
     self.contentViewShadowRadius = 4;
     self.contentViewShadowEnabled = YES;
     self.scaleContentView = NO;
-    self.contentViewScaleValue = 0.9;
+    NSInteger screenHeight = [UIScreen mainScreen].applicationFrame.size.height;
+    float scale = (screenHeight - [[UIApplication sharedApplication] statusBarFrame].size.height*2) / screenHeight;
+    self.contentViewScaleValue = scale;
     self.scaleBackgroundImageView = NO;
     self.scaleMenuView = NO;
     self.backgroundImage = nil;

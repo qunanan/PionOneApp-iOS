@@ -7,6 +7,7 @@
 //
 
 #import "Node.h"
+#import "Driver+Create.h"
 
 #define NODE_SN @"node_sn"
 #define NODE_NAME   @"name"
@@ -16,6 +17,8 @@
 @interface Node (Setup)
 + (Node *)nodeWithServerInfo:(NSDictionary *)nodeDictionary
       inManagedObjectContext:(NSManagedObjectContext*)context;
+- (void)addNewGroveWithDriver:(Driver *)driver cntName:(NSString *)cntName;
+- (void)addI2CGrovesWithDrivers:(NSArray *)drivers cntName:(NSString *)cntName;
 
 - (void)refreshNodeSettingsWithArray:(NSArray *)settingsArray;
 - (NSString *)apiURL;

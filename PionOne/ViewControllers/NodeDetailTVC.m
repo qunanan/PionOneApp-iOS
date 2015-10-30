@@ -26,34 +26,29 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    __typeof (&*self) __weak weakSelf = self;
+//    __typeof (&*self) __weak weakSelf = self;
     self.tvManager = [[RETableViewManager alloc] initWithTableView:self.tableView];
     self.tvManager[@"MultilineTextItem"] = @"MultilineTextCell";
     self.tvManager[@"ListImageItem"] = @"ListImageCell"; // which is the same as [self.manager registerClass:@"ListImageItem" forCellWithReuseIdentifier:@"ListImageCell"];
 
     RETableViewSection *section = [RETableViewSection section];
-    section.footerTitle = @"You can rename your node here";
-    [self.tvManager addSection:section];
-    self.nameItem = [RETextItem itemWithTitle:@"Name    " value:self.node.name placeholder:@"Name for your Node"];
-    self.nameItem.onEndEditing = ^(RETextItem *item){
-        [weakSelf changeNodeName:item];
-    };
-    [section addItem:self.nameItem];
-    
-    section = [RETableViewSection sectionWithHeaderTitle:@"Node Recources"];
     section.footerTitle = @" ";
     [self.tvManager addSection:section];
-    RETableViewItem *item = [RETableViewItem itemWithTitle:@"Web Page" accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
+    [section addItem:[NSString stringWithFormat:@"Name    %@", self.node.name]];
+    
+    section = [RETableViewSection sectionWithHeaderTitle:@"Recources"];
+    section.footerTitle = @" ";
+    [self.tvManager addSection:section];
+    RETableViewItem *item = [RETableViewItem itemWithTitle:@"Web Page" accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES]; // same as [weakSelf.tableView deselectRowAtIndexPath:item.indexPath animated:YES];
-        [weakSelf performSegueWithIdentifier:@"ShowResourcesVC" sender:self.node.apiURL];
     }];
     item.style = UITableViewCellStyleSubtitle;
     item.detailLabelText = @"Long tap to copy the url";
     item.cellHeight = 55.0;
-    item.copyHandler =  ^(id item){
+    MultilineTextItem *urlItem = [MultilineTextItem itemWithTitle:self.node.apiURL];
+    urlItem.copyHandler = ^(id item){
         [UIPasteboard generalPasteboard].string = self.node.apiURL;
     };
-    [section addItem:item];
     UIImage *qrImage = [UIImage mdQRCodeForString:self.node.apiURL size:100];
     ListImageItem *imageItem = [ListImageItem itemWithImage:qrImage];
     imageItem.copyHandler = ^(id item){
@@ -61,8 +56,10 @@
     };
     imageItem.selectionHandler = ^(ListImageItem *item) {
         [item deselectRowAnimated:YES]; // same as [weakSelf.tableView deselectRowAtIndexPath:item.indexPath animated:YES];
-        [weakSelf performSegueWithIdentifier:@"ShowResourcesVC" sender:self.node.apiURL];
     };
+    
+    [section addItem:item];
+    [section addItem:urlItem];
     [section addItem:imageItem];
     
     
@@ -129,12 +126,4 @@
     [[PionOneManager sharedInstance] renameNode:self.node withName:item.value completionHandler:nil];
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    id dVC = segue.destinationViewController;
-    if ([dVC isKindOfClass:[NodeResourcesVC class]]) {
-        if ([sender isKindOfClass:[NSString class]]) {
-            [(NodeResourcesVC *)dVC setUrlStr:sender];
-        }
-    }
-}
 @end

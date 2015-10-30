@@ -10,6 +10,7 @@
 #import "Grove.h"
 #import "Driver.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <GoogleMaterialIconFont/GoogleMaterialIconFont-Swift.h>
 
 @implementation NodeListCell
 
@@ -30,6 +31,7 @@
         icon.image = nil;
         icon.layer.borderWidth = 0;
     }
+    self.moreIndicatorLabel.text = nil;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -39,14 +41,32 @@
 }
 
 - (void)setGroves:(NSArray *)groves {
-    if (_groves != groves && groves != nil) {
-        _groves = groves;
+    _groves = groves;
+
+    NSInteger screenWidth = [UIScreen mainScreen].applicationFrame.size.width;
+    NSInteger maxIcons;
+    switch (screenWidth) {
+        case 320:
+            maxIcons = 4;
+            break;
+        case 375:
+            maxIcons = 5;
+            break;
+        case 414:
+            maxIcons = 6;
+            break;
+        default:
+            maxIcons = 4;
+            break;
+    }
+    if (_groves != nil) {
         for (Grove *grove in groves) {
-            if ([groves indexOfObject:grove] >= 5) {
+            if ([groves indexOfObject:grove] >= maxIcons) {
+                self.moreIndicatorLabel.text = [NSString materialIcon:MaterialIconFontMoreHoriz];
+                self.moreIndicatorLabel.font = [UIFont materialIconOfSize:18];
                 break;
-            }
-            if ([UIScreen mainScreen].applicationFrame.size.width <= 320 && [groves indexOfObject:grove] >= 4) {
-                break;
+            } else {
+                self.moreIndicatorLabel.text = nil;
             }
             NSURL *url = [NSURL URLWithString:grove.driver.imageURL];
             UIImageView *icon = [self.groveIcons objectAtIndex:[groves indexOfObject:grove]];

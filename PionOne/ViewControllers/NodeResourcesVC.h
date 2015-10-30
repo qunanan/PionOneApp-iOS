@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Node+Setup.h"
 
 @interface NodeResourcesVC : UIViewController
-@property (nonatomic ,strong) NSString *urlStr;
+@property (nonatomic, strong) Node *node;
 @end

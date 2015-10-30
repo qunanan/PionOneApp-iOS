@@ -10,7 +10,7 @@
 #import "Node.h"
 #import "PionOneManager.h"
 #import "SetupNodeVC.h"
-#import "NodeDetailTVC.h"
+#import "NodeResourcesVC.h"
 #import "NodeListCell.h"
 #import "MGSwipeButton.h"
 #import "MGSwipeTableCell.h"
@@ -60,13 +60,19 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self setNeedsStatusBarAppearanceUpdate];
     
     self.managedObjectContext = [[PionOneManager sharedInstance] mainMOC];
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     self.cellCanBeSelected = YES;
 
-    // A little trick for removing the cell separators
-    self.tableView.tableFooterView = [UIView new];
+    UIView *footerView = self.tableView.tableFooterView;
+    [footerView setNeedsLayout];
+    [footerView layoutIfNeeded];
+    CGRect frame = footerView.frame;
+    frame.size.height = 30;
+    footerView.frame = frame;
+    self.tableView.tableFooterView = footerView;
     
     //init left bar button
     CGRect barIconRect = CGRectMake(0, 0, 28, 28);
@@ -93,10 +99,15 @@
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     UIFont * font = [UIFont systemFontOfSize:14.0];
     NSDictionary *attributes = @{NSFontAttributeName:font, NSForegroundColorAttributeName : [UIColor blackColor]};
-    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to refresh" attributes:attributes];
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to retrieve server settings" attributes:attributes];
     [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refreshControl;
     [self refresh:self.refreshControl];
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
 }
 
 - (void)refresh:(UIRefreshControl *)refreshControl {
@@ -149,8 +160,10 @@
     cell.nameLabel.text = node.name;
     if (node.online.boolValue) {
         [cell.onlineIndicator setBackgroundColor:[UIColor greenColor]];
+        cell.onlineLabel.text = @"Online";
     } else {
         [cell.onlineIndicator setBackgroundColor:[UIColor redColor]];
+        cell.onlineLabel.text = @"Offline";
     }
     NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"connectorName" ascending:YES];
     cell.groves = [node.groves sortedArrayUsingDescriptors:@[descriptor]];
@@ -199,7 +212,7 @@
     Node *node = [self.fetchedResultsController objectAtIndexPath:path];
 
     if (direction == MGSwipeDirectionRightToLeft && index == 0) {
-        [self performSegueWithIdentifier:@"ShowNodeDetail" sender:node];
+        [self performSegueWithIdentifier:@"ShowNodeAPI" sender:node];
     } else if (direction == MGSwipeDirectionRightToLeft && index == 1) {
         self.configuringNode = node;
         [[self.renameDialog.textFields objectAtIndex:0] setText:nil];
@@ -207,11 +220,15 @@
         [self presentViewController:self.renameDialog animated:YES completion:nil];
     } else if (direction == MGSwipeDirectionRightToLeft && index == 2) {
         //delete button
-        [self.HUD show:YES];
-        [[PionOneManager sharedInstance] removeNode:node completionHandler:^(BOOL succes, NSString *msg) {
-            [self.HUD hide:YES];
-        }];
-        return NO; //Don't autohide to improve delete expansion animation
+        UIAlertController *removeAlert = [UIAlertController alertControllerWithTitle:@"Are you sure?" message:nil preferredStyle:UIAlertControllerStyleAlert];
+        [removeAlert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+        [removeAlert addAction:[UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+            [self.HUD show:YES];
+            [[PionOneManager sharedInstance] removeNode:node completionHandler:^(BOOL succes, NSString *msg) {
+                [self.HUD hide:YES];
+            }];
+        }]];
+        [self presentViewController:removeAlert animated:YES completion:nil];
     }
     
     return YES;
@@ -226,7 +243,7 @@
 //        [UIColor colorWithRed:0 green:0x99/255.0 blue:0xcc/255.0 alpha:1.0],
 //        [UIColor redColor]};
 //    UIImage * icons[3] = {[UIImage imageNamed:@"check.png"], [UIImage imageNamed:@"fav.png"], [UIImage imageNamed:@"menu.png"]};
-    NSString* titles[3] = {@"Detail", @"Rename", @"Delete"};
+    NSString* titles[3] = {@"API", @"Rename", @"Delete"};
     for (int i = 0; i < number; ++i)
     {
 //        MGSwipeButton * button = [MGSwipeButton buttonWithTitle:@"" icon:icons[i] backgroundColor:colors[i] padding:15 callback:^BOOL(MGSwipeTableCell * sender){
@@ -376,17 +393,17 @@
 
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    self.fetchedResultsController.delegate = nil;
     id dVC = [segue destinationViewController];
     if ([dVC isKindOfClass:[SetupNodeVC class]]) {
         if ([sender isKindOfClass:[Node class]]) {
             [(SetupNodeVC *)dVC setNode:sender];
             [(SetupNodeVC *)dVC setManagedObjectContext:self.managedObjectContext];
             [[(SetupNodeVC *)dVC navigationController] setTitle:[(Node *)sender name]];
-            self.fetchedResultsController.delegate = nil;
         }
-    } else if ([dVC isKindOfClass:[NodeDetailTVC class]]) {
+    } else if ([dVC isKindOfClass:[NodeResourcesVC class]]) {
         if ([sender isKindOfClass:[Node class]]) {
-            [(NodeDetailTVC *)dVC setNode:sender];
+            [(NodeResourcesVC *)dVC setNode:sender];
         }
     }
 }

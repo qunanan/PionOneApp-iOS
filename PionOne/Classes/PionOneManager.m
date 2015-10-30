@@ -904,10 +904,12 @@
                            [_tmpMOC performBlock:^{
                                Node *tmpNode = [_tmpMOC objectWithID:node.objectID];
                                [tmpNode refreshNodeSettingsWithArray:array];
+                               dispatch_async(dispatch_get_main_queue(), ^{
+                                   if (handler) {
+                                       handler(YES,msg);
+                                   }
+                               });
                            }];
-                           if (handler) {
-                               handler(YES,msg);
-                           }
                        } else if (status.integerValue == 404) {
                            [_tmpMOC performBlock:^{
                                Node *tmpNode = [_tmpMOC objectWithID:node.objectID];
@@ -1060,7 +1062,10 @@
         if (range.location == NSNotFound) {
             //instanceName object start
             foundNewObject = YES;
-            dic = [[NSMutableDictionary alloc] init];
+            if ([str containsString:@":"]) {
+                dic = [[NSMutableDictionary alloc] init];
+                [dic setObject:[str substringToIndex:[str length]-1] forKey:@"instanceName"];
+            }
         } else {
             if ([str containsString:@"  name: "]) {
                 NSString *name = [[str substringFromIndex:8] nonLossyASCIIString];

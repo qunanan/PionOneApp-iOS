@@ -10,9 +10,11 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "DriverDetailVC.h"
 #import "Grove+Create.h"
+#import <GoogleMaterialIconFont/GoogleMaterialIconFont-Swift.h>
 
 @interface SelectGroveTVC ()
 @property (nonatomic, strong) NSString *interfaceType;
+@property (nonatomic, strong) NSMutableArray *i2cDevices;
 @end
 
 @implementation SelectGroveTVC
@@ -42,7 +44,26 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    
     self.navigationItem.title = self.connectorName;
+    if ([self.connectorName isEqualToString:@"I2C"]) {
+        
+        UIView *footerView = self.tableView.tableFooterView;
+        [footerView setNeedsLayout];
+        [footerView layoutIfNeeded];
+        CGRect frame = footerView.frame;
+        frame.size.height = 60;
+        footerView.frame = frame;
+        self.tableView.tableFooterView = footerView;
+
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(addGroves)];
+
+        self.tableView.allowsMultipleSelection = YES;
+        self.i2cDevices = [[NSMutableArray alloc] init];
+    } else {
+        self.tableView.tableFooterView = [UIView new];
+    }
 }
 
 #pragma -mark TableVew Delegate
@@ -60,14 +81,31 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     Driver *selectDriver = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    [Grove groveForNode:self.node WithDriver:selectDriver connector:self.connectorName inManagedContext:self.managedObjectContext];
-    [self.navigationController popViewControllerAnimated:YES];
-//    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-//    [self performSegueWithIdentifier:@"ShowDriverDetail" sender:cell.imageView.image];
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    [cell setSelected:NO animated:YES];
+
+    if (self.tableView.allowsMultipleSelection) {
+        if (cell.accessoryType == UITableViewCellAccessoryCheckmark) {
+            cell.accessoryType = UITableViewCellAccessoryNone;
+            [self.i2cDevices removeObject:selectDriver];
+        } else {
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            [self.i2cDevices addObject:selectDriver];
+        }
+    } else {
+        [self.node addNewGroveWithDriver:selectDriver cntName:self.connectorName];
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 55.0;
+}
+
+
+- (void)addGroves {
+    [self.node addI2CGrovesWithDrivers:self.i2cDevices cntName:self.connectorName];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

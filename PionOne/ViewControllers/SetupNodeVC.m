@@ -41,14 +41,14 @@
     [footerView setNeedsLayout];
     [footerView layoutIfNeeded];
     frame = footerView.frame;
-    frame.size.height = 60;
+    frame.size.height = 95;
     footerView.frame = frame;
     self.tableView.tableFooterView = footerView;
     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     UIFont * font = [UIFont systemFontOfSize:14.0];
     NSDictionary *attributes = @{NSFontAttributeName:font, NSForegroundColorAttributeName : [UIColor blackColor]};
-    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to refresh" attributes:attributes];
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to retrieve server settings" attributes:attributes];
     [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refreshControl;
 }
