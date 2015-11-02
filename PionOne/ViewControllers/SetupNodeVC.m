@@ -52,10 +52,24 @@
     [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refreshControl;
 }
+
+- (void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    if (self.isMovingFromParentViewController || self.isBeingDismissed) {
+        // This view controller is being popped or dismissed
+        [self refresh:self.refreshControl];
+    }
+//
+//    [_managedObjectContext performBlock:^{
+//        NSError *childError = nil;
+//        if (![_managedObjectContext save:&childError]) {
+//            NSLog(@"Error saving child");
+//        }
+//    }];
+}
+
 - (void)refresh:(UIRefreshControl *)refreshControl {
-    [[PionOneManager sharedInstance] tmpMOC]; //get a new child MOC of MainMOC
     [[PionOneManager sharedInstance] node:self.node getSettingsWithCompletionHandler:^(BOOL success, NSString *msg) {
-        [[PionOneManager sharedInstance] saveContext];
         [self.refreshControl endRefreshing];
     }];
 }
@@ -109,13 +123,13 @@
 
 #pragma -mark private methods
 - (void)startOTA {
-    self.HUD.labelText = @"Preparing...";
+//    self.HUD.labelText = @"Preparing...";
     self.HUD.detailsLabelText = nil;
     [self.HUD show:YES];
     [[PionOneManager sharedInstance] node:self.node startOTAWithprogressHandler:^(BOOL success, NSString *msg, NSString *ota_msg, NSString *ota_staus) {
         if (success) {
             self.HUD.detailsLabelText = ota_msg;
-            self.HUD.labelText = ota_staus;
+//            self.HUD.labelText = ota_staus;
             if ([ota_staus isEqualToString:@"done"]) {
                 [self.HUD hide:YES];
                 [[[UIAlertView alloc] initWithTitle:@"Success!" message:nil delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
@@ -176,7 +190,7 @@
 }
 - (IBAction)updateFirmware:(id)sender {
     [[[UIAlertView alloc] initWithTitle:@"Are you sure?"
-                               message:@"It will reset the node settings."
+                               message:@"It will update this PionOne's settings and will take a minutes"
                               delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK",nil] show];
 }
 
@@ -213,13 +227,4 @@
     }
 }
 
-- (void) viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    [_managedObjectContext performBlock:^{
-        NSError *childError = nil;
-        if (![_managedObjectContext save:&childError]) {
-            NSLog(@"Error saving child");
-        }
-    }];
-}
 @end

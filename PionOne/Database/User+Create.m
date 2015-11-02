@@ -15,6 +15,7 @@
 
     User *user = nil;
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"User"];
+    request.predicate = [NSPredicate predicateWithFormat:@"userID = %@", [dic objectForKey:@"user_id"]];
 
     NSError *error;
     NSArray *matches = [context executeFetchRequest:request error:&error];
@@ -27,8 +28,8 @@
         user = [NSEntityDescription insertNewObjectForEntityForName:@"User"
                                              inManagedObjectContext:context];
         user.userID = [dic objectForKey:@"user_id"];
-        user.token = [dic objectForKey:@"token"];
     }
+    user.token = [dic objectForKey:@"token"];
     return user;
 }
 

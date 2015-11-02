@@ -16,43 +16,25 @@
 #import "MGSwipeTableCell.h"
 #import <GoogleMaterialIconFont/GoogleMaterialIconFont-Swift.h>
 #import "UIViewController+RESideMenu.h"
+#import "UIScrollView+EmptyDataSet.h"
 
-@interface NodeListCDTVC() <MBProgressHUDDelegate, MGSwipeTableCellDelegate, UITextFieldDelegate>
+@interface NodeListCDTVC() <MBProgressHUDDelegate, MGSwipeTableCellDelegate, UITextFieldDelegate, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
 @property (strong, nonatomic) UIAlertController *renameDialog;
 @property (strong, nonatomic) Node *configuringNode;
 @property (assign, nonatomic) BOOL cellCanBeSelected;
 @property (assign, nonatomic) BOOL isReloading;
 @property (strong, nonatomic) NSFetchedResultsController *cachedFRC;
-
+@property (atomic, assign) __block BOOL reachable;
+@property (nonatomic, strong) UIView *reachableHeaderView;
 @end
 
 @implementation NodeListCDTVC
 
-- (UIAlertController *)renameDialog {
-    __typeof (&*self) __weak weakSelf = self;
-    if (_renameDialog == nil) {
-        _renameDialog = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"Rename Pion One"] preferredStyle:UIAlertControllerStyleAlert];
-        [_renameDialog addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:nil]];
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self renameNode];
-        }];
-        okAction.enabled = NO;
-        [_renameDialog addAction:okAction];
-        [_renameDialog addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-            textField.placeholder = @"Take a name for Pion One";
-            textField.secureTextEntry = NO;
-            [textField setReturnKeyType:UIReturnKeyGo];
-            textField.delegate = weakSelf;
-            [textField addTarget:weakSelf action:@selector(textFieldDidChange) forControlEvents:UIControlEventEditingChanged];
-        }];
-    }
-    return _renameDialog;
-}
-
-
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+    self.tableView.tableFooterView.hidden = self.tableView.isEmptyDataSetVisible;
+    
     self.fetchedResultsController.delegate = self;
     [self performFetch];
 }
@@ -60,11 +42,22 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self setNeedsStatusBarAppearanceUpdate];
+    self.tableView.emptyDataSetSource = self;
+    self.tableView.emptyDataSetDelegate = self;
     
     self.managedObjectContext = [[PionOneManager sharedInstance] mainMOC];
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     self.cellCanBeSelected = YES;
+
+    self.reachableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 40)];
+    UILabel *info = [[UILabel alloc] initWithFrame:self.reachableHeaderView.frame];
+    info.text = @"We need network to retrieve the settings form server";
+    info.font = [UIFont systemFontOfSize:14];
+    info.alpha = 0.9;
+    info.textAlignment = NSTextAlignmentCenter;
+    info.lineBreakMode = NSLineBreakByCharWrapping;
+    info.numberOfLines = 0;
+    [self.reachableHeaderView addSubview:info];
 
     UIView *footerView = self.tableView.tableFooterView;
     [footerView setNeedsLayout];
@@ -72,6 +65,7 @@
     CGRect frame = footerView.frame;
     frame.size.height = 30;
     footerView.frame = frame;
+    footerView.backgroundColor = [UIColor clearColor];
     self.tableView.tableFooterView = footerView;
     
     //init left bar button
@@ -103,24 +97,53 @@
     [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refreshControl;
     [self refresh:self.refreshControl];
-}
+    
+    [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        switch (status) {
+            case AFNetworkReachabilityStatusNotReachable:
+                NSLog(@"No Internet Connection");
+                self.reachable = NO;
+                break;
+            case AFNetworkReachabilityStatusReachableViaWiFi:
+                NSLog(@"WIFI");
+                self.reachable = YES;
+                break;
+            case AFNetworkReachabilityStatusReachableViaWWAN:
+                NSLog(@"3G");
+                self.reachable = YES;
+                break;
+            default:
+                NSLog(@"Unkown network status");
+                self.reachable = NO;
+                break;
+        }
+        if (!self.reachable) {
+            [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                self.tableView.tableHeaderView = self.reachableHeaderView;
+            } completion:^(BOOL finished) {
+                //
+            }];
+        } else {
+            [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                self.tableView.tableHeaderView = nil;
+            } completion:^(BOOL finished) {
+                //
+            }];
+        }
+    }];
+    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
 
-- (UIStatusBarStyle)preferredStatusBarStyle
-{
-    return UIStatusBarStyleLightContent;
+
 }
 
 - (void)refresh:(UIRefreshControl *)refreshControl {
     [[PionOneManager sharedInstance] deleteZombieNodeWithCompletionHandler:^(BOOL succes, NSString *msg) {
         [[PionOneManager sharedInstance] getNodeListAndNodeSettingsWithCompletionHandler:^(BOOL success, NSString *msg) {
             [self.refreshControl endRefreshing];
-            [self.tableView reloadData];
         }];
     }];
 }
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    [super controllerDidChangeContent:controller];
-}
+
 #pragma -mark Properyies
 - (void)setManagedObjectContext:(NSManagedObjectContext *)managedObjectContext {
     _managedObjectContext = managedObjectContext;
@@ -147,6 +170,114 @@
     return _HUD;
 }
 
+- (UIAlertController *)renameDialog {
+    __typeof (&*self) __weak weakSelf = self;
+    if (_renameDialog == nil) {
+        _renameDialog = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"Rename Pion One"] preferredStyle:UIAlertControllerStyleAlert];
+        [_renameDialog addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:nil]];
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self renameNode];
+        }];
+        okAction.enabled = NO;
+        [_renameDialog addAction:okAction];
+        [_renameDialog addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+            textField.placeholder = @"Take a name for Pion One";
+            textField.secureTextEntry = NO;
+            [textField setReturnKeyType:UIReturnKeyGo];
+            textField.delegate = weakSelf;
+            [textField addTarget:weakSelf action:@selector(textFieldDidChange) forControlEvents:UIControlEventEditingChanged];
+        }];
+    }
+    return _renameDialog;
+}
+
+#pragma -mark EmptyDataSet Datasource
+- (UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView
+{
+    return [UIImage imageNamed:@"workflow"];
+}
+//- (CAAnimation *)imageAnimationForEmptyDataSet:(UIScrollView *)scrollView
+//{
+//    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath: @"transform"];
+//    
+//    animation.fromValue = [NSValue valueWithCATransform3D:CATransform3DIdentity];
+//    animation.toValue = [NSValue valueWithCATransform3D:CATransform3DMakeRotation(M_PI_2, 0.0, 0.0, 1.0)];
+//    
+//    animation.duration = 1;
+//    animation.cumulative = YES;
+//    animation.repeatCount = MAXFLOAT;
+//    
+//    return animation;
+//}
+
+- (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView
+{
+    NSString *text = @"Building IoT devices in 5 minutes";
+    
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:18.0f],
+                                 NSForegroundColorAttributeName: [UIColor darkGrayColor]};
+    
+    return [[NSAttributedString alloc] initWithString:text attributes:attributes];
+}
+- (NSAttributedString *)descriptionForEmptyDataSet:(UIScrollView *)scrollView
+{
+    NSString *text = @"Pion One is a Wi-Fi development board to build connected IoT projects with Grove modules. Simplify your development of IoT devices without requirements of hardware programming or soldering.";
+    
+    NSMutableParagraphStyle *paragraph = [NSMutableParagraphStyle new];
+    paragraph.lineBreakMode = NSLineBreakByWordWrapping;
+    paragraph.alignment = NSTextAlignmentCenter;
+    
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:14.0f],
+                                 NSForegroundColorAttributeName: [UIColor lightGrayColor],
+                                 NSParagraphStyleAttributeName: paragraph};
+    
+    return [[NSAttributedString alloc] initWithString:text attributes:attributes];
+}
+
+- (NSAttributedString *)buttonTitleForEmptyDataSet:(UIScrollView *)scrollView forState:(UIControlState)state
+{
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:17.0f]};
+    
+    return [[NSAttributedString alloc] initWithString:@"Tap add button to start" attributes:attributes];
+}
+//- (UIImage *)buttonImageForEmptyDataSet:(UIScrollView *)scrollView forState:(UIControlState)state
+//{
+//    return [UIImage imageNamed:@"logo_color"];
+//}
+- (UIColor *)backgroundColorForEmptyDataSet:(UIScrollView *)scrollView
+{
+    return [UIColor whiteColor];
+}
+//- (UIView *)customViewForEmptyDataSet:(UIScrollView *)scrollView
+//{
+//    UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+//    [activityView startAnimating];
+//    return activityView;
+//}
+//- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView
+//{
+//    return -self.tableView.tableFooterView.frame.size.height;
+//}
+#pragma -mark EmptyDataSet Delegate
+- (BOOL)emptyDataSetShouldDisplay:(UIScrollView *)scrollView
+{
+    return YES;
+}
+- (BOOL)emptyDataSetShouldAllowScroll:(UIScrollView *)scrollView
+{
+    return YES;
+}
+//- (BOOL) emptyDataSetShouldAllowImageViewAnimate:(UIScrollView *)scrollView
+//{
+//    return YES;
+//}
+#pragma mark - NSFetchedResultsControllerDelegate
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    [super controllerDidChangeContent:controller];
+    self.tableView.tableFooterView.hidden = self.tableView.isEmptyDataSetVisible;
+}
+
 #pragma -mark TableVew Delegate
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NodeListCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NodeListTVCell" forIndexPath:indexPath];
@@ -170,8 +301,46 @@
     return cell;
 }
 
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
+    return self.cellCanBeSelected;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    Node *node = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    if (self.cellCanBeSelected == NO) {
+        [cell setSelected:NO animated:NO];
+        return;
+    }
+    [self performSegueWithIdentifier:@"ShowNodeSettings" sender:node];
+    [cell setSelected:NO animated:YES];
+}
+
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
+    Node *node = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [self performSegueWithIdentifier:@"ShowNodeDetail" sender:node];
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return NO;
+}
 
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    //    NSString *online = [[[self.fetchedResultsController sections] objectAtIndex:section] name];
+    //    if ([online isEqualToString:@"0"]) {
+    //        return @"Offline";
+    //    }
+    //    return @"Online";
+    return [[[self.fetchedResultsController sections] objectAtIndex:section] name];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 80;
+}
+
+
+#pragma -mark SwipTableCell Delegate
 - (NSArray *)swipeTableCell:(NodeListCell *)cell swipeButtonsForDirection:(MGSwipeDirection)direction swipeSettings:(MGSwipeSettings *)swipeSettings expansionSettings:(MGSwipeExpansionSettings *)expansionSettings {
     
     swipeSettings.transition = MGSwipeTransitionStatic;
@@ -212,7 +381,11 @@
     Node *node = [self.fetchedResultsController objectAtIndexPath:path];
 
     if (direction == MGSwipeDirectionRightToLeft && index == 0) {
-        [self performSegueWithIdentifier:@"ShowNodeAPI" sender:node];
+        if (node.groves.count > 0) {
+            [self performSegueWithIdentifier:@"ShowNodeAPI" sender:node];
+        } else {
+            [[[UIAlertView alloc] initWithTitle:@"Sorry" message:@"You have to update firmware for this device first" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+        }
     } else if (direction == MGSwipeDirectionRightToLeft && index == 1) {
         self.configuringNode = node;
         [[self.renameDialog.textFields objectAtIndex:0] setText:nil];
@@ -290,44 +463,6 @@
         [result addObject:button];
     }
     return result;
-}
-
-- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
-    return self.cellCanBeSelected;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    Node *node = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-    if (self.cellCanBeSelected == NO) {
-        [cell setSelected:NO animated:NO];
-        return;
-    }
-    [self performSegueWithIdentifier:@"ShowNodeSettings" sender:node];
-    [cell setSelected:NO animated:YES];
-}
-
-- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
-    Node *node = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    [self performSegueWithIdentifier:@"ShowNodeDetail" sender:node];
-}
-
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    return NO;
-}
-
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-//    NSString *online = [[[self.fetchedResultsController sections] objectAtIndex:section] name];
-//    if ([online isEqualToString:@"0"]) {
-//        return @"Offline";
-//    }
-//    return @"Online";
-    return [[[self.fetchedResultsController sections] objectAtIndex:section] name];
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 80;
 }
 
 #pragma -mark Actions

@@ -11,22 +11,16 @@
 #import <FBSDKShareKit/FBSDKShareKit.h>
 #import "NodeDetailTVC.h"
 #import "MBProgressHUD.h"
+#import "AFNetworking.h"
 
 @interface NodeResourcesVC () <UIWebViewDelegate>
 @property (strong, nonatomic) UIWebView *webView;
-@property (nonatomic, strong) MBProgressHUD *HUD;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
+@property (nonatomic, strong) UILabel *messageLabel;
+@property (nonatomic, strong) UIActivityIndicatorView *webIndicator;
+
 @end
 @implementation NodeResourcesVC
-
-
-- (MBProgressHUD *)HUD {
-    if (_HUD == nil) {
-        _HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
-        [self.navigationController.view addSubview:_HUD];
-    }
-    return _HUD;
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -48,11 +42,16 @@
     detailButton.titleLabel.font = [UIFont materialIconOfSize:28];
     [detailButton addTarget:self action:@selector(showNodeDetails)forControlEvents:UIControlEventTouchUpInside];
 
+    self.webIndicator = [[UIActivityIndicatorView alloc] initWithFrame:barIconRect];
+    self.webIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
+    self.webIndicator.hidesWhenStopped = YES;
+    
+    UIBarButtonItem *indicatorItem = [[UIBarButtonItem alloc] initWithCustomView:self.webIndicator];
     UIBarButtonItem *detailItem = [[UIBarButtonItem alloc] initWithCustomView:detailButton];
     UIBarButtonItem *shareItem = [[UIBarButtonItem alloc] initWithCustomView:shareButton];
     UIBarButtonItem *space = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:self action:nil];
     space.width = 20;
-    [self.navigationItem setRightBarButtonItems:@[detailItem, space, shareItem]];
+    [self.navigationItem setRightBarButtonItems:@[detailItem, space, shareItem, space, space, indicatorItem]];
 
     //init webView
     self.webView = [[UIWebView alloc] initWithFrame:self.view.frame];
@@ -70,16 +69,29 @@
     NSURL *url = [NSURL URLWithString:self.node.apiURL];
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:10.0];
     [self.webView loadRequest:request];
-    [self.HUD show:YES];
+    [self.webIndicator startAnimating];
+    
+    //init label
+    self.messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.webView.frame.size.width, 60)];
+    self.messageLabel.center = self.webView.center;
+    self.messageLabel.hidden = YES;
+    self.messageLabel.text = @"We had a problem loading this for you.\nPlease try again.";
+    self.messageLabel.textAlignment = NSTextAlignmentCenter;
+    self.messageLabel.lineBreakMode = NSLineBreakByCharWrapping;
+    self.messageLabel.numberOfLines = 0;
+    [self.webView addSubview:self.messageLabel];
+    
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
-    [self.HUD hide:YES];
+    [self.webIndicator stopAnimating];
     [self.refreshControl endRefreshing];
+    self.messageLabel.hidden = YES;
 }
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-    [self.HUD hide:YES];
+    [self.webIndicator stopAnimating];
     [self.refreshControl endRefreshing];
+    self.messageLabel.hidden = NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated {

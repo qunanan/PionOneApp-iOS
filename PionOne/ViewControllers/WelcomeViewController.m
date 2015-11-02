@@ -139,6 +139,8 @@
 //    [self performSegueWithIdentifier:@"LoginSegue" sender:nil];
     self.signInButton.enabled = NO;
     self.signUpButton.enabled = NO;
+    [[PionOneManager sharedInstance] scanDriverListWithCompletionHandler:nil];
+    
 //    [[PionOneManager sharedInstance] getNodeListWithCompletionHandler:^(BOOL succse, NSString *msg) {
 //        if (succse) {
 //        } else {

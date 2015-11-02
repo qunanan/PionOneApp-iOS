@@ -15,15 +15,15 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "98F672581B980E6800A9292B"
-               BuildableName = "PionOne.app"
+               BuildableName = "Pion One.app"
                BlueprintName = "PionOne"
-               ReferencedContainer = "container:PionOne.xcodeproj">
+               ReferencedContainer = "container:Pion One.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
@@ -33,16 +33,16 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "98F672581B980E6800A9292B"
-            BuildableName = "PionOne.app"
+            BuildableName = "Pion One.app"
             BlueprintName = "PionOne"
-            ReferencedContainer = "container:PionOne.xcodeproj">
+            ReferencedContainer = "container:Pion One.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
@@ -56,17 +56,11 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "98F672581B980E6800A9292B"
-            BuildableName = "PionOne.app"
+            BuildableName = "Pion One.app"
             BlueprintName = "PionOne"
-            ReferencedContainer = "container:PionOne.xcodeproj">
+            ReferencedContainer = "container:Pion One.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <CommandLineArguments>
-         <CommandLineArgument
-            argument = "-com.apple.CoreData.ConcurrencyDebug 1"
-            isEnabled = "YES">
-         </CommandLineArgument>
-      </CommandLineArguments>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -81,17 +75,18 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "98F672581B980E6800A9292B"
-            BuildableName = "PionOne.app"
+            BuildableName = "Pion One.app"
             BlueprintName = "PionOne"
-            ReferencedContainer = "container:PionOne.xcodeproj">
+            ReferencedContainer = "container:Pion One.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
-      buildConfiguration = "Debug">
+      buildConfiguration = "Release">
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
+      customArchiveName = "Pion One"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

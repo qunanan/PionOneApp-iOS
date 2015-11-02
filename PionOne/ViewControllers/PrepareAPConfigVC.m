@@ -60,11 +60,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self registerAPconfigLocalNotification];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [self registerAPconfigLocalNotification];
     if (![[PionOneManager sharedInstance] isConnectedToPionOne]) {
         [self startCheckingNodeAPConnection];
     }

@@ -91,12 +91,6 @@
     return _udpSocket;
 }
 
-- (NSManagedObjectContext *)tmpMOC {
-    _tmpMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-    _tmpMOC.parentContext = self.mainMOC;
-    return _tmpMOC;
-}
-
 #pragma -mark User Management API
 
 - (void)signUpWithEmail:(NSString *)email
@@ -127,7 +121,13 @@
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
         if (status.integerValue == 200) {
             self.user = [User userWithInfo:responseObject inManagedObjectContext:self.mainMOC];
-            [self saveContext];
+            //save context
+            [self.mainMOC performBlock:^{
+                NSError *parentError = nil;
+                if (![_mainMOC save:&parentError]) {
+                    NSLog(@"Error saving parent");
+                }
+            }];
             [[NSUserDefaults standardUserDefaults] setObject:self.user.token forKey:kPionOneUserToken];
             if(handler) handler(YES,msg);
         } else {
@@ -171,7 +171,13 @@
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
         if (status.integerValue == 200) {
             self.user = [User userWithInfo:responseObject inManagedObjectContext:self.mainMOC];
-            [self saveContext];
+            //save context
+            [self.mainMOC performBlock:^{
+                NSError *parentError = nil;
+                if (![_mainMOC save:&parentError]) {
+                    NSLog(@"Error saving parent");
+                }
+            }];
             [[NSUserDefaults standardUserDefaults] setObject:self.user.token forKey:kPionOneUserToken];
             if(handler) handler(YES,msg);
         } else {
@@ -195,8 +201,14 @@
         NSLog(@"It's not logined");
         return;
     }
-    [self.mainMOC deleteObject:self.user];
-    [self saveContext];
+//    [self.mainMOC deleteObject:self.user];
+    //save context
+    [self.mainMOC performBlock:^{
+        NSError *parentError = nil;
+        if (![_mainMOC save:&parentError]) {
+            NSLog(@"Error saving parent");
+        }
+    }];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kPionOneUserToken];
 }
 
@@ -249,7 +261,13 @@
         if (status.integerValue == 200) {
             NSString *newToken = [(NSDictionary *)responseObject objectForKey:@"token"];
             self.user.token = newToken;
-            [self saveContext];
+            //save context
+            [self.mainMOC performBlock:^{
+                NSError *parentError = nil;
+                if (![_mainMOC save:&parentError]) {
+                    NSLog(@"Error saving parent");
+                }
+            }];
             [[NSUserDefaults standardUserDefaults] setObject:newToken forKey:kPionOneUserToken];
             if (handler) handler(YES,msg);
         } else {
@@ -336,11 +354,13 @@
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
         if (status.integerValue == 200) {
             NSArray * nodelist = (NSArray *)[(NSDictionary *)responseObject objectForKey:@"nodes"];
-            [self.tmpMOC performBlock:^{
-                User *tmpUser = [_tmpMOC objectWithID:self.user.objectID];
+            NSManagedObjectContext *refreshMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+            refreshMOC.parentContext = self.mainMOC;
+            [refreshMOC performBlock:^{
+                User *tmpUser = [refreshMOC objectWithID:self.user.objectID];
                 [tmpUser refreshNodeListWithArry:nodelist];
             }];
-            [self saveContext];
+            [self saveChildContext:refreshMOC];
             if (handler) handler(YES,msg);
         } else {
             if (handler) handler(NO,msg);
@@ -367,19 +387,21 @@
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
         if (status.integerValue == 200) {
             NSArray * nodelist = (NSArray *)[(NSDictionary *)responseObject objectForKey:@"nodes"];
-            [self.tmpMOC performBlock:^{
-                User *tmpUser = [_tmpMOC objectWithID:self.user.objectID];
+            NSManagedObjectContext *refreshMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+            refreshMOC.parentContext = self.mainMOC;
+            [refreshMOC performBlock:^{
+                User *tmpUser = [refreshMOC objectWithID:self.user.objectID];
                 [tmpUser refreshNodeListWithArry:nodelist];
                 __block NSInteger count = tmpUser.nodes.count;
                 if (count == 0) {
-                    [self saveContext];
+                    [self saveChildContext:refreshMOC];
                     if (handler) handler(YES,msg);
                 } else {
                     for (Node *tmpNode in tmpUser.nodes) {
                         [self node:tmpNode getSettingsWithCompletionHandler:^(BOOL success, NSString *msg) {
                             if (--count == 0) {
                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                    [self saveContext];
+                                    [self saveChildContext:refreshMOC];
                                     if (handler) handler(success,msg);
                                 });
                             }
@@ -438,11 +460,15 @@
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token] forKeys:@[@"access_token"]];
     self.httpManager.requestSerializer.timeoutInterval = 30.0f;
     [self.httpManager GET:aPionOneDriverScan parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        [self.tmpMOC performBlock:^{
+        NSManagedObjectContext *refreshMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        refreshMOC.parentContext = self.mainMOC;
+
+        [refreshMOC performBlock:^{
             for (NSDictionary *dic in (NSArray *)responseObject) {
-                [Driver driverWithInfo:dic inManagedObjectContext:_tmpMOC];
+                [Driver driverWithInfo:dic inManagedObjectContext:refreshMOC];
             }
-            [self saveContext];
+            //save context
+            [self saveChildContext:refreshMOC];
         }];
         if(handler) handler(YES,nil);
         NSLog(@"JSON:ScanDriver: %@", responseObject);
@@ -470,10 +496,10 @@
 //        }
 //    }
 //}
-- (void)saveContext {
-    [_tmpMOC performBlock:^{
+- (void)saveChildContext:(NSManagedObjectContext *) childMOC {
+    [childMOC performBlock:^{
         NSError *childError = nil;
-        if ([_tmpMOC save:&childError]) {
+        if ([childMOC save:&childError]) {
             [_mainMOC performBlock:^{
                 NSError *parentError = nil;
                 if (![_mainMOC save:&parentError]) {
@@ -860,7 +886,7 @@
 
 - (void)node:(Node *)node OTAStatusWithprogressHandler:(void (^)(BOOL, NSString *, NSString *, NSString *))handler {
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[node.key] forKeys:@[@"access_token"]];
-    self.httpManager.requestSerializer.timeoutInterval = 180.0f;
+    self.httpManager.requestSerializer.timeoutInterval = 60.0f;
     [self.httpManager POST:aPionOneOTAStatus
                 parameters:parameters
                    success:^(AFHTTPRequestOperation * __nonnull operation, id  __nonnull responseObject) {
@@ -892,6 +918,8 @@
 }
 
 - (void)node:(Node *)node getSettingsWithCompletionHandler:(void (^)(BOOL, NSString *))handler {
+    NSManagedObjectContext *refreshMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    refreshMOC.parentContext = node.managedObjectContext;
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[node.key] forKeys:@[@"access_token"]];
     self.httpManager.requestSerializer.timeoutInterval = 6.0f;
     [self.httpManager GET:aPionOneNodeGetSettings
@@ -901,9 +929,13 @@
                        NSString *status =(NSString *)[(NSDictionary *)responseObject objectForKey:@"status"];
                        if (status.integerValue == 200) {
                            NSArray *array = [self nodeSettingsFromYamlString:msg];
-                           [_tmpMOC performBlock:^{
-                               Node *tmpNode = [_tmpMOC objectWithID:node.objectID];
+                           [refreshMOC performBlock:^{
+                               Node *tmpNode = [refreshMOC objectWithID:node.objectID];
                                [tmpNode refreshNodeSettingsWithArray:array];
+                               NSError *error = nil;
+                               if (![refreshMOC save:&error]) {
+                                   NSLog(@"Error saving parent");
+                               }
                                dispatch_async(dispatch_get_main_queue(), ^{
                                    if (handler) {
                                        handler(YES,msg);
@@ -911,17 +943,19 @@
                                });
                            }];
                        } else if (status.integerValue == 404) {
-                           [_tmpMOC performBlock:^{
-                               Node *tmpNode = [_tmpMOC objectWithID:node.objectID];
-                               NSInteger count = tmpNode.groves.count;
-                               NSLog(@"%ld", (long)count);
-                               [tmpNode refreshNodeSettingsWithArray:nil];
-                               count = tmpNode.groves.count;
-                               NSLog(@"%ld", (long)count);
+                           [refreshMOC performBlock:^{
+                               Node *tmpNode = [refreshMOC objectWithID:node.objectID];
+                               tmpNode.groves = nil;
+                               NSError *error = nil;
+                               if (![refreshMOC save:&error]) {
+                                   NSLog(@"Error saving parent");
+                               }
+                               dispatch_async(dispatch_get_main_queue(), ^{
+                                   if (handler) {
+                                       handler(YES,msg);
+                                   }
+                               });
                            }];
-                           if (handler) {
-                               handler(YES,msg);
-                           }
                        } else {
                            if (handler) {
                                handler(NO,msg);

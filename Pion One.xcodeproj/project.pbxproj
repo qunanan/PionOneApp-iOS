@@ -10,6 +10,8 @@
 		3D1ACF31BED3DB007678738C /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1981195BC8AE806D378DF3B /* Pods.framework */; };
 		9805B1401BCFB044003DD994 /* Node+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 9805B13D1BCFB044003DD994 /* Node+CoreDataProperties.m */; };
 		9805B1411BCFB044003DD994 /* Node.m in Sources */ = {isa = PBXBuildFile; fileRef = 9805B13F1BCFB044003DD994 /* Node.m */; };
+		982A3BF41BE45D8700062935 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 982A3BF31BE45D8700062935 /* Launch Screen.storyboard */; };
+		982A3BF71BE4640100062935 /* launchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 982A3BF61BE4640100062935 /* launchViewController.m */; };
 		984C80371BD8C383006B26C3 /* PionOneStyleKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 984C80361BD8C383006B26C3 /* PionOneStyleKit.m */; };
 		984C803A1BD8CBC2006B26C3 /* GroveButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 984C80391BD8CBC2006B26C3 /* GroveButton.m */; };
 		984DFA291BA491E2006E4DAB /* NodeDetailTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 984DFA281BA491E2006E4DAB /* NodeDetailTVC.m */; };
@@ -26,6 +28,7 @@
 		986E01441BA3DBCF00C12BF2 /* Driver.m in Sources */ = {isa = PBXBuildFile; fileRef = 986E01431BA3DBCF00C12BF2 /* Driver.m */; };
 		986E01471BA3DBCF00C12BF2 /* Grove.m in Sources */ = {isa = PBXBuildFile; fileRef = 986E01461BA3DBCF00C12BF2 /* Grove.m */; };
 		988B06711BD48FFE00C4268E /* NSString+escapedUnicode.m in Sources */ = {isa = PBXBuildFile; fileRef = 988B06701BD48FFE00C4268E /* NSString+escapedUnicode.m */; };
+		98AD9B3A1BE7112500F0BCC3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 98AD9B391BE7112500F0BCC3 /* Images.xcassets */; };
 		98B4ED631BA13296000D6255 /* SetupNodeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 98B4ED621BA13296000D6255 /* SetupNodeVC.m */; };
 		98B4ED661BA1BF0F000D6255 /* SelectGroveTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 98B4ED651BA1BF0F000D6255 /* SelectGroveTVC.m */; };
 		98B4ED691BA1C4F7000D6255 /* Grove+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 98B4ED681BA1C4F7000D6255 /* Grove+Create.m */; };
@@ -35,8 +38,6 @@
 		98F672621B980E6800A9292B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 98F672611B980E6800A9292B /* AppDelegate.m */; };
 		98F672651B980E6800A9292B /* PionOne.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 98F672631B980E6800A9292B /* PionOne.xcdatamodeld */; };
 		98F6726B1B980E6800A9292B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 98F672691B980E6800A9292B /* Main.storyboard */; };
-		98F6726D1B980E6800A9292B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 98F6726C1B980E6800A9292B /* Images.xcassets */; };
-		98F672701B980E6800A9292B /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 98F6726E1B980E6800A9292B /* LaunchScreen.xib */; };
 		98F672AD1B98114C00A9292B /* CoreDataTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 98F672A61B98114C00A9292B /* CoreDataTableViewController.m */; };
 		98F672AF1B98114C00A9292B /* SignUpVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 98F672AA1B98114C00A9292B /* SignUpVC.m */; };
 		98F672B01B98114C00A9292B /* WelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 98F672AC1B98114C00A9292B /* WelcomeViewController.m */; };
@@ -64,6 +65,9 @@
 		9805B13D1BCFB044003DD994 /* Node+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Node+CoreDataProperties.m"; path = "Database/Node+CoreDataProperties.m"; sourceTree = "<group>"; };
 		9805B13E1BCFB044003DD994 /* Node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Node.h; path = Database/Node.h; sourceTree = "<group>"; };
 		9805B13F1BCFB044003DD994 /* Node.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Node.m; path = Database/Node.m; sourceTree = "<group>"; };
+		982A3BF31BE45D8700062935 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		982A3BF51BE4640100062935 /* launchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = launchViewController.h; sourceTree = "<group>"; };
+		982A3BF61BE4640100062935 /* launchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = launchViewController.m; sourceTree = "<group>"; };
 		984C80351BD8C383006B26C3 /* PionOneStyleKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PionOneStyleKit.h; path = Views/PionOneStyleKit.h; sourceTree = "<group>"; };
 		984C80361BD8C383006B26C3 /* PionOneStyleKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PionOneStyleKit.m; path = Views/PionOneStyleKit.m; sourceTree = "<group>"; };
 		984C80381BD8CBC2006B26C3 /* GroveButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GroveButton.h; path = Views/GroveButton.h; sourceTree = "<group>"; };
@@ -94,6 +98,7 @@
 		987748F31BDF7B4600BC6EC7 /* PionOne PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PionOne PrefixHeader.pch"; sourceTree = "<group>"; };
 		988B066F1BD48FFE00C4268E /* NSString+escapedUnicode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+escapedUnicode.h"; path = "Classes/NSString+escapedUnicode.h"; sourceTree = "<group>"; };
 		988B06701BD48FFE00C4268E /* NSString+escapedUnicode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+escapedUnicode.m"; path = "Classes/NSString+escapedUnicode.m"; sourceTree = "<group>"; };
+		98AD9B391BE7112500F0BCC3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = PionOne/Images.xcassets; sourceTree = "<group>"; };
 		98B4ED611BA13296000D6255 /* SetupNodeVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetupNodeVC.h; sourceTree = "<group>"; };
 		98B4ED621BA13296000D6255 /* SetupNodeVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetupNodeVC.m; sourceTree = "<group>"; };
 		98B4ED641BA1BF0F000D6255 /* SelectGroveTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectGroveTVC.h; sourceTree = "<group>"; };
@@ -104,15 +109,13 @@
 		98E026341BBF6B6C00D691B4 /* NodeListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NodeListCell.m; path = Views/NodeListCell.m; sourceTree = "<group>"; };
 		98E9CF471BD0F21E00FE1F38 /* SetupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetupViewController.h; sourceTree = "<group>"; };
 		98E9CF481BD0F21E00FE1F38 /* SetupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetupViewController.m; sourceTree = "<group>"; };
-		98F672591B980E6800A9292B /* PionOne.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PionOne.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		98F672591B980E6800A9292B /* Pion One.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pion One.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		98F6725D1B980E6800A9292B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		98F6725E1B980E6800A9292B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		98F672601B980E6800A9292B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		98F672611B980E6800A9292B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		98F672641B980E6800A9292B /* PionOne.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PionOne.xcdatamodel; sourceTree = "<group>"; };
 		98F6726A1B980E6800A9292B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		98F6726C1B980E6800A9292B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		98F6726F1B980E6800A9292B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		98F672A51B98114C00A9292B /* CoreDataTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDataTableViewController.h; sourceTree = "<group>"; };
 		98F672A61B98114C00A9292B /* CoreDataTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDataTableViewController.m; sourceTree = "<group>"; };
 		98F672A91B98114C00A9292B /* SignUpVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignUpVC.h; sourceTree = "<group>"; };
@@ -198,6 +201,7 @@
 			children = (
 				98F6725B1B980E6800A9292B /* PionOne */,
 				98F6725A1B980E6800A9292B /* Products */,
+				98AD9B391BE7112500F0BCC3 /* Images.xcassets */,
 				0930383B8D93905EAB144D33 /* Pods */,
 				6437B1C9D2B17EC71581EC7D /* Frameworks */,
 			);
@@ -206,7 +210,7 @@
 		98F6725A1B980E6800A9292B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				98F672591B980E6800A9292B /* PionOne.app */,
+				98F672591B980E6800A9292B /* Pion One.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -219,8 +223,7 @@
 				98F672871B980F3900A9292B /* Classes */,
 				98F672861B980F1200A9292B /* Views */,
 				98F672691B980E6800A9292B /* Main.storyboard */,
-				98F6726C1B980E6800A9292B /* Images.xcassets */,
-				98F6726E1B980E6800A9292B /* LaunchScreen.xib */,
+				982A3BF31BE45D8700062935 /* Launch Screen.storyboard */,
 				98F672631B980E6800A9292B /* PionOne.xcdatamodeld */,
 				98F6725C1B980E6800A9292B /* Supporting Files */,
 			);
@@ -317,6 +320,8 @@
 				984DFA2B1BA4B944006E4DAB /* NodeResourcesVC.m */,
 				98643D341BE224A000DF2CF5 /* AboutViewController.h */,
 				98643D351BE224A000DF2CF5 /* AboutViewController.m */,
+				982A3BF51BE4640100062935 /* launchViewController.h */,
+				982A3BF61BE4640100062935 /* launchViewController.m */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -366,7 +371,7 @@
 			);
 			name = PionOne;
 			productName = PionOne;
-			productReference = 98F672591B980E6800A9292B /* PionOne.app */;
+			productReference = 98F672591B980E6800A9292B /* Pion One.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -389,7 +394,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 98F672541B980E6800A9292B /* Build configuration list for PBXProject "PionOne" */;
+			buildConfigurationList = 98F672541B980E6800A9292B /* Build configuration list for PBXProject "Pion One" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -412,9 +417,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98AD9B3A1BE7112500F0BCC3 /* Images.xcassets in Resources */,
+				982A3BF41BE45D8700062935 /* Launch Screen.storyboard in Resources */,
 				98F6726B1B980E6800A9292B /* Main.storyboard in Resources */,
-				98F672701B980E6800A9292B /* LaunchScreen.xib in Resources */,
-				98F6726D1B980E6800A9292B /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -500,6 +505,7 @@
 				98643D361BE224A000DF2CF5 /* AboutViewController.m in Sources */,
 				98F672F81B99802200A9292B /* Driver+Create.m in Sources */,
 				984DFA291BA491E2006E4DAB /* NodeDetailTVC.m in Sources */,
+				982A3BF71BE4640100062935 /* launchViewController.m in Sources */,
 				98F673221B9A887100A9292B /* PrepareAPConfigVC.m in Sources */,
 				98F672E61B983F5300A9292B /* Node+Setup.m in Sources */,
 				984C803A1BD8CBC2006B26C3 /* GroveButton.m in Sources */,
@@ -527,14 +533,6 @@
 				98F6726A1B980E6800A9292B /* Base */,
 			);
 			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		98F6726E1B980E6800A9292B /* LaunchScreen.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				98F6726F1B980E6800A9292B /* Base */,
-			);
-			name = LaunchScreen.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -634,12 +632,12 @@
 					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SRCROOT)/$(PRODUCT_NAME)/PionOne PrefixHeader.pch";
+				GCC_PREFIX_HEADER = "$(SRCROOT)/PionOne/PionOne PrefixHeader.pch";
 				INFOPLIST_FILE = PionOne/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "STU.Pion-One";
-				PRODUCT_NAME = PionOne;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.seeedstudio.Pion-One";
+				PRODUCT_NAME = "Pion One";
 				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
@@ -657,12 +655,12 @@
 					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SRCROOT)/$(PRODUCT_NAME)/PionOne PrefixHeader.pch";
+				GCC_PREFIX_HEADER = "$(SRCROOT)/PionOne/PionOne PrefixHeader.pch";
 				INFOPLIST_FILE = PionOne/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "STU.Pion-One";
-				PRODUCT_NAME = PionOne;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.seeedstudio.Pion-One";
+				PRODUCT_NAME = "Pion One";
 				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
@@ -670,7 +668,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		98F672541B980E6800A9292B /* Build configuration list for PBXProject "PionOne" */ = {
+		98F672541B980E6800A9292B /* Build configuration list for PBXProject "Pion One" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				98F6727D1B980E6800A9292B /* Debug */,
