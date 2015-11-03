@@ -2,7 +2,7 @@
 
 ##Open source libraries
 This app is made possible with open source. Many thanks to 
-##AFNetworking
+###AFNetworking
 
 AFNetworking is released under the MIT license. See LICENSE for details.
 
