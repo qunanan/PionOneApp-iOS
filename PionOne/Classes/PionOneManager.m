@@ -60,10 +60,18 @@
 - (User *)user {
     if (_user == nil) {
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"User"];
-        request.predicate = nil;
-        request.sortDescriptors = nil;//@[[[NSSortDescriptor alloc] initWithKey:@"token" ascending:YES selector:@selector(localizedStandardCompare:)]];
-        NSArray *result = [self.mainMOC executeFetchRequest:request error:nil];
-        _user = [result lastObject];
+        request.predicate = [NSPredicate predicateWithFormat:@"token = %@", [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneUserToken]];
+        NSError *error;
+        NSArray *matches = [self.mainMOC executeFetchRequest:request error:nil];
+        if (!matches || error || ([matches count] > 1)) {
+            // handle error
+        } else if ([matches count] == 1) {
+            _user = [matches firstObject];
+        } else {
+            //handle error
+        }
+
+        _user = [matches lastObject];
     }
     return _user;
 }

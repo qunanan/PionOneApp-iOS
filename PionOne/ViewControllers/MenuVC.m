@@ -13,8 +13,8 @@
 #import <GoogleMaterialIconFont/GoogleMaterialIconFont-Swift.h>
 #import "MBProgressHUD.h"
 #import "NodeListCDTVC.h"
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
-#import <FBSDKLoginKit/FBSDKLoginKit.h>
+//#import <FBSDKCoreKit/FBSDKCoreKit.h>
+//#import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <FBSDKShareKit/FBSDKShareKit.h>
 
 @interface MenuVC () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, FBSDKSharingDelegate>
