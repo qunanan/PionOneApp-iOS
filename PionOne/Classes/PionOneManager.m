@@ -137,6 +137,7 @@
                 }
             }];
             [[NSUserDefaults standardUserDefaults] setObject:self.user.token forKey:kPionOneUserToken];
+            [[NSUserDefaults standardUserDefaults] setObject:email forKey:kPionOneUserEmail];
             if(handler) handler(YES,msg);
         } else {
             if(handler) handler(NO,msg);
@@ -187,6 +188,7 @@
                 }
             }];
             [[NSUserDefaults standardUserDefaults] setObject:self.user.token forKey:kPionOneUserToken];
+            [[NSUserDefaults standardUserDefaults] setObject:email forKey:kPionOneUserEmail];
             if(handler) handler(YES,msg);
         } else {
             if(handler) handler(NO,msg);
@@ -218,6 +220,7 @@
         }
     }];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kPionOneUserToken];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kPionOneUserEmail];
 }
 
 - (void)retrievePwdForAccount:(NSString *)email completionHandler:(void (^)(BOOL succse, NSString *msg))handler
@@ -314,10 +317,10 @@
         } else {
             if (handler) handler(NO,msg);
         }
-        NSLog(@"JSON:CreatNode: %@", responseObject);
+        NSLog(@"JSON:CreateNode: %@", responseObject);
     } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
         if (handler) {
-            handler(NO,@"CreatNode:Connecting to Server failed!");
+            handler(NO,@"CreateNode:Connecting to Server failed!");
         }
         NSLog(@"Networking error: %@", error);
     }];
@@ -993,6 +996,7 @@
 - (NSString *)yamlWithGrove:(Grove *)grove {
     NSString *yaml = [NSString stringWithFormat:@"%@:\r\n",grove.instanceName];
     yaml = [yaml stringByAppendingFormat:@"  name: %@\r\n",grove.driver.groveName.escapedUnicode];
+    yaml = [yaml stringByAppendingFormat:@"  SKU: %@\r\n",grove.driver.skuID];
     yaml = [yaml stringByAppendingFormat:@"  construct_arg_list:\r\n"];
     if ([grove.driver.interfaceType isEqualToString:@"GPIO"]) {
         yaml = [yaml stringByAppendingFormat:@"    pin: %@\r\n",grove.pinNum0];
@@ -1113,6 +1117,10 @@
                 NSString *name = [[str substringFromIndex:8] nonLossyASCIIString];
                 [dic setObject:name forKey:@"name"];
             }
+            if ([str containsString:@"  SKU: "]) {
+                NSString *skuID = [str substringFromIndex:7];
+                [dic setObject:skuID forKey:@"SKU"];
+            }
             foundNewObject = NO;
             if ([str containsString:@"    pin: "]) {
                 NSString *pin = [str substringFromIndex:9];
@@ -1133,7 +1141,6 @@
     }
     return array;
 }
-
 
 #pragma -mark Node API Method
 - (void)getAPIsForNode:(Node *)node completion:(void (^)(BOOL, NSString *, NSArray *))handler {

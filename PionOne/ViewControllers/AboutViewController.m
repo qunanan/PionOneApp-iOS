@@ -14,7 +14,7 @@
 #import <GoogleMaterialIconFont/GoogleMaterialIconFont-Swift.h>
 
 @interface AboutViewController () <UIWebViewDelegate>
-@property (strong, nonatomic) UIWebView *webView;
+@property (strong, nonatomic) IBOutlet UIWebView *webView;
 @property (nonatomic, strong) MBProgressHUD *HUD;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
 @property (nonatomic, strong) UILabel *messageLabel;
@@ -45,8 +45,9 @@
     [self.navigationItem setRightBarButtonItems:@[space, indicatorItem]];
 
     //init webView
-    self.webView = [[UIWebView alloc] initWithFrame:self.view.frame];
-    [self.view addSubview:self.webView];
+//    CGRect webFrame = CGRectMake(0, self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height, self.navigationController.navigationBar.frame.size.width, [UIScreen mainScreen].applicationFrame.size.height - self.navigationController.navigationBar.frame.size.height);
+//    self.webView = [[UIWebView alloc] initWithFrame:webFrame];
+//    [self.view addSubview:self.webView];
     self.webView.delegate = self;
     self.webView.scalesPageToFit = NO;
 
@@ -64,8 +65,8 @@
     [self.webIndicator startAnimating];
     
     //init label
-    self.messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.webView.frame.size.width, 80)];
-//    self.messageLabel.center = self.webView.center;
+    self.messageLabel = [[UILabel alloc] initWithFrame:self.view.frame];
+    //self.messageLabel.center = self.view.center;
     self.messageLabel.hidden = YES;
     self.messageLabel.backgroundColor = [UIColor whiteColor];
     self.messageLabel.text = @"We had a problem loading this for you.\nPlease check your network and try again.";
@@ -83,7 +84,6 @@
 }
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
     NSString *errorMsg;
-    
     if ([[error domain] isEqualToString:NSURLErrorDomain]) {
         switch ([error code]) {
             case NSURLErrorCannotFindHost:
@@ -97,10 +97,17 @@
                 self.messageLabel.hidden = NO;
             default:
                 errorMsg = [error localizedDescription];
+                if ([errorMsg containsString:@"The request timed out"]) {
+                    [self.webIndicator stopAnimating];
+                    [self.refreshControl endRefreshing];
+                    self.messageLabel.hidden = NO;
+                }
+                NSLog(@"%@",errorMsg);
                 break;
         }
     } else {
         errorMsg = [error localizedDescription];
+        NSLog(@"%@",errorMsg);
     }
 }
 

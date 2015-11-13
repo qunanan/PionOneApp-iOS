@@ -95,9 +95,10 @@
 - (void)refreshNodeSettingsWithArray:(NSArray *)settingsArray {
     [self removeGroves:self.groves];   //remove all sttings
     for (NSDictionary *settingDic in settingsArray) {
-        NSString *groveName = settingDic[@"name"];
+//        NSString *groveName = settingDic[@"name"];
+        NSString *sku = settingDic[@"SKU"];
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Driver"];
-        request.predicate = [NSPredicate predicateWithFormat:@"groveName = %@", groveName];
+        request.predicate = [NSPredicate predicateWithFormat:@"skuID = %@", sku];
         NSError *error;
         NSArray *matches = [self.managedObjectContext executeFetchRequest:request error:&error];
         Driver *driver = nil;

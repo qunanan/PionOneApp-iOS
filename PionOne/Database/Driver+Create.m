@@ -32,6 +32,7 @@
     driver.driverName = dic[kJsonDriverName];
     driver.imageURL = dic[kJsonImageURL];
     driver.interfaceType = dic[kJsonDriverInterfaceType];
+    driver.skuID = dic[kJsonDriverSKU];
     return driver;
 }
 

@@ -39,6 +39,7 @@
 #define aPionOneNodeAPIs @"/v1/node/.well-known"
 
 //default keys
+#define kPionOneUserEmail @"PionOneUserEmail"
 #define kPionOneOTAServerBaseURL @"PionOneOTAServerBaseURL"
 #define kPionOneDataServerBaseURL @"PionOneDataServerBaseURL"
 #define kPionOneOTAServerIPAddress @"PionOneOTAServerIPAddress"

@@ -1,9 +1,9 @@
 //
 //  Driver.h
-//  PionOne
+//  Pion One
 //
-//  Created by Qxn on 15/9/12.
-//  Copyright (c) 2015年 SeeedStudio. All rights reserved.
+//  Created by Qxn on 15/11/13.
+//  Copyright © 2015年 SeeedStudio. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -11,21 +11,14 @@
 
 @class Grove;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface Driver : NSManagedObject
 
-@property (nonatomic, retain) NSNumber * driverID;
-@property (nonatomic, retain) NSString * driverName;
-@property (nonatomic, retain) NSString * groveName;
-@property (nonatomic, retain) NSString * imageURL;
-@property (nonatomic, retain) NSString * interfaceType;
-@property (nonatomic, retain) NSSet *groves;
-@end
-
-@interface Driver (CoreDataGeneratedAccessors)
-
-- (void)addGrovesObject:(Grove *)value;
-- (void)removeGrovesObject:(Grove *)value;
-- (void)addGroves:(NSSet *)values;
-- (void)removeGroves:(NSSet *)values;
+// Insert code here to declare functionality of your managed object subclass
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#import "Driver+CoreDataProperties.h"

@@ -14,7 +14,7 @@
 #import "AFNetworking.h"
 
 @interface NodeResourcesVC () <UIWebViewDelegate>
-@property (strong, nonatomic) UIWebView *webView;
+@property (strong, nonatomic) IBOutlet UIWebView *webView;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
 @property (nonatomic, strong) UILabel *messageLabel;
 @property (nonatomic, strong) UIActivityIndicatorView *webIndicator;
@@ -54,8 +54,8 @@
     [self.navigationItem setRightBarButtonItems:@[detailItem, space, shareItem, space, space, indicatorItem]];
 
     //init webView
-    self.webView = [[UIWebView alloc] initWithFrame:self.view.frame];
-    [self.view addSubview:self.webView];
+//    self.webView = [[UIWebView alloc] initWithFrame:self.view.frame];
+//    [self.view addSubview:self.webView];
     self.webView.delegate = self;
     self.webView.scalesPageToFit = NO;
     //init refreshcotrol
@@ -72,14 +72,16 @@
     [self.webIndicator startAnimating];
     
     //init label
-    self.messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.webView.frame.size.width, 60)];
-    self.messageLabel.center = self.webView.center;
+    self.messageLabel = [[UILabel alloc] initWithFrame:self.view.frame];
+    //self.messageLabel.center = self.view.center;
     self.messageLabel.hidden = YES;
-    self.messageLabel.text = @"We had a problem loading this for you.\nPlease try again.";
+    self.messageLabel.backgroundColor = [UIColor whiteColor];
+    self.messageLabel.text = @"We had a problem loading this for you.\nPlease check your network and try again.";
+    self.messageLabel.alpha = 0.9;
     self.messageLabel.textAlignment = NSTextAlignmentCenter;
     self.messageLabel.lineBreakMode = NSLineBreakByCharWrapping;
     self.messageLabel.numberOfLines = 0;
-    [self.webView addSubview:self.messageLabel];
+    [self.webView.scrollView addSubview:self.messageLabel];
     
 }
 
@@ -89,9 +91,35 @@
     self.messageLabel.hidden = YES;
 }
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-    [self.webIndicator stopAnimating];
-    [self.refreshControl endRefreshing];
-    self.messageLabel.hidden = NO;
+    NSString *errorMsg;
+    if ([[error domain] isEqualToString:NSURLErrorDomain]) {
+        switch ([error code]) {
+            case NSURLErrorCannotFindHost:
+                errorMsg = NSLocalizedString(@"Cannot find specified host. Retype URL.", nil);
+            case NSURLErrorCannotConnectToHost:
+                errorMsg = NSLocalizedString(@"Cannot connect to specified host. Server may be down.", nil);
+            case NSURLErrorNotConnectedToInternet:
+                errorMsg = NSLocalizedString(@"Cannot connect to the internet. Service may not be available.", nil);
+                [self.webIndicator stopAnimating];
+                [self.refreshControl endRefreshing];
+                self.messageLabel.hidden = NO;
+                self.webView.scrollView.contentSize = self.messageLabel.frame.size;
+            default:
+                errorMsg = [error localizedDescription];
+                if ([errorMsg containsString:@"The request timed out"]) {
+                    [self.webIndicator stopAnimating];
+                    [self.refreshControl endRefreshing];
+                    self.messageLabel.hidden = NO;
+                    [self.webView reload];
+                    self.webView.scrollView.contentSize = self.messageLabel.frame.size;
+                }
+                NSLog(@"%@",errorMsg);
+                break;
+        }
+    } else {
+        errorMsg = [error localizedDescription];
+        NSLog(@"%@",errorMsg);
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
