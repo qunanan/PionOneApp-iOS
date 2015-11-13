@@ -45,6 +45,8 @@
     self.tableView.emptyDataSetSource = self;
     self.tableView.emptyDataSetDelegate = self;
     
+    [[PionOneManager sharedInstance] scanDriverListWithCompletionHandler:nil];
+
     self.managedObjectContext = [[PionOneManager sharedInstance] mainMOC];
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     self.cellCanBeSelected = YES;
@@ -283,14 +285,13 @@
     NodeListCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NodeListTVCell" forIndexPath:indexPath];
     Node *node = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
-    NSLog(@"%@", cell.contentView.subviews);
-
     //setup swipe cell delegate
     cell.delegate = self;
     //setup cell properties
     cell.nameLabel.text = node.name;
     if (node.online.boolValue) {
-        [cell.onlineIndicator setBackgroundColor:[UIColor greenColor]];
+        
+        [cell.onlineIndicator setBackgroundColor:[UIColor colorWithRed:0.2 green:0.8 blue:0.2 alpha:1.0]];
         cell.onlineLabel.text = @"Online";
     } else {
         [cell.onlineIndicator setBackgroundColor:[UIColor redColor]];
@@ -346,8 +347,9 @@
     swipeSettings.transition = MGSwipeTransitionStatic;
     if (direction == MGSwipeDirectionRightToLeft) {
         NSIndexPath * path = [self.tableView indexPathForCell:cell];
-        Node *node = [self.fetchedResultsController objectAtIndexPath:path];
-        UIColor *buttonColor = node.online.boolValue? [UIColor greenColor] : [UIColor redColor];
+//        Node *node = [self.fetchedResultsController objectAtIndexPath:path];
+        NodeListCell *cell = [self.tableView cellForRowAtIndexPath:path];
+        UIColor *buttonColor = cell.onlineIndicator.backgroundColor;
         return [self createRightButtons:3 withColor:buttonColor];
     } else {
 //        expansionSettings.buttonIndex = 0;
@@ -384,7 +386,7 @@
         if (node.groves.count > 0) {
             [self performSegueWithIdentifier:@"ShowNodeAPI" sender:node];
         } else {
-            [[[UIAlertView alloc] initWithTitle:@"Sorry" message:@"You have to update firmware for this device first" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+            [[[UIAlertView alloc] initWithTitle:@"Sorry" message:@"You have to update firmware for this device first." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
         }
     } else if (direction == MGSwipeDirectionRightToLeft && index == 1) {
         self.configuringNode = node;
@@ -477,8 +479,8 @@
                 if ([[PionOneManager sharedInstance] cachedSSID]) {
                     [self performSegueWithIdentifier:@"ShowAPconfigVC" sender:nil];
                 } else {
-                   msg = @"Do Not Get A WiFi Network!";
-                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
+                   msg = @"Please make sure that your phone is connected to an available wifi network.";
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"No"
                                                                         message:msg
                                                                        delegate:nil
                                                               cancelButtonTitle:@"Ok"
@@ -486,8 +488,8 @@
                     [alertView show];
                 }
             } else {
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
-                                                                    message:msg
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Sorry"
+                                                                    message:@"We had a problem doing this for you, please check your wifi network and try again."
                                                                    delegate:nil
                                                           cancelButtonTitle:@"Ok"
                                                           otherButtonTitles:nil];

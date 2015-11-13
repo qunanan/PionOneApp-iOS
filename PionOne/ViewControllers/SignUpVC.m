@@ -69,8 +69,8 @@
             [self cancel:nil];
             [pVC login];
         } else {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
-                                                                message:msg
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Sorry"
+                                                                message:@"We had a problem doing this for you, maybe you can change the region for better internet connection."
                                                                delegate:nil
                                                       cancelButtonTitle:@"Ok"
                                                       otherButtonTitles:nil];

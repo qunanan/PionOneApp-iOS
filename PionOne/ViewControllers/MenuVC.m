@@ -104,6 +104,7 @@
 - (void)sharerDidCancel:(id<FBSDKSharing>)sharer {
     
 }
+
 - (MBProgressHUD *)HUD {
     if (_HUD == nil) {
         UITableViewController *controller = (UITableViewController *)self.sideMenuViewController.contentViewController;
@@ -114,7 +115,6 @@
     return _HUD;
 }
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.tableView.delegate = self;
@@ -123,7 +123,8 @@
 }
 
 - (IBAction)logout {
-    UIAlertController *logoutAction = [UIAlertController alertControllerWithTitle:@"Logged in as qunanan" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    NSString *email = [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneUserEmail];
+    UIAlertController *logoutAction = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Logged in as %@", email] message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     [logoutAction addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
     [logoutAction addAction:[UIAlertAction actionWithTitle:@"Log Out" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [[PionOneManager sharedInstance] logout];
@@ -152,13 +153,13 @@
     UITextField *textField1 = [_changePasswordDialog.textFields objectAtIndex:0];
     UITextField *textField2 = [_changePasswordDialog.textFields objectAtIndex:1];
     if (![textField1.text isEqualToString:textField2.text]) {
-        [[[UIAlertView alloc] initWithTitle:nil message:@"recheck password" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+        [[[UIAlertView alloc] initWithTitle:@"Error" message:@"The password confirmation is not match your new password." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
         return;
     }
     [self.HUD show:YES];
     [[PionOneManager sharedInstance] changePasswordWithNewPassword:textField1.text completionHandler:^(BOOL success, NSString *msg) {
         if (!success) {
-            [[[UIAlertView alloc] initWithTitle:nil message:msg delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+            [[[UIAlertView alloc] initWithTitle:@"Info" message:msg delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
         }
         [self.HUD hide:YES];
     }];

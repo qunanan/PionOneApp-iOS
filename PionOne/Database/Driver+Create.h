@@ -13,6 +13,7 @@
 #define kJsonDriverID @"ID"
 #define kJsonImageURL @"ImageURL"
 #define kJsonDriverInterfaceType @"InterfaceType"
+#define kJsonDriverSKU @"SKU"
 
 @interface Driver (Create)
 + (Driver *)driverWithInfo:(NSDictionary *)dic inManagedObjectContext:(NSManagedObjectContext *)context;

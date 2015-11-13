@@ -12,7 +12,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "MBProgressHUD.h"
 #import "GroveButton.h"
-
+#import "NodeResourcesVC.h"
 
 @interface SetupNodeVC () <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate>
 @property (strong, nonatomic) IBOutletCollection(GroveButton) NSArray *groveButtons;
@@ -41,7 +41,7 @@
     [footerView setNeedsLayout];
     [footerView layoutIfNeeded];
     frame = footerView.frame;
-    frame.size.height = 95;
+    frame.size.height = 125;
     footerView.frame = frame;
     self.tableView.tableFooterView = footerView;
     
@@ -206,6 +206,8 @@
         if ([sender isKindOfClass:[Driver class]]) {
             [(DriverDetailVC *)dVC setDriver:sender];;
         }
+    } else if ([dVC isKindOfClass:[NodeResourcesVC class]]) {
+        [(NodeResourcesVC *)dVC setNode:self.node];
     }
 }
 
