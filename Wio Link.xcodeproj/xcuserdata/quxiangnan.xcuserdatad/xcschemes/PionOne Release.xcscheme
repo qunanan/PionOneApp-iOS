@@ -17,7 +17,7 @@
                BlueprintIdentifier = "98F672581B980E6800A9292B"
                BuildableName = "Pion One.app"
                BlueprintName = "PionOne"
-               ReferencedContainer = "container:Pion One.xcodeproj">
+               ReferencedContainer = "container:Wio Link.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,7 +35,7 @@
             BlueprintIdentifier = "98F672581B980E6800A9292B"
             BuildableName = "Pion One.app"
             BlueprintName = "PionOne"
-            ReferencedContainer = "container:Pion One.xcodeproj">
+            ReferencedContainer = "container:Wio Link.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -58,7 +58,7 @@
             BlueprintIdentifier = "98F672581B980E6800A9292B"
             BuildableName = "Pion One.app"
             BlueprintName = "PionOne"
-            ReferencedContainer = "container:Pion One.xcodeproj">
+            ReferencedContainer = "container:Wio Link.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -77,7 +77,7 @@
             BlueprintIdentifier = "98F672581B980E6800A9292B"
             BuildableName = "Pion One.app"
             BlueprintName = "PionOne"
-            ReferencedContainer = "container:Pion One.xcodeproj">
+            ReferencedContainer = "container:Wio Link.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

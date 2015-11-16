@@ -13,9 +13,11 @@
 #import "MBProgressHUD.h"
 #import "GroveButton.h"
 #import "NodeResourcesVC.h"
+#import "KHFlatButton.h"
 
 @interface SetupNodeVC () <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate>
 @property (strong, nonatomic) IBOutletCollection(GroveButton) NSArray *groveButtons;
+@property (weak, nonatomic) IBOutlet KHFlatButton *apiButton;
 
 @property (nonatomic, strong) MBProgressHUD *HUD;
 @end
@@ -27,6 +29,8 @@
     self.title = self.node.name;
     self.tableView.delegate = self;
     [self refreshGroveButtonConfiguration];
+    
+    //add a button
     
     //Init headerView
     UIView *headerView = self.tableView.tableHeaderView;
@@ -41,7 +45,7 @@
     [footerView setNeedsLayout];
     [footerView layoutIfNeeded];
     frame = footerView.frame;
-    frame.size.height = 125;
+    frame.size.height = 143;
     footerView.frame = frame;
     self.tableView.tableFooterView = footerView;
     
@@ -66,6 +70,12 @@
 //            NSLog(@"Error saving child");
 //        }
 //    }];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (self.node.groves.count == 0 || 1) {
+    }
 }
 
 - (void)refresh:(UIRefreshControl *)refreshControl {
@@ -192,6 +202,9 @@
     [[[UIAlertView alloc] initWithTitle:@"Are you sure?"
                                message:@"It will update this PionOne's settings and will take a minutes"
                               delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK",nil] show];
+}
+- (IBAction)apiButtonPushed:(id)sender {
+    [self performSegueWithIdentifier:@"ShowAPIResourceSegue" sender:nil];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

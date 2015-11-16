@@ -8,7 +8,7 @@
 
 #import "NodeResourcesVC.h"
 #import <GoogleMaterialIconFont/GoogleMaterialIconFont-Swift.h>
-#import <FBSDKShareKit/FBSDKShareKit.h>
+//#import <FBSDKShareKit/FBSDKShareKit.h>
 #import "NodeDetailTVC.h"
 #import "MBProgressHUD.h"
 #import "AFNetworking.h"
@@ -134,29 +134,24 @@
 }
 
 - (void)shareAPIs {
-    UIAlertController *shareDialog = [UIAlertController alertControllerWithTitle:@"Share the APIs" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    UIAlertAction *facebook = [UIAlertAction actionWithTitle:@"Facebook" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
-        content.contentURL = [NSURL URLWithString:self.node.apiURL];
-        [FBSDKShareDialog showFromViewController:self
-                                     withContent:content
-                                        delegate:nil];
-    }];
-    UIAlertAction *messenger = [UIAlertAction actionWithTitle:@"Messenger" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
-        content.contentURL = [NSURL URLWithString:self.node.apiURL];
-        [FBSDKMessageDialog showWithContent:content delegate:nil];
-    }];
-    UIAlertAction *copyUrl = [UIAlertAction actionWithTitle:@"Copy Page URL" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [UIPasteboard generalPasteboard].string = self.node.apiURL;
-    }];
-
-    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
-    [shareDialog addAction:copyUrl];
-    [shareDialog addAction:facebook];
-    [shareDialog addAction:messenger];
-    [shareDialog addAction:cancel];
-    [self presentViewController:shareDialog animated:YES completion:nil];
+    [self shareText:self.node.name andImage:nil andUrl:[NSURL URLWithString:self.node.apiURL]];
+}
+- (void)shareText:(NSString *)text andImage:(UIImage *)image andUrl:(NSURL *)url
+{
+    NSMutableArray *sharingItems = [NSMutableArray new];
+    
+    if (text) {
+        [sharingItems addObject:text];
+    }
+    if (image) {
+        [sharingItems addObject:image];
+    }
+    if (url) {
+        [sharingItems addObject:url];
+    }
+    
+    UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:sharingItems applicationActivities:nil];
+    [self presentViewController:activityController animated:YES completion:nil];
 }
 
 - (void)showNodeDetails {

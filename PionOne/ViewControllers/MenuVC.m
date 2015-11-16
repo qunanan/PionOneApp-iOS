@@ -15,13 +15,13 @@
 #import "NodeListCDTVC.h"
 //#import <FBSDKCoreKit/FBSDKCoreKit.h>
 //#import <FBSDKLoginKit/FBSDKLoginKit.h>
-#import <FBSDKShareKit/FBSDKShareKit.h>
+//#import <FBSDKShareKit/FBSDKShareKit.h>
 
-@interface MenuVC () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, FBSDKSharingDelegate>
+@interface MenuVC () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) NSArray *menuList;
 @property (strong, nonatomic) UIAlertController *changePasswordDialog;
-@property (strong, nonatomic) UIAlertController *shareDialog;
+//@property (strong, nonatomic) UIAlertController *shareDialog;
 @property (nonatomic, strong) MBProgressHUD *HUD;
 
 @end
@@ -76,34 +76,34 @@
     return _changePasswordDialog;
 }
 
-- (UIAlertController *)shareDialog {
-    if (_shareDialog == nil) {
-        _shareDialog = [UIAlertController alertControllerWithTitle:@"Share this App to your friends" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-        UIAlertAction *facebook = [UIAlertAction actionWithTitle:@"Facebook" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
-            content.contentURL = [NSURL URLWithString:@"http://iot.seeed.cc"];
-            [FBSDKShareDialog showFromViewController:self
-                                         withContent:content
-                                            delegate:nil];
-        }];
-        UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
-        [_shareDialog addAction:facebook];
-        [_shareDialog addAction:cancel];
-    }
-    return _shareDialog;
-}
+//- (UIAlertController *)shareDialog {
+//    if (_shareDialog == nil) {
+//        _shareDialog = [UIAlertController alertControllerWithTitle:@"Share this App to your friends" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+//        UIAlertAction *facebook = [UIAlertAction actionWithTitle:@"Facebook" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//            FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
+//            content.contentURL = [NSURL URLWithString:@"http://iot.seeed.cc"];
+//            [FBSDKShareDialog showFromViewController:self
+//                                         withContent:content
+//                                            delegate:nil];
+//        }];
+//        UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+//        [_shareDialog addAction:facebook];
+//        [_shareDialog addAction:cancel];
+//    }
+//    return _shareDialog;
+//}
+//
+//- (void)sharer:(id<FBSDKSharing>)sharer didCompleteWithResults:(NSDictionary *)results {
+//    
+//}
 
-- (void)sharer:(id<FBSDKSharing>)sharer didCompleteWithResults:(NSDictionary *)results {
-    
-}
-
-- (void)sharer:(id<FBSDKSharing>)sharer didFailWithError:(NSError *)error {
-    
-}
-
-- (void)sharerDidCancel:(id<FBSDKSharing>)sharer {
-    
-}
+//- (void)sharer:(id<FBSDKSharing>)sharer didFailWithError:(NSError *)error {
+//    
+//}
+//
+//- (void)sharerDidCancel:(id<FBSDKSharing>)sharer {
+//    
+//}
 
 - (MBProgressHUD *)HUD {
     if (_HUD == nil) {
@@ -197,7 +197,8 @@
         if ([vcID isEqualToString:@"ShowChangePassword"]) {
             [self presentViewController:self.changePasswordDialog animated:YES completion:nil];;
         } else if ([vcID isEqualToString:@"ShowShare"]) {
-            [self presentViewController:self.shareDialog animated:YES completion:nil];;
+            [self shareText:nil andImage:nil andUrl:[NSURL URLWithString:@"http://iot.seeed.cc"]];
+           // [self presentViewController:self.shareDialog animated:YES completion:nil];;
         } else {
             UINavigationController *controller = (UINavigationController *)self.sideMenuViewController.contentViewController;
             NSArray *controllers = [controller childViewControllers];
@@ -270,6 +271,24 @@
     } else {
         [_changePasswordDialog.actions objectAtIndex:1].enabled = YES;
     }
+}
+
+- (void)shareText:(NSString *)text andImage:(UIImage *)image andUrl:(NSURL *)url
+{
+    NSMutableArray *sharingItems = [NSMutableArray new];
+    
+    if (text) {
+        [sharingItems addObject:text];
+    }
+    if (image) {
+        [sharingItems addObject:image];
+    }
+    if (url) {
+        [sharingItems addObject:url];
+    }
+    
+    UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:sharingItems applicationActivities:nil];
+    [self presentViewController:activityController animated:YES completion:nil];
 }
 
 @end

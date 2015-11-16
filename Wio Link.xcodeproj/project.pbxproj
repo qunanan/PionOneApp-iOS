@@ -22,9 +22,6 @@
 		984DFA3B1BA53EAE006E4DAB /* NodeAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 984DFA3A1BA53EAE006E4DAB /* NodeAPI.m */; };
 		984DFA431BA57B7C006E4DAB /* ListImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 984DFA401BA57B7C006E4DAB /* ListImageCell.m */; };
 		984DFA441BA57B7C006E4DAB /* ListImageItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 984DFA421BA57B7C006E4DAB /* ListImageItem.m */; };
-		98643D311BE222B400DF2CF5 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 98643D2E1BE222B400DF2CF5 /* FBSDKCoreKit.framework */; };
-		98643D321BE222B400DF2CF5 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 98643D2F1BE222B400DF2CF5 /* FBSDKLoginKit.framework */; };
-		98643D331BE222B400DF2CF5 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 98643D301BE222B400DF2CF5 /* FBSDKShareKit.framework */; };
 		98643D361BE224A000DF2CF5 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 98643D351BE224A000DF2CF5 /* AboutViewController.m */; };
 		986E01471BA3DBCF00C12BF2 /* Grove.m in Sources */ = {isa = PBXBuildFile; fileRef = 986E01461BA3DBCF00C12BF2 /* Grove.m */; };
 		988B06711BD48FFE00C4268E /* NSString+escapedUnicode.m in Sources */ = {isa = PBXBuildFile; fileRef = 988B06701BD48FFE00C4268E /* NSString+escapedUnicode.m */; };
@@ -89,9 +86,6 @@
 		984DFA401BA57B7C006E4DAB /* ListImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ListImageCell.m; path = Views/ListImageCell.m; sourceTree = "<group>"; };
 		984DFA411BA57B7C006E4DAB /* ListImageItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ListImageItem.h; path = Views/ListImageItem.h; sourceTree = "<group>"; };
 		984DFA421BA57B7C006E4DAB /* ListImageItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ListImageItem.m; path = Views/ListImageItem.m; sourceTree = "<group>"; };
-		98643D2E1BE222B400DF2CF5 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
-		98643D2F1BE222B400DF2CF5 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
-		98643D301BE222B400DF2CF5 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
 		98643D341BE224A000DF2CF5 /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
 		98643D351BE224A000DF2CF5 /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
 		986E01451BA3DBCF00C12BF2 /* Grove.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Grove.h; path = Database/Grove.h; sourceTree = "<group>"; };
@@ -110,7 +104,7 @@
 		98E026341BBF6B6C00D691B4 /* NodeListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NodeListCell.m; path = Views/NodeListCell.m; sourceTree = "<group>"; };
 		98E9CF471BD0F21E00FE1F38 /* SetupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetupViewController.h; sourceTree = "<group>"; };
 		98E9CF481BD0F21E00FE1F38 /* SetupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetupViewController.m; sourceTree = "<group>"; };
-		98F672591B980E6800A9292B /* Pion One.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pion One.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		98F672591B980E6800A9292B /* Wio Link.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Wio Link.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		98F6725D1B980E6800A9292B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		98F6725E1B980E6800A9292B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		98F672601B980E6800A9292B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -166,10 +160,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				98643D331BE222B400DF2CF5 /* FBSDKShareKit.framework in Frameworks */,
 				3D1ACF31BED3DB007678738C /* Pods.framework in Frameworks */,
-				98643D311BE222B400DF2CF5 /* FBSDKCoreKit.framework in Frameworks */,
-				98643D321BE222B400DF2CF5 /* FBSDKLoginKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -188,9 +179,6 @@
 		6437B1C9D2B17EC71581EC7D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				98643D2E1BE222B400DF2CF5 /* FBSDKCoreKit.framework */,
-				98643D2F1BE222B400DF2CF5 /* FBSDKLoginKit.framework */,
-				98643D301BE222B400DF2CF5 /* FBSDKShareKit.framework */,
 				98F673231B9A956000A9292B /* SystemConfiguration.framework */,
 				C1981195BC8AE806D378DF3B /* Pods.framework */,
 			);
@@ -211,7 +199,7 @@
 		98F6725A1B980E6800A9292B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				98F672591B980E6800A9292B /* Pion One.app */,
+				98F672591B980E6800A9292B /* Wio Link.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -372,7 +360,7 @@
 			);
 			name = PionOne;
 			productName = PionOne;
-			productReference = 98F672591B980E6800A9292B /* Pion One.app */;
+			productReference = 98F672591B980E6800A9292B /* Wio Link.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -395,7 +383,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 98F672541B980E6800A9292B /* Build configuration list for PBXProject "Pion One" */;
+			buildConfigurationList = 98F672541B980E6800A9292B /* Build configuration list for PBXProject "Wio Link" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -638,7 +626,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.seeedstudio.Pion-One";
-				PRODUCT_NAME = "Pion One";
+				PRODUCT_NAME = "Wio Link";
 				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
@@ -661,7 +649,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.seeedstudio.Pion-One";
-				PRODUCT_NAME = "Pion One";
+				PRODUCT_NAME = "Wio Link";
 				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
@@ -669,7 +657,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		98F672541B980E6800A9292B /* Build configuration list for PBXProject "Pion One" */ = {
+		98F672541B980E6800A9292B /* Build configuration list for PBXProject "Wio Link" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				98F6727D1B980E6800A9292B /* Debug */,

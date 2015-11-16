@@ -2,46 +2,4 @@
 <Bucket
    type = "0"
    version = "2.0">
-   <Breakpoints>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "PionOne/ViewControllers/AboutViewController.m"
-            timestampString = "468914658.194204"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "87"
-<<<<<<< HEAD
-            endingLineNumber = "87">
-=======
-            endingLineNumber = "87"
-            landmarkName = "-webView:didFailLoadWithError:"
-            landmarkType = "5">
->>>>>>> AddSKUproperty
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "PionOne/ViewControllers/AboutViewController.m"
-            timestampString = "468914145.584563"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "81"
-<<<<<<< HEAD
-            endingLineNumber = "81">
-=======
-            endingLineNumber = "81"
-            landmarkName = "-webViewDidFinishLoad:"
-            landmarkType = "5">
->>>>>>> AddSKUproperty
-         </BreakpointContent>
-      </BreakpointProxy>
-   </Breakpoints>
 </Bucket>
