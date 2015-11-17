@@ -60,10 +60,10 @@
     
     UIView *view = [[UIView alloc] initWithFrame:self.scrollView.frame];
     CGRect screenFrame = [UIScreen mainScreen].applicationFrame;
-    CGRect imageFrame = CGRectMake((screenFrame.size.width - 272)/2, (screenFrame.size.height - 331) /2 - 20, 272, 331);
+    CGRect imageFrame = CGRectMake(0,0, screenFrame.size.width, screenFrame.size.height * 0.9);
     UIImageView *imageview = [[UIImageView alloc] initWithFrame:imageFrame];
-    imageview.contentMode = UIViewContentModeScaleAspectFill;
-    imageview.image = [UIImage imageNamed:@"Intro1"];
+    imageview.contentMode = UIViewContentModeScaleAspectFit;
+    imageview.image = [UIImage imageNamed:@"guide1"];
     [view addSubview:imageview];
     
     
@@ -87,10 +87,10 @@
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(originWidth, 0, originWidth, originHeight)];
     
     CGRect screenFrame = [UIScreen mainScreen].applicationFrame;
-    CGRect imageFrame = CGRectMake((screenFrame.size.width - 270)/2, (screenFrame.size.height - 308) /2 - 20, 270, 308);
+    CGRect imageFrame = CGRectMake(0,0, screenFrame.size.width, screenFrame.size.height * 0.9);
     UIImageView *imageview = [[UIImageView alloc] initWithFrame:imageFrame];
     imageview.contentMode = UIViewContentModeScaleAspectFit;
-    imageview.image = [UIImage imageNamed:@"Intro2"];
+    imageview.image = [UIImage imageNamed:@"guide2"];
     [view addSubview:imageview];
     
     
@@ -106,10 +106,10 @@
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(originWidth*2, 0, originWidth, originHeight)];
     
     CGRect screenFrame = [UIScreen mainScreen].applicationFrame;
-    CGRect imageFrame = CGRectMake((screenFrame.size.width - 272)/2, (screenFrame.size.height - 343) /2 - 20, 272, 343);
+    CGRect imageFrame = CGRectMake(0,0, screenFrame.size.width, screenFrame.size.height * 0.9);
     UIImageView *imageview = [[UIImageView alloc] initWithFrame:imageFrame];
     imageview.contentMode = UIViewContentModeScaleAspectFit;
-    imageview.image = [UIImage imageNamed:@"Intro3"];
+    imageview.image = [UIImage imageNamed:@"guide3"];
     [view addSubview:imageview];
     
     

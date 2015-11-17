@@ -17,6 +17,7 @@
 #import <GoogleMaterialIconFont/GoogleMaterialIconFont-Swift.h>
 #import "UIViewController+RESideMenu.h"
 #import "UIScrollView+EmptyDataSet.h"
+#import "StyleKitWiolink.h"
 
 @interface NodeListCDTVC() <MBProgressHUDDelegate, MGSwipeTableCellDelegate, UITextFieldDelegate, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
 @property (strong, nonatomic) UIAlertController *renameDialog;
@@ -48,7 +49,9 @@
     [[PionOneManager sharedInstance] scanDriverListWithCompletionHandler:nil];
 
     self.managedObjectContext = [[PionOneManager sharedInstance] mainMOC];
-    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+//    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+//    self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:195 green:22 blue:30 alpha:1];
+//    self.navigationController.navigationBar.translucent = NO;
     self.cellCanBeSelected = YES;
 
     self.reachableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 40)];
@@ -290,12 +293,13 @@
     //setup cell properties
     cell.nameLabel.text = node.name;
     if (node.online.boolValue) {
-        
-        [cell.onlineIndicator setBackgroundColor:[UIColor colorWithRed:0.2 green:0.8 blue:0.2 alpha:1.0]];
+        [cell.onlineIndicator setBackgroundColor:[StyleKitWiolink wioLinkBlue]];
         cell.onlineLabel.text = @"Online";
+        cell.onlineLabel.textColor = [StyleKitWiolink wioLinkBlue];
     } else {
-        [cell.onlineIndicator setBackgroundColor:[UIColor redColor]];
+        [cell.onlineIndicator setBackgroundColor:[StyleKitWiolink wioLinkRed]];
         cell.onlineLabel.text = @"Offline";
+        cell.onlineLabel.textColor = [StyleKitWiolink wioLinkRed];
     }
     NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"connectorName" ascending:YES];
     cell.groves = [node.groves sortedArrayUsingDescriptors:@[descriptor]];
@@ -469,6 +473,10 @@
 
 #pragma -mark Actions
 - (IBAction)addNode:(UIBarButtonItem *)sender {
+//    if (1) {
+//        [self performSegueWithIdentifier:@"ShowAPconfigVC" sender:nil];
+//        return;
+//    }
     [self.HUD show:YES];
     [[PionOneManager sharedInstance] rebootPionOne];
     [[PionOneManager sharedInstance] deleteZombieNodeWithCompletionHandler:^(BOOL succes, NSString *msg) {

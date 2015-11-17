@@ -28,7 +28,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>4</string>
+	<string>6</string>
 	<key>FacebookAppID</key>
 	<string>1517004395287228</string>
 	<key>FacebookDisplayName</key>
@@ -87,8 +87,6 @@
 	</dict>
 	<key>UIBackgroundModes</key>
 	<array/>
-	<key>UILaunchStoryboardName</key>
-	<string>Launch Screen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>

@@ -13,9 +13,7 @@
 #import <GoogleMaterialIconFont/GoogleMaterialIconFont-Swift.h>
 #import "MBProgressHUD.h"
 #import "NodeListCDTVC.h"
-//#import <FBSDKCoreKit/FBSDKCoreKit.h>
-//#import <FBSDKLoginKit/FBSDKLoginKit.h>
-//#import <FBSDKShareKit/FBSDKShareKit.h>
+#import "StyleKitWiolink.h"
 
 @interface MenuVC () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -30,20 +28,20 @@
 - (NSArray *)menuList {
     if (_menuList == nil) {
         NSDictionary *menu1 = [NSDictionary dictionaryWithObjects:@[@"Groves",
-                                                                    [NSString materialIcon:MaterialIconFontExtension],
+                                                                    @"iconGrove",
                                                                     @"ShowDriverList"]
                                                           forKeys:@[kTitle,kIcon,kControllerID]];
         NSDictionary *menu2 = [NSDictionary dictionaryWithObjects:@[@"Password",
-                                                                    [NSString materialIcon:MaterialIconFontPermIdentity],
+                                                                    @"iconAccount",
                                                                     @"ShowChangePassword"]
                                                           forKeys:@[kTitle,kIcon,kControllerID]];
         NSDictionary *menu3 = [NSDictionary dictionaryWithObjects:@[@"About",
-                                                                    [NSString materialIcon:MaterialIconFontInfo],
+                                                                    @"iconInfo",
                                                                     @"ShowAboutViewController"]
                                                           forKeys:@[kTitle,kIcon,kControllerID]];
         NSDictionary *menu4 = [NSDictionary dictionaryWithObjects:@[@"Share",
-                                                                    [NSString materialIcon:MaterialIconFontShare]
-                                                                    , @"ShowShare"]
+                                                                    @"iconShare",
+                                                                    @"ShowShare"]
                                                           forKeys:@[kTitle,kIcon,kControllerID]];
         _menuList = [[NSArray alloc] initWithObjects:menu1, menu2, menu3, menu4, nil];
     }
@@ -171,21 +169,19 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MenuButtonCell" forIndexPath:indexPath];
-    UILabel *icon = [cell.contentView viewWithTag:21];
+    UIImageView *icon = [cell.contentView viewWithTag:21];
     UILabel *name = [cell.contentView viewWithTag:22];
     if (indexPath.section == 0) {
         NSDictionary *menu = [self.menuList objectAtIndex:indexPath.row];
         name.text = [menu objectForKey:kTitle];
-        icon.text = [menu objectForKey:kIcon];
-        icon.font = [UIFont materialIconOfSize:30];
+        icon.image = [UIImage imageNamed:[menu objectForKey:kIcon]];
     } else {
-        icon.text = [NSString materialIcon:MaterialIconFontExitToApp];
-        icon.font = [UIFont materialIconOfSize:30];
         name.text = @"Logout";
+        icon.image = [UIImage imageNamed:@"iconLogout"];
     }
     [cell setSelected:NO];
     UIView *bgColorView = [[UIView alloc] init];
-    bgColorView.backgroundColor = [UIColor orangeColor];
+    bgColorView.backgroundColor = [StyleKitWiolink wioLinkBlue];
     [cell setSelectedBackgroundView:bgColorView];
     return cell;
 }

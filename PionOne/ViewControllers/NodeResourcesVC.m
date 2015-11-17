@@ -26,32 +26,17 @@
     [super viewDidLoad];
     //Init right bar botton
     CGRect barIconRect = CGRectMake(0, 0, 28, 28);
-    UIButton *shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [shareButton setFrame:barIconRect];
-    [shareButton setTitle:[NSString materialIcon:MaterialIconFontShare] forState:UIControlStateNormal];
-    [shareButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [shareButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateHighlighted];
-    shareButton.titleLabel.font = [UIFont materialIconOfSize:28];
-    [shareButton addTarget:self action:@selector(shareAPIs)forControlEvents:UIControlEventTouchUpInside];
-
-    UIButton *detailButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [detailButton setFrame:barIconRect];
-    [detailButton setTitle:[NSString materialIcon:MaterialIconFontDetails] forState:UIControlStateNormal];
-    [detailButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [detailButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateHighlighted];
-    detailButton.titleLabel.font = [UIFont materialIconOfSize:28];
-    [detailButton addTarget:self action:@selector(showNodeDetails)forControlEvents:UIControlEventTouchUpInside];
-
     self.webIndicator = [[UIActivityIndicatorView alloc] initWithFrame:barIconRect];
     self.webIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
     self.webIndicator.hidesWhenStopped = YES;
     
     UIBarButtonItem *indicatorItem = [[UIBarButtonItem alloc] initWithCustomView:self.webIndicator];
-    UIBarButtonItem *detailItem = [[UIBarButtonItem alloc] initWithCustomView:detailButton];
-    UIBarButtonItem *shareItem = [[UIBarButtonItem alloc] initWithCustomView:shareButton];
+    CGImageRef ref = [[UIImage imageNamed:@"iconShare"] CGImage];
+    UIImage *image = [UIImage imageWithCGImage:ref scale:5.0 orientation:UIImageOrientationDown];
+    UIBarButtonItem *shareItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:self action:@selector(shareAPIs)];
     UIBarButtonItem *space = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:self action:nil];
-    space.width = 20;
-    [self.navigationItem setRightBarButtonItems:@[detailItem, space, shareItem, space, space, indicatorItem]];
+    space.width = 40;
+    [self.navigationItem setRightBarButtonItems:@[shareItem, space, space, indicatorItem]];
 
     //init webView
 //    self.webView = [[UIWebView alloc] initWithFrame:self.view.frame];

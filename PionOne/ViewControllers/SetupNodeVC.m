@@ -14,6 +14,7 @@
 #import "GroveButton.h"
 #import "NodeResourcesVC.h"
 #import "KHFlatButton.h"
+#import "StyleKitWiolink.h"
 
 @interface SetupNodeVC () <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate>
 @property (strong, nonatomic) IBOutletCollection(GroveButton) NSArray *groveButtons;
@@ -31,7 +32,18 @@
     [self refreshGroveButtonConfiguration];
     
     //add a button
-    
+    CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(context, [[UIColor whiteColor] CGColor]);
+    CGContextFillRect(context, rect);
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    [self.apiButton setBackgroundImage:image forState:UIControlStateHighlighted];
+    [self.apiButton setTitleColor:[StyleKitWiolink wioLinkBrown] forState: UIControlStateHighlighted];
+    self.apiButton.layer.borderColor = [[UIColor whiteColor] CGColor];
+    self.apiButton.layer.borderWidth = 3.0;
+
     //Init headerView
     UIView *headerView = self.tableView.tableHeaderView;
     [headerView setNeedsLayout];
@@ -123,7 +135,11 @@
     return cell;
 }
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
-    view.tintColor = [UIColor colorWithWhite:0.95 alpha:1.0];
+    if ([view isKindOfClass: [UITableViewHeaderFooterView class]]) {
+        UITableViewHeaderFooterView* castView = (UITableViewHeaderFooterView*) view;
+        castView.contentView.backgroundColor = [StyleKitWiolink wioLinkBrown];
+        [castView.textLabel setTextColor:[UIColor whiteColor]];
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {

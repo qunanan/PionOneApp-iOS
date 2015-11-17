@@ -7,7 +7,7 @@
 //
 
 #import "GroveButton.h"
-#import "PionOneStyleKit.h"
+#import "StyleKitWiolink.h"
 
 @implementation GroveButton
 - (id)initWithFrame:(CGRect)frame
@@ -49,6 +49,8 @@
 }
 
 - (void)drawRect:(CGRect)rect {
-    [PionOneStyleKit drawGroveButtonWithPressed:self.highlighted configured:self.selected];
+    [StyleKitWiolink drawGroveButtonWithPressed:self.highlighted configured:self.selected];
 }
+
+
 @end

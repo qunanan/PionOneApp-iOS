@@ -13,7 +13,6 @@
 		9827D01B1BF5A3DD0044E3DD /* Driver+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 9827D0181BF5A3DD0044E3DD /* Driver+CoreDataProperties.m */; };
 		9827D01C1BF5A3DD0044E3DD /* Driver.m in Sources */ = {isa = PBXBuildFile; fileRef = 9827D01A1BF5A3DD0044E3DD /* Driver.m */; };
 		982A3BF41BE45D8700062935 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 982A3BF31BE45D8700062935 /* Launch Screen.storyboard */; };
-		984C80371BD8C383006B26C3 /* PionOneStyleKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 984C80361BD8C383006B26C3 /* PionOneStyleKit.m */; };
 		984C803A1BD8CBC2006B26C3 /* GroveButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 984C80391BD8CBC2006B26C3 /* GroveButton.m */; };
 		984DFA291BA491E2006E4DAB /* NodeDetailTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 984DFA281BA491E2006E4DAB /* NodeDetailTVC.m */; };
 		984DFA2C1BA4B944006E4DAB /* NodeResourcesVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 984DFA2B1BA4B944006E4DAB /* NodeResourcesVC.m */; };
@@ -26,6 +25,7 @@
 		986E01471BA3DBCF00C12BF2 /* Grove.m in Sources */ = {isa = PBXBuildFile; fileRef = 986E01461BA3DBCF00C12BF2 /* Grove.m */; };
 		988B06711BD48FFE00C4268E /* NSString+escapedUnicode.m in Sources */ = {isa = PBXBuildFile; fileRef = 988B06701BD48FFE00C4268E /* NSString+escapedUnicode.m */; };
 		98AD9B3A1BE7112500F0BCC3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 98AD9B391BE7112500F0BCC3 /* Images.xcassets */; };
+		98B00AAD1BFB5BEA0014FE27 /* StyleKitWiolink.m in Sources */ = {isa = PBXBuildFile; fileRef = 98B00AAC1BFB5BEA0014FE27 /* StyleKitWiolink.m */; };
 		98B4ED631BA13296000D6255 /* SetupNodeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 98B4ED621BA13296000D6255 /* SetupNodeVC.m */; };
 		98B4ED661BA1BF0F000D6255 /* SelectGroveTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 98B4ED651BA1BF0F000D6255 /* SelectGroveTVC.m */; };
 		98B4ED691BA1C4F7000D6255 /* Grove+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 98B4ED681BA1C4F7000D6255 /* Grove+Create.m */; };
@@ -68,8 +68,6 @@
 		9827D0191BF5A3DD0044E3DD /* Driver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Driver.h; path = Database/Driver.h; sourceTree = "<group>"; };
 		9827D01A1BF5A3DD0044E3DD /* Driver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Driver.m; path = Database/Driver.m; sourceTree = "<group>"; };
 		982A3BF31BE45D8700062935 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
-		984C80351BD8C383006B26C3 /* PionOneStyleKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PionOneStyleKit.h; path = Views/PionOneStyleKit.h; sourceTree = "<group>"; };
-		984C80361BD8C383006B26C3 /* PionOneStyleKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PionOneStyleKit.m; path = Views/PionOneStyleKit.m; sourceTree = "<group>"; };
 		984C80381BD8CBC2006B26C3 /* GroveButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GroveButton.h; path = Views/GroveButton.h; sourceTree = "<group>"; };
 		984C80391BD8CBC2006B26C3 /* GroveButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GroveButton.m; path = Views/GroveButton.m; sourceTree = "<group>"; };
 		984DFA271BA491E2006E4DAB /* NodeDetailTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NodeDetailTVC.h; sourceTree = "<group>"; };
@@ -94,6 +92,8 @@
 		988B066F1BD48FFE00C4268E /* NSString+escapedUnicode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+escapedUnicode.h"; path = "Classes/NSString+escapedUnicode.h"; sourceTree = "<group>"; };
 		988B06701BD48FFE00C4268E /* NSString+escapedUnicode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+escapedUnicode.m"; path = "Classes/NSString+escapedUnicode.m"; sourceTree = "<group>"; };
 		98AD9B391BE7112500F0BCC3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = PionOne/Images.xcassets; sourceTree = "<group>"; };
+		98B00AAB1BFB5BEA0014FE27 /* StyleKitWiolink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StyleKitWiolink.h; path = Views/StyleKitWiolink.h; sourceTree = "<group>"; };
+		98B00AAC1BFB5BEA0014FE27 /* StyleKitWiolink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StyleKitWiolink.m; path = Views/StyleKitWiolink.m; sourceTree = "<group>"; };
 		98B4ED611BA13296000D6255 /* SetupNodeVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetupNodeVC.h; sourceTree = "<group>"; };
 		98B4ED621BA13296000D6255 /* SetupNodeVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetupNodeVC.m; sourceTree = "<group>"; };
 		98B4ED641BA1BF0F000D6255 /* SelectGroveTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectGroveTVC.h; sourceTree = "<group>"; };
@@ -236,8 +236,8 @@
 		98F672861B980F1200A9292B /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				984C80351BD8C383006B26C3 /* PionOneStyleKit.h */,
-				984C80361BD8C383006B26C3 /* PionOneStyleKit.m */,
+				98B00AAB1BFB5BEA0014FE27 /* StyleKitWiolink.h */,
+				98B00AAC1BFB5BEA0014FE27 /* StyleKitWiolink.m */,
 				984DFA3F1BA57B7C006E4DAB /* ListImageCell.h */,
 				984DFA401BA57B7C006E4DAB /* ListImageCell.m */,
 				984DFA411BA57B7C006E4DAB /* ListImageItem.h */,
@@ -484,11 +484,11 @@
 				98F6731C1B99A92F00A9292B /* DriverDetailVC.m in Sources */,
 				98F672651B980E6800A9292B /* PionOne.xcdatamodeld in Sources */,
 				98F6730A1B99A41900A9292B /* User.m in Sources */,
-				984C80371BD8C383006B26C3 /* PionOneStyleKit.m in Sources */,
 				98B4ED631BA13296000D6255 /* SetupNodeVC.m in Sources */,
 				98F672B61B98176500A9292B /* PionOneManager.m in Sources */,
 				984DFA3B1BA53EAE006E4DAB /* NodeAPI.m in Sources */,
 				98F672EF1B98CA6800A9292B /* RetrievePasswordVC.m in Sources */,
+				98B00AAD1BFB5BEA0014FE27 /* StyleKitWiolink.m in Sources */,
 				98F672E01B98290C00A9292B /* User+Create.m in Sources */,
 				98F6725F1B980E6800A9292B /* main.m in Sources */,
 				98B4ED661BA1BF0F000D6255 /* SelectGroveTVC.m in Sources */,
@@ -613,6 +613,7 @@
 			baseConfigurationReference = BADEDD0749106A759DC6DD76 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
@@ -636,6 +637,7 @@
 			baseConfigurationReference = 243FA921D9EC0C3B3301DE1F /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
