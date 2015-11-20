@@ -66,7 +66,7 @@
     cell.textLabel.text = driver.groveName;
     cell.detailTextLabel.text = driver.interfaceType;
     NSURL *url = [NSURL URLWithString:driver.imageURL];
-    [cell.imageView sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"ic_extension_36pt"]];
+    [cell.imageView sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"placeHolder"]];
     return cell;
 }
 
@@ -89,6 +89,30 @@
             [(DriverDetailVC *)dVC setDriver:sender];;
         }
     }
+}
+
+#pragma -mark Actions
+- (IBAction)reloadDriverList:(id)sender {
+    NSManagedObjectContext *refreshMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    refreshMOC.parentContext = self.managedObjectContext;
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Driver"];
+    request.predicate = nil;
+    NSError *error;
+    NSArray *matches = [self.managedObjectContext executeFetchRequest:request error:&error];
+    
+    if (error || !matches) {
+        // handle error
+    } else {
+        for (Driver *driver in matches) {
+            [self.managedObjectContext deleteObject:driver];
+        }
+        NSError *childError = nil;
+        if ([self.managedObjectContext save:&childError]) {
+        } else {
+            NSLog(@"Error saving child");
+        }
+    }
+    [self refresh:nil];
 }
 
 @end

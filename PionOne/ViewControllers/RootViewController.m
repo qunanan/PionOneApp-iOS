@@ -14,7 +14,9 @@
 @implementation RootViewController
 - (void)awakeFromNib
 {
-    self.menuPreferredStatusBarStyle = UIStatusBarStyleDefault;
+    self.menuPreferredStatusBarStyle = UIStatusBarStyleLightContent;
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    
     self.contentViewShadowColor = [UIColor blackColor];
     self.contentViewShadowOffset = CGSizeMake(4, 1);
     self.contentViewShadowOpacity = 0.6;

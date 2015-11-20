@@ -21,6 +21,7 @@
 @property (weak, nonatomic) IBOutlet KHFlatButton *apiButton;
 
 @property (nonatomic, strong) MBProgressHUD *HUD;
+@property (nonatomic, assign) BOOL isConfigured;
 @end
 
 @implementation SetupNodeVC
@@ -28,6 +29,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = self.node.name;
+    self.isConfigured = self.node.groves.count? YES:NO;
     self.tableView.delegate = self;
     [self refreshGroveButtonConfiguration];
     
@@ -62,8 +64,9 @@
     self.tableView.tableFooterView = footerView;
     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl setTintColor:[UIColor lightGrayColor]];
     UIFont * font = [UIFont systemFontOfSize:14.0];
-    NSDictionary *attributes = @{NSFontAttributeName:font, NSForegroundColorAttributeName : [UIColor blackColor]};
+    NSDictionary *attributes = @{NSFontAttributeName:font, NSForegroundColorAttributeName : [UIColor lightGrayColor]};
     refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to retrieve server settings" attributes:attributes];
     [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refreshControl;
@@ -131,7 +134,7 @@
     cell.textLabel.text = grove.driver.groveName;
     cell.detailTextLabel.text = grove.driver.interfaceType;
     NSURL *url = [NSURL URLWithString:grove.driver.imageURL];
-    [cell.imageView sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"ic_extension_36pt"]];
+    [cell.imageView sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"placeHolder"]];
     return cell;
 }
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
@@ -149,7 +152,8 @@
 
 #pragma -mark private methods
 - (void)startOTA {
-//    self.HUD.labelText = @"Preparing...";
+    self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+
     self.HUD.detailsLabelText = nil;
     [self.HUD show:YES];
     [[PionOneManager sharedInstance] node:self.node startOTAWithprogressHandler:^(BOOL success, NSString *msg, NSString *ota_msg, NSString *ota_staus) {
@@ -159,6 +163,8 @@
             if ([ota_staus isEqualToString:@"done"]) {
                 [self.HUD hide:YES];
                 [[[UIAlertView alloc] initWithTitle:@"Success!" message:nil delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+                self.isConfigured = YES;
+                self.navigationController.interactivePopGestureRecognizer.enabled = YES;
             }
             if ([ota_staus isEqualToString:@"error"]) {
                 [self.HUD hide:YES];
@@ -215,12 +221,19 @@
     [self performSegueWithIdentifier:@"ShowSelectGrove" sender:sender.titleLabel.text];
 }
 - (IBAction)updateFirmware:(id)sender {
-    [[[UIAlertView alloc] initWithTitle:@"Are you sure?"
-                               message:@"It will update this PionOne's settings and will take a minutes"
-                              delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK",nil] show];
+    UIAlertController *action = [UIAlertController alertControllerWithTitle:nil message:@"It will update this WioLink's firmware and will take about one minute." preferredStyle:UIAlertControllerStyleActionSheet];
+    [action addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [action addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [self startOTA];
+    }]];
+    [self presentViewController:action animated:YES completion:nil];
 }
 - (IBAction)apiButtonPushed:(id)sender {
-    [self performSegueWithIdentifier:@"ShowAPIResourceSegue" sender:nil];
+    if (self.isConfigured) {
+        [self performSegueWithIdentifier:@"ShowAPIResourceSegue" sender:nil];
+        return;
+    }
+    [[[UIAlertView alloc] initWithTitle:@"Sorry" message:@"You have to update firmware for this device first." delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

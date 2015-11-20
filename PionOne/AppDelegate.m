@@ -18,8 +18,6 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [application setStatusBarHidden:NO];
-    [application setStatusBarStyle:UIStatusBarStyleLightContent];
 
     [[PionOneManager sharedInstance] setMainMOC:self.mainMOC];
     
@@ -27,8 +25,8 @@
     NSString *urlStr = [[NSUserDefaults standardUserDefaults] stringForKey:kPionOneOTAServerBaseURL];
     if (urlStr == nil) {
         [[PionOneManager sharedInstance] setRegion:PionOneRegionNameInternational
-                                       OTAServerIP:PionOneDefaultOTAServerIPAddressInternational
-                                    andDataSeverIP:PionOneDefaultDataServerIPAddressInternational];
+                                       OTAServerIP:PionOneDefaultOTAServerHostInternational
+                                    andDataSeverIP:PionOneDefaultDataServerHostInternational];
     }
 
     if ([self isUserExist]) {

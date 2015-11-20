@@ -48,7 +48,7 @@
             [textField addTarget:weakSelf action:@selector(textFieldDidChange) forControlEvents:UIControlEventEditingChanged];
         }];
         [_userInputDialog addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-            textField.placeholder = @"Enter A Name For Your Pion One";
+            textField.placeholder = @"Enter A Name For Your Wio Link";
             textField.secureTextEntry = NO;
             [textField setReturnKeyType:UIReturnKeyJoin];
             textField.delegate = weakSelf;
@@ -60,6 +60,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.navigationController.interactivePopGestureRecognizer.enabled = NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -75,6 +76,7 @@
     [super viewWillDisappear:animated];
     [[PionOneManager sharedInstance] cancel]; //cancel all processing, include Checking Node AP connection
     [[PionOneManager sharedInstance] deleteZombieNodeWithCompletionHandler:nil];
+    self.navigationController.interactivePopGestureRecognizer.enabled = YES;
 }
 
 - (IBAction)gotReady {
@@ -84,8 +86,8 @@
         [[_userInputDialog.actions objectAtIndex:1] setEnabled:NO];
         [self presentViewController:self.userInputDialog animated:YES completion:nil];
     } else {
-        [[[UIAlertView alloc] initWithTitle:nil
-                                   message:@"Please connect to a PionOne_XXXX access point!"
+        [[[UIAlertView alloc] initWithTitle:@"Sorry"
+                                   message:@"Please connect to the WioLink_XXXX access point!"
                                   delegate:self
                          cancelButtonTitle:@"OK"
                           otherButtonTitles:nil] show];
@@ -98,7 +100,7 @@
             UILocalNotification *notification = [[UILocalNotification alloc] init];
             if (notification) {
                 notification.soundName = UILocalNotificationDefaultSoundName;
-                notification.alertBody = @"Connected to PionOne!";
+                notification.alertBody = @"Connected to Wio Link!";
                 [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                 
                 [[_userInputDialog.actions objectAtIndex:1] setEnabled:NO];
@@ -112,6 +114,7 @@
 }
 
 - (void)startConfiguration {
+
     if (_userInputDialog.textFields.count >= 2) {
         UITextField *passwordTextField = [_userInputDialog.textFields objectAtIndex:0];
         UITextField *nameTextField = [_userInputDialog.textFields objectAtIndex:1];

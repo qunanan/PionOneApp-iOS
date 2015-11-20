@@ -9,8 +9,9 @@
 #import "PionOneManager.h"
 #import "NSString+Email.h"
 #import "GCDAsyncUdpSocket.h"
-#import "NodeAPI.h"
 #import "NSString+escapedUnicode.h"
+#include <netdb.h> 
+#include <arpa/inet.h> 
 
 //#define NSLog(format, ...)
 #define PionOneManagerQueueName "PionOneManagerQueueName"
@@ -113,7 +114,7 @@
     }
     if (pwd.length < 4) {
         if (handler) {
-            handler(NO,@"Password must be at least 4 characters long.");
+            handler(NO,@"Password must be at least 4 characters.");
         }
         return;
     }
@@ -123,7 +124,7 @@
         return;
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[email, pwd] forKeys:@[@"email", @"password"]];
-    self.httpManager.requestSerializer.timeoutInterval = 10.0f;
+    self.httpManager.requestSerializer.timeoutInterval = 20.0f;
     [self.httpManager POST:aPionOneUserCreate parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
@@ -174,7 +175,7 @@
         return;
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[email, pwd] forKeys:@[@"email", @"password"]];
-    self.httpManager.requestSerializer.timeoutInterval = 10.0f;
+    self.httpManager.requestSerializer.timeoutInterval = 20.0f;
     [self.httpManager POST:aPionOneUserLogin parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
@@ -265,7 +266,7 @@
         return;
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[newPwd, self.user.token] forKeys:@[@"password", @"access_token"]];
-    self.httpManager.requestSerializer.timeoutInterval = 10.0f;
+    self.httpManager.requestSerializer.timeoutInterval = 20.0f;
     [self.httpManager POST:aPionOneUserChangePassword parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
@@ -301,7 +302,7 @@
         return;
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token, name] forKeys:@[@"access_token", @"name"]];
-    self.httpManager.requestSerializer.timeoutInterval = 10.0f;
+    self.httpManager.requestSerializer.timeoutInterval = 20.0f;
     [self.httpManager POST:aPionOneNodeCreate parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
@@ -333,7 +334,7 @@
         return;
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token, node.sn, name] forKeys:@[@"access_token", @"node_sn", @"name"]];
-    self.httpManager.requestSerializer.timeoutInterval = 10.0f;
+    self.httpManager.requestSerializer.timeoutInterval = 20.0f;
     [self.httpManager POST:aPionOneNodeRename parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
@@ -359,7 +360,7 @@
         return;
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token] forKeys:@[@"access_token"]];
-    self.httpManager.requestSerializer.timeoutInterval = 10.0f;
+    self.httpManager.requestSerializer.timeoutInterval = 20.0f;
     [self.httpManager GET:aPionOneNodeList parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
@@ -392,7 +393,7 @@
         return;
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token] forKeys:@[@"access_token"]];
-    self.httpManager.requestSerializer.timeoutInterval = 10.0f;
+    self.httpManager.requestSerializer.timeoutInterval = 20.0f;
     [self.httpManager GET:aPionOneNodeList parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
@@ -440,7 +441,7 @@
         return;
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token, node.sn] forKeys:@[@"access_token", @"node_sn"]];
-    self.httpManager.requestSerializer.timeoutInterval = 10.0f;
+    self.httpManager.requestSerializer.timeoutInterval = 20.0f;
     [self.httpManager POST:aPionOneNodeDelete parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg =[(NSDictionary *)responseObject objectForKey:@"msg"];
@@ -540,7 +541,7 @@
 - (BOOL)isConnectedToPionOne {
     NSDictionary *nwkInfo = [self fetchSSIDInfo];
     NSString *ssid = nwkInfo[@"SSID"];
-    if ([ssid containsString:@"PionOne"]) {
+    if ([ssid containsString:@"WioLink"] || [ssid containsString:@"PionOne"]) {
         return YES;
     }
     return NO;
@@ -567,7 +568,7 @@
         return;
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token, zombieNodeSN] forKeys:@[@"access_token", @"node_sn"]];
-    self.httpManager.requestSerializer.timeoutInterval = 6.0f;
+    self.httpManager.requestSerializer.timeoutInterval = 10.0f;
     [self.httpManager POST:aPionOneNodeDelete parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg =[(NSDictionary *)responseObject objectForKey:@"msg"];
@@ -596,8 +597,8 @@
 - (void)getNodeMacAddressWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler {
     NSDictionary *nwkInfo = [self fetchSSIDInfo];
     NSString *ssid = nwkInfo[@"SSID"];
-    if (![ssid containsString:@"PionOne_"]) {
-        NSString *error = @"This api only works with PionOne configuration network!";
+    if (![ssid containsString:@"WioLink_"] || ![ssid containsString:@"PionOne_"]) {
+        NSString *error = @"This api only works with WioLink configuration network!";
         NSLog(@"%@",error);
         if (handler) {
             handler(NO,error);
@@ -647,7 +648,7 @@
     }
     self.isAPConfigSuccess = NO;
     __block BOOL timeout = NO;
-    int64_t delay = 30.0; // In seconds
+    int64_t delay = 60.0; // In seconds
     dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC);
     dispatch_after(time,dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 1), ^{
         timeout = YES;
@@ -932,7 +933,7 @@
     NSManagedObjectContext *refreshMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
     refreshMOC.parentContext = node.managedObjectContext;
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[node.key] forKeys:@[@"access_token"]];
-    self.httpManager.requestSerializer.timeoutInterval = 6.0f;
+    self.httpManager.requestSerializer.timeoutInterval = 10.0f;
     [self.httpManager GET:aPionOneNodeGetSettings
                 parameters:parameters
                    success:^(AFHTTPRequestOperation * __nonnull operation, id  __nonnull responseObject) {
@@ -1143,46 +1144,85 @@
 }
 
 #pragma -mark Node API Method
-- (void)getAPIsForNode:(Node *)node completion:(void (^)(BOOL, NSString *, NSArray *))handler {
-    if (!self.user) {
-        NSLog(@"To call the APIs, you need to set User.");
-        if (handler) handler(NO,nil,nil);
-        return;
-    }
-    NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[node.key] forKeys:@[@"access_token"]];
-    self.httpManager.requestSerializer.timeoutInterval = 30.0f;
-    [self.httpManager GET:aPionOneNodeAPIs parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSString *status =(NSString *)[(NSDictionary *)responseObject objectForKey:@"status"];
-        NSString *msg =(NSString *)[(NSDictionary *)responseObject objectForKey:@"msg"];
-        if (status.integerValue == 200) {
-            NSMutableArray *apis = [[NSMutableArray alloc] init];
-            for (NSString *apiStr in (NSArray *)msg) {
-                NodeAPI *api =[[NodeAPI alloc] initWithNode:node andAPIString:apiStr];
-                if(api) {
-                    [apis addObject:api];
-                }
-            }
-            if(handler) handler(YES,nil,apis);
-        } else {
-            if(handler) handler(NO,msg,nil);
-        }
-        NSLog(@"JSON:well-known: %@", responseObject);
-    } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
-        if (handler) {
-            handler(NO,@"well-known:Connecting to Server failed!",nil);
-        }
-        NSLog(@"Networking error: %@", error);
-    }];
-}
+//- (void)getAPIsForNode:(Node *)node completion:(void (^)(BOOL, NSString *, NSArray *))handler {
+//    if (!self.user) {
+//        NSLog(@"To call the APIs, you need to set User.");
+//        if (handler) handler(NO,nil,nil);
+//        return;
+//    }
+//    NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[node.key] forKeys:@[@"access_token"]];
+//    self.httpManager.requestSerializer.timeoutInterval = 30.0f;
+//    [self.httpManager GET:aPionOneNodeAPIs parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+//        NSString *status =(NSString *)[(NSDictionary *)responseObject objectForKey:@"status"];
+//        NSString *msg =(NSString *)[(NSDictionary *)responseObject objectForKey:@"msg"];
+//        if (status.integerValue == 200) {
+//            NSMutableArray *apis = [[NSMutableArray alloc] init];
+//            for (NSString *apiStr in (NSArray *)msg) {
+//                NodeAPI *api =[[NodeAPI alloc] initWithNode:node andAPIString:apiStr];
+//                if(api) {
+//                    [apis addObject:api];
+//                }
+//            }
+//            if(handler) handler(YES,nil,apis);
+//        } else {
+//            if(handler) handler(NO,msg,nil);
+//        }
+//        NSLog(@"JSON:well-known: %@", responseObject);
+//    } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
+//        if (handler) {
+//            handler(NO,@"well-known:Connecting to Server failed!",nil);
+//        }
+//        NSLog(@"Networking error: %@", error);
+//    }];
+//}
 
 #pragma -mark setup Server IP
 - (void)setRegion:(NSString*)region OTAServerIP:(NSString *)otaIP andDataSeverIP:(NSString *)dataIP {
+    
     [[NSUserDefaults standardUserDefaults] setValue:region forKey:kPionOneServerRegion];
+
+    if ([region isEqualToString:PionOneRegionNameInternational]) {
+        [[NSUserDefaults standardUserDefaults] setValue:[self lookupHostIPAddressForURLString:PionOneDefaultOTAServerHostInternational] forKey:kPionOneOTAServerIPAddress];
+        [[NSUserDefaults standardUserDefaults] setValue:[self lookupHostIPAddressForURLString:PionOneDefaultDataServerHostInternational] forKey:kPionOneDataServerIPAddress];
+        [[NSUserDefaults standardUserDefaults] setValue:PionOneDefaultOTAServerHostInternational forKey:kPionOneOTAServerHost];
+        [[NSUserDefaults standardUserDefaults] setValue:PionOneDefaultDataServerHostInternational forKey:kPionOneDataServerHost];
+        NSString *baseURL = [NSString stringWithFormat:@"https://%@",PionOneDefaultOTAServerHostInternational];
+        [[NSUserDefaults standardUserDefaults] setValue:baseURL forKey:kPionOneOTAServerBaseURL];
+        [[PionOneManager sharedInstance] setHttpManager:nil];
+        return;
+    }
+    if ([region isEqualToString:PionOneRegionNameChina]) {
+        [[NSUserDefaults standardUserDefaults] setValue:[self lookupHostIPAddressForURLString:PionOneDefaultOTAServerHostChina] forKey:kPionOneOTAServerIPAddress];
+        [[NSUserDefaults standardUserDefaults] setValue:[self lookupHostIPAddressForURLString:PionOneDefaultDataServerHostChina] forKey:kPionOneDataServerIPAddress];
+        [[NSUserDefaults standardUserDefaults] setValue:PionOneDefaultOTAServerHostChina forKey:kPionOneOTAServerHost];
+        [[NSUserDefaults standardUserDefaults] setValue:PionOneDefaultDataServerHostChina forKey:kPionOneDataServerHost];
+        NSString *baseURL = [NSString stringWithFormat:@"https://%@",PionOneDefaultOTAServerHostChina];
+        [[NSUserDefaults standardUserDefaults] setValue:baseURL forKey:kPionOneOTAServerBaseURL];
+        [[PionOneManager sharedInstance] setHttpManager:nil];
+        return;
+    }
+    
     [[NSUserDefaults standardUserDefaults] setValue:otaIP forKey:kPionOneOTAServerIPAddress];
     [[NSUserDefaults standardUserDefaults] setValue:dataIP forKey:kPionOneDataServerIPAddress];
+    [[NSUserDefaults standardUserDefaults] setValue:otaIP forKey:kPionOneOTAServerHost];
+    [[NSUserDefaults standardUserDefaults] setValue:dataIP forKey:kPionOneDataServerHost];
     NSString *baseURL = [NSString stringWithFormat:@"https://%@",otaIP];
     [[NSUserDefaults standardUserDefaults] setValue:baseURL forKey:kPionOneOTAServerBaseURL];
     [[PionOneManager sharedInstance] setHttpManager:nil];
+
+}
+
+- (NSString*)lookupHostIPAddressForURLString:(NSString*)str
+{
+    // Ask the unix subsytem to query the DNS
+    struct hostent *remoteHostEnt = gethostbyname([str UTF8String]);
+    // Get address info from host entry
+    struct in_addr *remoteInAddr = (struct in_addr *) remoteHostEnt->h_addr_list[0];
+    // Convert numeric addr to ASCII string
+    char *sRemoteInAddr = inet_ntoa(*remoteInAddr);
+    // hostIP
+    NSString* hostIP = [NSString stringWithUTF8String:sRemoteInAddr];
+    return hostIP;
 }
 
 @end

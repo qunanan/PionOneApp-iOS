@@ -49,32 +49,7 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>QRExt.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>REFormattedNumberField.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>RESideMenu.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>RETableViewManager-RETableViewManager.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>RETableViewManager.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>REValidation.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -89,25 +64,15 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>libqrencode.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>01EB0B1D297DEF4CAAB16EC7568E974A</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>16FB872D0D2D4BA0F378AB34D47CF95F</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>30D0C5538D7BCE424DDF3F142436E166</key>
+		<key>2576DDF84200052AF88ACE2E150DD9BA</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -117,17 +82,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>4BDD624BD43468D7C7FE493A331AC8D0</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>4E1263BFF45F6446CF3DE29AE234C893</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>52099AFD2B268D45F3F791C10D15E8D4</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -137,17 +92,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>6091230278DF87E6D1CC68545AD78664</key>
+		<key>5E486289B259E63397ACC613B1798A8B</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>8E790C75E9D57827556C5E5024388AF4</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>AE9FE8125AD74789FD4B4E4492DDC950</key>
+		<key>93EB05ECC8D32D0141E5A67EF65CD9D8</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -157,22 +107,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>DCB4F81F484760A0B7297B5CE0BD1B83</key>
+		<key>DDC77B90D63BE7AE5C149E7F4CA1F0D7</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>E61CE3B6DFA1FE6B3E296965C76C0E10</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>EAF0BEE2AE574DEF136A153C84DEE217</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>F0D7266C5EB0AD1057CEC66C088731D5</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -7,17 +7,15 @@
 //
 
 #import "NodeResourcesVC.h"
-#import <GoogleMaterialIconFont/GoogleMaterialIconFont-Swift.h>
-//#import <FBSDKShareKit/FBSDKShareKit.h>
-#import "NodeDetailTVC.h"
 #import "MBProgressHUD.h"
 #import "AFNetworking.h"
+#import "UIScrollView+EmptyDataSet.h"
 
-@interface NodeResourcesVC () <UIWebViewDelegate>
+@interface NodeResourcesVC () <UIWebViewDelegate, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
 @property (strong, nonatomic) IBOutlet UIWebView *webView;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
-@property (nonatomic, strong) UILabel *messageLabel;
 @property (nonatomic, strong) UIActivityIndicatorView *webIndicator;
+@property (nonatomic, assign) BOOL didFailLoading;
 
 @end
 @implementation NodeResourcesVC
@@ -29,6 +27,8 @@
     self.webIndicator = [[UIActivityIndicatorView alloc] initWithFrame:barIconRect];
     self.webIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
     self.webIndicator.hidesWhenStopped = YES;
+    self.webView.scrollView.emptyDataSetDelegate = self;
+    self.webView.scrollView.emptyDataSetSource = self;
     
     UIBarButtonItem *indicatorItem = [[UIBarButtonItem alloc] initWithCustomView:self.webIndicator];
     CGImageRef ref = [[UIImage imageNamed:@"iconShare"] CGImage];
@@ -56,56 +56,8 @@
     [self.webView loadRequest:request];
     [self.webIndicator startAnimating];
     
-    //init label
-    self.messageLabel = [[UILabel alloc] initWithFrame:self.view.frame];
-    //self.messageLabel.center = self.view.center;
-    self.messageLabel.hidden = YES;
-    self.messageLabel.backgroundColor = [UIColor whiteColor];
-    self.messageLabel.text = @"We had a problem loading this for you.\nPlease check your network and try again.";
-    self.messageLabel.alpha = 0.9;
-    self.messageLabel.textAlignment = NSTextAlignmentCenter;
-    self.messageLabel.lineBreakMode = NSLineBreakByCharWrapping;
-    self.messageLabel.numberOfLines = 0;
-    [self.webView.scrollView addSubview:self.messageLabel];
-    
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView {
-    [self.webIndicator stopAnimating];
-    [self.refreshControl endRefreshing];
-    self.messageLabel.hidden = YES;
-}
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-    NSString *errorMsg;
-    if ([[error domain] isEqualToString:NSURLErrorDomain]) {
-        switch ([error code]) {
-            case NSURLErrorCannotFindHost:
-                errorMsg = NSLocalizedString(@"Cannot find specified host. Retype URL.", nil);
-            case NSURLErrorCannotConnectToHost:
-                errorMsg = NSLocalizedString(@"Cannot connect to specified host. Server may be down.", nil);
-            case NSURLErrorNotConnectedToInternet:
-                errorMsg = NSLocalizedString(@"Cannot connect to the internet. Service may not be available.", nil);
-                [self.webIndicator stopAnimating];
-                [self.refreshControl endRefreshing];
-                self.messageLabel.hidden = NO;
-                self.webView.scrollView.contentSize = self.messageLabel.frame.size;
-            default:
-                errorMsg = [error localizedDescription];
-                if ([errorMsg containsString:@"The request timed out"]) {
-                    [self.webIndicator stopAnimating];
-                    [self.refreshControl endRefreshing];
-                    self.messageLabel.hidden = NO;
-                    [self.webView reload];
-                    self.webView.scrollView.contentSize = self.messageLabel.frame.size;
-                }
-                NSLog(@"%@",errorMsg);
-                break;
-        }
-    } else {
-        errorMsg = [error localizedDescription];
-        NSLog(@"%@",errorMsg);
-    }
-}
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -113,9 +65,7 @@
 }
 
 - (void)refresh {
-    NSURL *url = [NSURL URLWithString:self.node.apiURL];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:10.0];
-    [self.webView loadRequest:request];
+    [self.webView reload];
 }
 
 - (void)shareAPIs {
@@ -139,15 +89,105 @@
     [self presentViewController:activityController animated:YES completion:nil];
 }
 
+- (void)webViewDidStartLoad:(UIWebView *)webView {
+    [self.webIndicator startAnimating];
+    [self.refreshControl endRefreshing];
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+    [self.webIndicator stopAnimating];
+    [self.refreshControl endRefreshing];
+    self.didFailLoading = NO;
+    [self.webView.scrollView reloadEmptyDataSet];
+}
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+    NSString *errorMsg;
+    if ([[error domain] isEqualToString:NSURLErrorDomain]) {
+        switch ([error code]) {
+            case NSURLErrorCannotFindHost:
+                errorMsg = NSLocalizedString(@"Cannot find specified host. Retype URL.", nil);
+            case NSURLErrorCannotConnectToHost:
+                errorMsg = NSLocalizedString(@"Cannot connect to specified host. Server may be down.", nil);
+            case NSURLErrorNotConnectedToInternet:
+                errorMsg = NSLocalizedString(@"Cannot connect to the internet. Service may not be available.", nil);
+                [self.refreshControl endRefreshing];
+            default:
+                errorMsg = [error localizedDescription];
+                NSLog(@"%@",errorMsg);
+                break;
+        }
+    } else {
+        errorMsg = [error localizedDescription];
+        NSLog(@"%@",errorMsg);
+    }
+    self.didFailLoading = YES;
+    [self.webIndicator stopAnimating];
+    [self.webView.scrollView reloadEmptyDataSet];
+}
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+{
+    self.didFailLoading = NO;
+    
+    return YES;
+}
+
+#pragma -mark EmptyDataSet Datasource
+- (UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView
+{
+    if (self.webView.isLoading || !self.didFailLoading) {
+        return nil;
+    }
+
+    float scale = 3* 380.0/[UIScreen mainScreen].applicationFrame.size.width;
+    
+    UIImage *scaledImage = [UIImage imageWithCGImage:[[UIImage imageNamed:@"sorryPage"] CGImage] scale:scale orientation:UIImageOrientationUp];
+    return scaledImage;
+}
+
+- (NSAttributedString *)descriptionForEmptyDataSet:(UIScrollView *)scrollView
+{
+    if (self.webView.isLoading || !self.didFailLoading) {
+        return nil;
+    }
+    NSString *text = @"We had a problem loading this for you.\nPlease check your network and try again.";
+
+    NSMutableParagraphStyle *paragraph = [NSMutableParagraphStyle new];
+    paragraph.lineBreakMode = NSLineBreakByWordWrapping;
+    paragraph.alignment = NSTextAlignmentCenter;
+
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:14.0f],
+                                 NSForegroundColorAttributeName: [UIColor lightGrayColor],
+                                 NSParagraphStyleAttributeName: paragraph};
+
+    return [[NSAttributedString alloc] initWithString:text attributes:attributes];
+}
+
+- (UIColor *)backgroundColorForEmptyDataSet:(UIScrollView *)scrollView
+{
+    if (self.webView.isLoading || !self.didFailLoading) {
+        return [UIColor clearColor];
+    }
+    return [UIColor whiteColor];
+}
+
+#pragma -mark EmptyDataSet Delegate
+- (BOOL)emptyDataSetShouldDisplay:(UIScrollView *)scrollView
+{
+    return YES;
+}
+- (BOOL)emptyDataSetShouldAllowScroll:(UIScrollView *)scrollView
+{
+    return YES;
+}
+
+
 - (void)showNodeDetails {
     [self performSegueWithIdentifier:@"ShowNodeDetail" sender:nil];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    id dVC = [segue destinationViewController];
-    if ([dVC isKindOfClass:[NodeDetailTVC class]]) {
-        [(NodeResourcesVC *)dVC setNode:self.node];
-    }
+//    id dVC = [segue destinationViewController];
 }
 
 @end

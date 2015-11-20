@@ -121,7 +121,7 @@
 }
     
 - (NSString *)apiURL {
-    NSString *otaServerAddress = [NSString stringWithFormat:@"https://%@", [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneOTAServerIPAddress]];
+    NSString *otaServerAddress = [NSString stringWithFormat:@"%@", [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneOTAServerBaseURL]];
     NSString *dataServerIP = [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneDataServerIPAddress];
     return [NSString stringWithFormat:@"%@%@?access_token=%@&data_server=%@", otaServerAddress, aPionOneNodeResources,self.key, dataServerIP];
 }

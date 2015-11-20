@@ -14,10 +14,11 @@
 #import "NodeListCell.h"
 #import "MGSwipeButton.h"
 #import "MGSwipeTableCell.h"
-#import <GoogleMaterialIconFont/GoogleMaterialIconFont-Swift.h>
 #import "UIViewController+RESideMenu.h"
 #import "UIScrollView+EmptyDataSet.h"
 #import "StyleKitWiolink.h"
+#import <GoogleMaterialIconFont/GoogleMaterialIconFont-Swift.h>
+#import "RESideMenu.h"
 
 @interface NodeListCDTVC() <MBProgressHUDDelegate, MGSwipeTableCellDelegate, UITextFieldDelegate, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
 @property (strong, nonatomic) UIAlertController *renameDialog;
@@ -38,14 +39,18 @@
     
     self.fetchedResultsController.delegate = self;
     [self performFetch];
-}
+    self.sideMenuViewController.panGestureEnabled = YES;
 
+}
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    self.sideMenuViewController.panGestureEnabled = NO;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.tableView.emptyDataSetSource = self;
     self.tableView.emptyDataSetDelegate = self;
-    
     [[PionOneManager sharedInstance] scanDriverListWithCompletionHandler:nil];
 
     self.managedObjectContext = [[PionOneManager sharedInstance] mainMOC];
@@ -56,7 +61,7 @@
 
     self.reachableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 40)];
     UILabel *info = [[UILabel alloc] initWithFrame:self.reachableHeaderView.frame];
-    info.text = @"We need network to retrieve the settings form server";
+    info.text = @"We need network to retrieve the settings from server";
     info.font = [UIFont systemFontOfSize:14];
     info.alpha = 0.9;
     info.textAlignment = NSTextAlignmentCenter;
@@ -178,7 +183,7 @@
 - (UIAlertController *)renameDialog {
     __typeof (&*self) __weak weakSelf = self;
     if (_renameDialog == nil) {
-        _renameDialog = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"Rename Pion One"] preferredStyle:UIAlertControllerStyleAlert];
+        _renameDialog = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"Rename Wio Link"] preferredStyle:UIAlertControllerStyleAlert];
         [_renameDialog addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:nil]];
         UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             [self renameNode];
@@ -186,7 +191,7 @@
         okAction.enabled = NO;
         [_renameDialog addAction:okAction];
         [_renameDialog addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-            textField.placeholder = @"Take a name for Pion One";
+            textField.placeholder = @"Take a name for Wio Link";
             textField.secureTextEntry = NO;
             [textField setReturnKeyType:UIReturnKeyGo];
             textField.delegate = weakSelf;
@@ -199,7 +204,10 @@
 #pragma -mark EmptyDataSet Datasource
 - (UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView
 {
-    return [UIImage imageNamed:@"workflow"];
+    float scale = 3* 380.0/[UIScreen mainScreen].applicationFrame.size.width;
+
+    UIImage *scaledImage = [UIImage imageWithCGImage:[[UIImage imageNamed:@"emptyList"] CGImage] scale:scale orientation:UIImageOrientationUp];
+    return scaledImage;
 }
 //- (CAAnimation *)imageAnimationForEmptyDataSet:(UIScrollView *)scrollView
 //{
@@ -215,35 +223,38 @@
 //    return animation;
 //}
 
-- (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView
-{
-    NSString *text = @"Building IoT devices in 5 minutes";
-    
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:18.0f],
-                                 NSForegroundColorAttributeName: [UIColor darkGrayColor]};
-    
-    return [[NSAttributedString alloc] initWithString:text attributes:attributes];
-}
-- (NSAttributedString *)descriptionForEmptyDataSet:(UIScrollView *)scrollView
-{
-    NSString *text = @"Pion One is a Wi-Fi development board to build connected IoT projects with Grove modules. Simplify your development of IoT devices without requirements of hardware programming or soldering.";
-    
-    NSMutableParagraphStyle *paragraph = [NSMutableParagraphStyle new];
-    paragraph.lineBreakMode = NSLineBreakByWordWrapping;
-    paragraph.alignment = NSTextAlignmentCenter;
-    
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:14.0f],
-                                 NSForegroundColorAttributeName: [UIColor lightGrayColor],
-                                 NSParagraphStyleAttributeName: paragraph};
-    
-    return [[NSAttributedString alloc] initWithString:text attributes:attributes];
-}
+//- (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView
+//{
+//    NSString *text = @"Building IoT devices in 5 minutes";
+//    
+//    NSDictionary *attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:18.0f],
+//                                 NSForegroundColorAttributeName: [UIColor darkGrayColor]};
+//    
+//    return [[NSAttributedString alloc] initWithString:text attributes:attributes];
+//}
+//- (NSAttributedString *)descriptionForEmptyDataSet:(UIScrollView *)scrollView
+//{
+//    NSString *text = @"Wio Link is a Wi-Fi development board to build connected IoT projects with Grove modules. Simplify your development of IoT devices without requirements of hardware programming or soldering.";
+//    
+//    NSMutableParagraphStyle *paragraph = [NSMutableParagraphStyle new];
+//    paragraph.lineBreakMode = NSLineBreakByWordWrapping;
+//    paragraph.alignment = NSTextAlignmentCenter;
+//    
+//    NSDictionary *attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:14.0f],
+//                                 NSForegroundColorAttributeName: [UIColor lightGrayColor],
+//                                 NSParagraphStyleAttributeName: paragraph};
+//    
+//    return [[NSAttributedString alloc] initWithString:text attributes:attributes];
+//}
 
 - (NSAttributedString *)buttonTitleForEmptyDataSet:(UIScrollView *)scrollView forState:(UIControlState)state
 {
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:17.0f]};
     
     return [[NSAttributedString alloc] initWithString:@"Tap add button to start" attributes:attributes];
+}
+- (void)emptyDataSet:(UIScrollView *)scrollView didTapButton:(UIButton *)button {
+    [self addNode:nil];
 }
 //- (UIImage *)buttonImageForEmptyDataSet:(UIScrollView *)scrollView forState:(UIControlState)state
 //{
@@ -399,7 +410,7 @@
         [self presentViewController:self.renameDialog animated:YES completion:nil];
     } else if (direction == MGSwipeDirectionRightToLeft && index == 2) {
         //delete button
-        UIAlertController *removeAlert = [UIAlertController alertControllerWithTitle:@"Are you sure?" message:nil preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *removeAlert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
         [removeAlert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
         [removeAlert addAction:[UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             [self.HUD show:YES];
@@ -484,10 +495,13 @@
             [self.HUD hide:YES];
             if (succes) {
                 [[PionOneManager sharedInstance] cacheCurrentSSID];
-                if ([[PionOneManager sharedInstance] cachedSSID]) {
+                if ([[PionOneManager sharedInstance] cachedSSID] &&
+                    ![[[PionOneManager sharedInstance] cachedSSID] containsString:@"PionOne_"] &&
+                    ![[[PionOneManager sharedInstance] cachedSSID] containsString:@"WioLink_"])
+                {
                     [self performSegueWithIdentifier:@"ShowAPconfigVC" sender:nil];
                 } else {
-                   msg = @"Please make sure that your phone is connected to an available wifi network.";
+                    msg = @"Please make sure that your phone is connected to an available wifi network.";
                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"No"
                                                                         message:msg
                                                                        delegate:nil

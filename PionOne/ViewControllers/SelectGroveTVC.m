@@ -10,7 +10,6 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "DriverDetailVC.h"
 #import "Grove+Create.h"
-#import <GoogleMaterialIconFont/GoogleMaterialIconFont-Swift.h>
 
 @interface SelectGroveTVC ()
 @property (nonatomic, strong) NSString *interfaceType;
@@ -73,7 +72,7 @@
     cell.textLabel.text = driver.groveName;
     cell.detailTextLabel.text = driver.interfaceType;
     NSURL *url = [NSURL URLWithString:driver.imageURL];
-    [cell.imageView sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"ic_extension_36pt"]];
+    [cell.imageView sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"placeHolder"]];
     return cell;
 }
 

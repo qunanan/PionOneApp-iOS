@@ -26,7 +26,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationController.navigationBar.tintColor = self.navigationItem.rightBarButtonItem.tintColor;
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
 
 }
 
@@ -44,7 +43,6 @@
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -70,7 +68,7 @@
             [pVC login];
         } else {
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Sorry"
-                                                                message:@"We had a problem doing this for you, maybe you can change the region for better internet connection."
+                                                                message:msg
                                                                delegate:nil
                                                       cancelButtonTitle:@"Ok"
                                                       otherButtonTitles:nil];
@@ -96,15 +94,15 @@
             //International
             self.regionLabel.text = PionOneRegionNameInternational;
             [[PionOneManager sharedInstance] setRegion:PionOneRegionNameInternational
-                                           OTAServerIP:PionOneDefaultOTAServerIPAddressInternational
-                                        andDataSeverIP:PionOneDefaultDataServerIPAddressInternational];
+                                           OTAServerIP:nil
+                                        andDataSeverIP:nil];
             break;
         case 1:
             //China
             self.regionLabel.text = PionOneRegionNameChina;
             [[PionOneManager sharedInstance] setRegion:PionOneRegionNameChina
-                                           OTAServerIP:PionOneDefaultOTAServerIPAddressChina
-                                        andDataSeverIP:PionOneDefaultDataServerIPAddressChina];
+                                           OTAServerIP:nil
+                                        andDataSeverIP:nil];
             break;
         case 2:
             //Custom

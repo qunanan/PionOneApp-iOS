@@ -70,7 +70,25 @@ github "raulriera/TextFieldEffects"
 
 ## How to use them
 
-Check out the demo project to see the configuration options for each effect.
+Every effect is properly documented in the source code, this is the best way to both understand and see what they do. There is also an example project included with all the effects and their settings.
+
+### Interface Builder
+
+The library is a simple drop-in, as soon as you set your subclass to one of the effects you will be able to see all the IBDesignable settings in the storyboard.
+
+### Code
+
+If you like to get your hands dirty, you can use them just like you would normally use any `UITextField`
+
+``` swift
+let textField = KaedeTextField(frame: textFieldFrame)
+textField.placeholderColor = .darkGrayColor()
+textField.foregroundColor = .lightGrayColor()
+
+view.addSubView(textField)
+```
+
+Is that simple.
 
 ## Created by
 Raul Riera, [@raulriera](http://twitter.com/raulriera)

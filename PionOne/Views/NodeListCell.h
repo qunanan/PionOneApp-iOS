@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MGSwipeTableCell.h"
+#import <MGSwipeTableCell/MGSwipeTableCell.h>
 
 @interface NodeListCell : MGSwipeTableCell
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;

@@ -10,13 +10,13 @@
 #import "MenuVC.h"
 #import "RESideMenu.h"
 #import "PionOneManager.h"
-#import <GoogleMaterialIconFont/GoogleMaterialIconFont-Swift.h>
 #import "MBProgressHUD.h"
 #import "NodeListCDTVC.h"
 #import "StyleKitWiolink.h"
 
 @interface MenuVC () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UILabel *versionLabel;
 @property (strong, nonatomic) NSArray *menuList;
 @property (strong, nonatomic) UIAlertController *changePasswordDialog;
 //@property (strong, nonatomic) UIAlertController *shareDialog;
@@ -74,35 +74,6 @@
     return _changePasswordDialog;
 }
 
-//- (UIAlertController *)shareDialog {
-//    if (_shareDialog == nil) {
-//        _shareDialog = [UIAlertController alertControllerWithTitle:@"Share this App to your friends" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-//        UIAlertAction *facebook = [UIAlertAction actionWithTitle:@"Facebook" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//            FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
-//            content.contentURL = [NSURL URLWithString:@"http://iot.seeed.cc"];
-//            [FBSDKShareDialog showFromViewController:self
-//                                         withContent:content
-//                                            delegate:nil];
-//        }];
-//        UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
-//        [_shareDialog addAction:facebook];
-//        [_shareDialog addAction:cancel];
-//    }
-//    return _shareDialog;
-//}
-//
-//- (void)sharer:(id<FBSDKSharing>)sharer didCompleteWithResults:(NSDictionary *)results {
-//    
-//}
-
-//- (void)sharer:(id<FBSDKSharing>)sharer didFailWithError:(NSError *)error {
-//    
-//}
-//
-//- (void)sharerDidCancel:(id<FBSDKSharing>)sharer {
-//    
-//}
-
 - (MBProgressHUD *)HUD {
     if (_HUD == nil) {
         UITableViewController *controller = (UITableViewController *)self.sideMenuViewController.contentViewController;
@@ -117,14 +88,23 @@
     [super viewDidLoad];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.tableFooterView = [UIView new];
+    
+    NSString * version = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
+    NSString * build = [[NSBundle mainBundle] objectForInfoDictionaryKey: (NSString *)kCFBundleVersionKey];
+    NSString * versionBuild = [NSString stringWithFormat: @"v%@", version];
+    
+    if (![version isEqualToString: build]) {
+        versionBuild = [NSString stringWithFormat: @"%@(%@)", versionBuild, build];
+    }
+    
+    self.versionLabel.text = versionBuild;
 }
 
 - (IBAction)logout {
     NSString *email = [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneUserEmail];
     UIAlertController *logoutAction = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Logged in as %@", email] message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     [logoutAction addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-    [logoutAction addAction:[UIAlertAction actionWithTitle:@"Log Out" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    [logoutAction addAction:[UIAlertAction actionWithTitle:@"Log Out" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         [[PionOneManager sharedInstance] logout];
         UIWindow *window = [[[UIApplication sharedApplication] windows] firstObject];
         [UIView transitionWithView:window

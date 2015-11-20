@@ -7,18 +7,15 @@
 //
 
 #import "AboutViewController.h"
-//#import <FBSDKCoreKit/FBSDKCoreKit.h>
-//#import <FBSDKLoginKit/FBSDKLoginKit.h>
-//#import <FBSDKShareKit/FBSDKShareKit.h>
 #import "MBProgressHUD.h"
-#import <GoogleMaterialIconFont/GoogleMaterialIconFont-Swift.h>
+#import "UIScrollView+EmptyDataSet.h"
 
-@interface AboutViewController () <UIWebViewDelegate>
+@interface AboutViewController () <UIWebViewDelegate, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
 @property (strong, nonatomic) IBOutlet UIWebView *webView;
 @property (nonatomic, strong) MBProgressHUD *HUD;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
-@property (nonatomic, strong) UILabel *messageLabel;
 @property (nonatomic, strong) UIActivityIndicatorView *webIndicator;
+@property (nonatomic, assign) BOOL didFailLoading;
 
 @end
 
@@ -38,6 +35,8 @@
     self.webIndicator = [[UIActivityIndicatorView alloc] initWithFrame:barIconRect];
     self.webIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
     self.webIndicator.hidesWhenStopped = YES;
+    self.webView.scrollView.emptyDataSetDelegate = self;
+    self.webView.scrollView.emptyDataSetSource = self;
 
     UIBarButtonItem *indicatorItem = [[UIBarButtonItem alloc] initWithCustomView:self.webIndicator];
     UIBarButtonItem *space = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:self action:nil];
@@ -64,23 +63,18 @@
     [self.webView loadRequest:request];
     [self.webIndicator startAnimating];
     
-    //init label
-    self.messageLabel = [[UILabel alloc] initWithFrame:self.view.frame];
-    //self.messageLabel.center = self.view.center;
-    self.messageLabel.hidden = YES;
-    self.messageLabel.backgroundColor = [UIColor whiteColor];
-    self.messageLabel.text = @"We had a problem loading this for you.\nPlease check your network and try again.";
-    self.messageLabel.alpha = 0.9;
-    self.messageLabel.textAlignment = NSTextAlignmentCenter;
-    self.messageLabel.lineBreakMode = NSLineBreakByCharWrapping;
-    self.messageLabel.numberOfLines = 0;
-    [self.webView.scrollView addSubview:self.messageLabel];
+}
+
+- (void)webViewDidStartLoad:(UIWebView *)webView {
+    [self.webIndicator startAnimating];
+    [self.refreshControl endRefreshing];
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     [self.webIndicator stopAnimating];
     [self.refreshControl endRefreshing];
-    self.messageLabel.hidden = YES;
+    self.didFailLoading = NO;
+    [self.webView.scrollView reloadEmptyDataSet];
 }
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
     NSString *errorMsg;
@@ -92,16 +86,9 @@
                 errorMsg = NSLocalizedString(@"Cannot connect to specified host. Server may be down.", nil);
             case NSURLErrorNotConnectedToInternet:
                 errorMsg = NSLocalizedString(@"Cannot connect to the internet. Service may not be available.", nil);
-                [self.webIndicator stopAnimating];
                 [self.refreshControl endRefreshing];
-                self.messageLabel.hidden = NO;
             default:
                 errorMsg = [error localizedDescription];
-                if ([errorMsg containsString:@"The request timed out"]) {
-                    [self.webIndicator stopAnimating];
-                    [self.refreshControl endRefreshing];
-                    self.messageLabel.hidden = NO;
-                }
                 NSLog(@"%@",errorMsg);
                 break;
         }
@@ -109,14 +96,69 @@
         errorMsg = [error localizedDescription];
         NSLog(@"%@",errorMsg);
     }
+    self.didFailLoading = YES;
+    [self.webIndicator stopAnimating];
+    [self.webView.scrollView reloadEmptyDataSet];
 }
 
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+{
+    self.didFailLoading = NO;
+    
+    return YES;
+}
+
+#pragma -mark EmptyDataSet Datasource
+- (UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView
+{
+    if (self.webView.isLoading || !self.didFailLoading) {
+        return nil;
+    }
+    
+    float scale = 3* 380.0/[UIScreen mainScreen].applicationFrame.size.width;
+    
+    UIImage *scaledImage = [UIImage imageWithCGImage:[[UIImage imageNamed:@"sorryPage"] CGImage] scale:scale orientation:UIImageOrientationUp];
+    return scaledImage;
+}
+
+- (NSAttributedString *)descriptionForEmptyDataSet:(UIScrollView *)scrollView
+{
+    if (self.webView.isLoading || !self.didFailLoading) {
+        return nil;
+    }
+    NSString *text = @"We had a problem loading this for you.\nPlease check your network and try again.";
+    
+    NSMutableParagraphStyle *paragraph = [NSMutableParagraphStyle new];
+    paragraph.lineBreakMode = NSLineBreakByWordWrapping;
+    paragraph.alignment = NSTextAlignmentCenter;
+    
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:14.0f],
+                                 NSForegroundColorAttributeName: [UIColor lightGrayColor],
+                                 NSParagraphStyleAttributeName: paragraph};
+    
+    return [[NSAttributedString alloc] initWithString:text attributes:attributes];
+}
+
+- (UIColor *)backgroundColorForEmptyDataSet:(UIScrollView *)scrollView
+{
+    if (self.webView.isLoading || !self.didFailLoading) {
+        return [UIColor clearColor];
+    }
+    return [UIColor whiteColor];
+}
+
+#pragma -mark EmptyDataSet Delegate
+- (BOOL)emptyDataSetShouldDisplay:(UIScrollView *)scrollView
+{
+    return YES;
+}
+- (BOOL)emptyDataSetShouldAllowScroll:(UIScrollView *)scrollView
+{
+    return YES;
+}
+
+
 - (void)refresh {
-    NSURL *url = [NSURL URLWithString:@"http://iot.seeed.cc"];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:10.0];
-    [self.webView loadRequest:request];
-    [self.refreshControl endRefreshing];
-    self.messageLabel.hidden = YES;
-    [self.webIndicator startAnimating];
+    [self.webView reload];
 }
 @end

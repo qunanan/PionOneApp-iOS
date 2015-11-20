@@ -71,7 +71,7 @@
             }
             NSURL *url = [NSURL URLWithString:grove.driver.imageURL];
             UIImageView *icon = [self.groveIcons objectAtIndex:[groves indexOfObject:grove]];
-            [icon sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"ic_extension_36pt"]];
+            [icon sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"placeHolder"]];
             icon.layer.borderWidth = 0.5;
         }
     }

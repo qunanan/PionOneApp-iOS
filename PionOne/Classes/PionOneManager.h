@@ -13,7 +13,7 @@
 #import "Driver+Create.h"
 #import "Grove.h"
 #import "PionOneUserDefaults.h"
-#import "AFNetworking.h"
+#import <AFNetworking/AFNetworking.h>
 
 @interface PionOneManager : NSObject
 @property (nonatomic, strong) NSManagedObjectContext *mainMOC; //if you want to call the API, it must not be nil
@@ -73,7 +73,7 @@
 - (NSString *)connectoNameForPin:(NSString *)pin;
 
 #pragma -mark Node API Method
-- (void)getAPIsForNode:(Node *)node completion:(void (^)(BOOL success, NSString *msg, NSArray *apis))handler;
+//- (void)getAPIsForNode:(Node *)node completion:(void (^)(BOOL success, NSString *msg, NSArray *apis))handler;
 
 - (void)saveChildContext:(NSManagedObjectContext *) childMOC;
 
