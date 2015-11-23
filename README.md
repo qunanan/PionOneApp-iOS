@@ -8,12 +8,9 @@ AFNetworking is released under the MIT license. See LICENSE for details.
 
 ###CocoaAsyncSocket
 ###SDWebImage
-###GoogleMaterialIconFont
 ###MBProgressHUD
 ###DZNEmptyDataSet
 ###KHFlatButton
 ###RESideMenu
-###RETableViewManager
-###QRExt
 ###MGSwipeTableCell
 ###TextFieldEffects
