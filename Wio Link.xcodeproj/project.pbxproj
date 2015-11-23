@@ -18,7 +18,7 @@
 		986E01471BA3DBCF00C12BF2 /* Grove.m in Sources */ = {isa = PBXBuildFile; fileRef = 986E01461BA3DBCF00C12BF2 /* Grove.m */; };
 		988B06711BD48FFE00C4268E /* NSString+escapedUnicode.m in Sources */ = {isa = PBXBuildFile; fileRef = 988B06701BD48FFE00C4268E /* NSString+escapedUnicode.m */; };
 		98AD9B3A1BE7112500F0BCC3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 98AD9B391BE7112500F0BCC3 /* Images.xcassets */; };
-		98B00AAD1BFB5BEA0014FE27 /* StyleKitWiolink.m in Sources */ = {isa = PBXBuildFile; fileRef = 98B00AAC1BFB5BEA0014FE27 /* StyleKitWiolink.m */; };
+		98B00AAD1BFB5BEA0014FE27 /* wioLinkViews.m in Sources */ = {isa = PBXBuildFile; fileRef = 98B00AAC1BFB5BEA0014FE27 /* wioLinkViews.m */; };
 		98B4ED631BA13296000D6255 /* SetupNodeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 98B4ED621BA13296000D6255 /* SetupNodeVC.m */; };
 		98B4ED661BA1BF0F000D6255 /* SelectGroveTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 98B4ED651BA1BF0F000D6255 /* SelectGroveTVC.m */; };
 		98B4ED691BA1C4F7000D6255 /* Grove+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 98B4ED681BA1C4F7000D6255 /* Grove+Create.m */; };
@@ -72,8 +72,8 @@
 		988B066F1BD48FFE00C4268E /* NSString+escapedUnicode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+escapedUnicode.h"; path = "Classes/NSString+escapedUnicode.h"; sourceTree = "<group>"; };
 		988B06701BD48FFE00C4268E /* NSString+escapedUnicode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+escapedUnicode.m"; path = "Classes/NSString+escapedUnicode.m"; sourceTree = "<group>"; };
 		98AD9B391BE7112500F0BCC3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = PionOne/Images.xcassets; sourceTree = "<group>"; };
-		98B00AAB1BFB5BEA0014FE27 /* StyleKitWiolink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StyleKitWiolink.h; path = Views/StyleKitWiolink.h; sourceTree = "<group>"; };
-		98B00AAC1BFB5BEA0014FE27 /* StyleKitWiolink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StyleKitWiolink.m; path = Views/StyleKitWiolink.m; sourceTree = "<group>"; };
+		98B00AAB1BFB5BEA0014FE27 /* wioLinkViews.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = wioLinkViews.h; path = Views/wioLinkViews.h; sourceTree = "<group>"; };
+		98B00AAC1BFB5BEA0014FE27 /* wioLinkViews.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = wioLinkViews.m; path = Views/wioLinkViews.m; sourceTree = "<group>"; };
 		98B4ED611BA13296000D6255 /* SetupNodeVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetupNodeVC.h; sourceTree = "<group>"; };
 		98B4ED621BA13296000D6255 /* SetupNodeVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetupNodeVC.m; sourceTree = "<group>"; };
 		98B4ED641BA1BF0F000D6255 /* SelectGroveTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectGroveTVC.h; sourceTree = "<group>"; };
@@ -215,8 +215,8 @@
 		98F672861B980F1200A9292B /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				98B00AAB1BFB5BEA0014FE27 /* StyleKitWiolink.h */,
-				98B00AAC1BFB5BEA0014FE27 /* StyleKitWiolink.m */,
+				98B00AAB1BFB5BEA0014FE27 /* wioLinkViews.h */,
+				98B00AAC1BFB5BEA0014FE27 /* wioLinkViews.m */,
 				98F673171B99A7FC00A9292B /* GroveTableViewCell.h */,
 				98F673181B99A7FC00A9292B /* GroveTableViewCell.m */,
 				98E026331BBF6B6C00D691B4 /* NodeListCell.h */,
@@ -450,7 +450,7 @@
 				98B4ED631BA13296000D6255 /* SetupNodeVC.m in Sources */,
 				98F672B61B98176500A9292B /* PionOneManager.m in Sources */,
 				98F672EF1B98CA6800A9292B /* RetrievePasswordVC.m in Sources */,
-				98B00AAD1BFB5BEA0014FE27 /* StyleKitWiolink.m in Sources */,
+				98B00AAD1BFB5BEA0014FE27 /* wioLinkViews.m in Sources */,
 				98F672E01B98290C00A9292B /* User+Create.m in Sources */,
 				98F6725F1B980E6800A9292B /* main.m in Sources */,
 				98B4ED661BA1BF0F000D6255 /* SelectGroveTVC.m in Sources */,

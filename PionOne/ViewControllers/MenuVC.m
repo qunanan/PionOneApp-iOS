@@ -12,7 +12,7 @@
 #import "PionOneManager.h"
 #import "MBProgressHUD.h"
 #import "NodeListCDTVC.h"
-#import "StyleKitWiolink.h"
+#import "wioLinkViews.h"
 
 @interface MenuVC () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -161,7 +161,7 @@
     }
     [cell setSelected:NO];
     UIView *bgColorView = [[UIView alloc] init];
-    bgColorView.backgroundColor = [StyleKitWiolink wioLinkBlue];
+    bgColorView.backgroundColor = [wioLinkViews wioLinkBlue];
     [cell setSelectedBackgroundView:bgColorView];
     return cell;
 }

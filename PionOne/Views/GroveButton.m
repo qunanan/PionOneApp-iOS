@@ -7,7 +7,7 @@
 //
 
 #import "GroveButton.h"
-#import "StyleKitWiolink.h"
+#import "wioLinkViews.h"
 
 @implementation GroveButton
 - (id)initWithFrame:(CGRect)frame
@@ -49,7 +49,7 @@
 }
 
 - (void)drawRect:(CGRect)rect {
-    [StyleKitWiolink drawGroveButtonWithPressed:self.highlighted configured:self.selected];
+    [wioLinkViews drawGroveButtonWithPressed:self.highlighted configured:self.selected];
 }
 
 

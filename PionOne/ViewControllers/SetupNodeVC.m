@@ -14,7 +14,7 @@
 #import "GroveButton.h"
 #import "NodeResourcesVC.h"
 #import "KHFlatButton.h"
-#import "StyleKitWiolink.h"
+#import "wioLinkViews.h"
 
 @interface SetupNodeVC () <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate>
 @property (strong, nonatomic) IBOutletCollection(GroveButton) NSArray *groveButtons;
@@ -42,7 +42,7 @@
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     [self.apiButton setBackgroundImage:image forState:UIControlStateHighlighted];
-    [self.apiButton setTitleColor:[StyleKitWiolink wioLinkBrown] forState: UIControlStateHighlighted];
+    [self.apiButton setTitleColor:[wioLinkViews wioLinkBrown] forState: UIControlStateHighlighted];
     self.apiButton.layer.borderColor = [[UIColor whiteColor] CGColor];
     self.apiButton.layer.borderWidth = 3.0;
 
@@ -140,7 +140,7 @@
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
     if ([view isKindOfClass: [UITableViewHeaderFooterView class]]) {
         UITableViewHeaderFooterView* castView = (UITableViewHeaderFooterView*) view;
-        castView.contentView.backgroundColor = [StyleKitWiolink wioLinkBrown];
+        castView.contentView.backgroundColor = [wioLinkViews wioLinkBrown];
         [castView.textLabel setTextColor:[UIColor whiteColor]];
     }
 }

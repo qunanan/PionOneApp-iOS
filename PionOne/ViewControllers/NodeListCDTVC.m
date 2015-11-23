@@ -16,7 +16,7 @@
 #import "MGSwipeTableCell.h"
 #import "UIViewController+RESideMenu.h"
 #import "UIScrollView+EmptyDataSet.h"
-#import "StyleKitWiolink.h"
+#import "wioLinkViews.h"
 #import <GoogleMaterialIconFont/GoogleMaterialIconFont-Swift.h>
 #import "RESideMenu.h"
 
@@ -304,13 +304,13 @@
     //setup cell properties
     cell.nameLabel.text = node.name;
     if (node.online.boolValue) {
-        [cell.onlineIndicator setBackgroundColor:[StyleKitWiolink wioLinkBlue]];
+        [cell.onlineIndicator setBackgroundColor:[wioLinkViews wioLinkBlue]];
         cell.onlineLabel.text = @"Online";
-        cell.onlineLabel.textColor = [StyleKitWiolink wioLinkBlue];
+        cell.onlineLabel.textColor = [wioLinkViews wioLinkBlue];
     } else {
-        [cell.onlineIndicator setBackgroundColor:[StyleKitWiolink wioLinkRed]];
+        [cell.onlineIndicator setBackgroundColor:[wioLinkViews wioLinkRed]];
         cell.onlineLabel.text = @"Offline";
-        cell.onlineLabel.textColor = [StyleKitWiolink wioLinkRed];
+        cell.onlineLabel.textColor = [wioLinkViews wioLinkRed];
     }
     NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"connectorName" ascending:YES];
     cell.groves = [node.groves sortedArrayUsingDescriptors:@[descriptor]];

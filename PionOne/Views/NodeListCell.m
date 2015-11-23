@@ -11,7 +11,7 @@
 #import "Driver.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <GoogleMaterialIconFont/GoogleMaterialIconFont-Swift.h>
-#import "StyleKitWiolink.h"
+#import "wioLinkViews.h"
 
 @implementation NodeListCell
 
@@ -22,7 +22,7 @@
     for (UIImageView *icon in self.groveIcons) {
         icon.layer.masksToBounds = YES;
         icon.layer.cornerRadius = 17.5;
-        icon.layer.borderColor = [[StyleKitWiolink wioLinkRed] CGColor];
+        icon.layer.borderColor = [[wioLinkViews wioLinkRed] CGColor];
     }
 }
 
