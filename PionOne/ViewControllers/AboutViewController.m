@@ -9,6 +9,7 @@
 #import "AboutViewController.h"
 #import "MBProgressHUD.h"
 #import "UIScrollView+EmptyDataSet.h"
+#import <GoogleMaterialIconFont/GoogleMaterialIconFont-Swift.h>
 
 @interface AboutViewController () <UIWebViewDelegate, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
 @property (strong, nonatomic) IBOutlet UIWebView *webView;
@@ -37,11 +38,18 @@
     self.webIndicator.hidesWhenStopped = YES;
     self.webView.scrollView.emptyDataSetDelegate = self;
     self.webView.scrollView.emptyDataSetSource = self;
-
+    UIButton *homeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [homeBtn setFrame:barIconRect];
+    [homeBtn setTitle:[NSString materialIcon:MaterialIconFontHome] forState:UIControlStateNormal];
+    [homeBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [homeBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateHighlighted];
+    homeBtn.titleLabel.font = [UIFont materialIconOfSize:28];
+    [homeBtn addTarget:self action:@selector(gotoHomePage) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *indicatorItem = [[UIBarButtonItem alloc] initWithCustomView:self.webIndicator];
+    UIBarButtonItem *homeItem = [[UIBarButtonItem alloc] initWithCustomView:homeBtn];
     UIBarButtonItem *space = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:self action:nil];
-    space.width = 100;
-    [self.navigationItem setRightBarButtonItems:@[space, indicatorItem]];
+    space.width = 20;
+    [self.navigationItem setRightBarButtonItems:@[homeItem, space, space, space, indicatorItem]];
 
     //init webView
 //    CGRect webFrame = CGRectMake(0, self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height, self.navigationController.navigationBar.frame.size.width, [UIScreen mainScreen].applicationFrame.size.height - self.navigationController.navigationBar.frame.size.height);
@@ -160,5 +168,12 @@
 
 - (void)refresh {
     [self.webView reload];
+}
+
+- (void)gotoHomePage {
+    [self.webView stopLoading];
+    NSURL *url = [NSURL URLWithString:@"http://iot.seeed.cc"];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:10.0];
+    [self.webView loadRequest:request];
 }
 @end

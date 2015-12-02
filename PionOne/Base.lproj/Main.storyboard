@@ -1422,6 +1422,9 @@
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
+                                                    <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
+                                                        <rect key="frame" x="8" y="48" width="224" height="17"/>
+                                                    </variation>
                                                 </label>
                                                 <imageView userInteractionEnabled="NO" tag="21" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="9fc-Jp-bbr">
                                                     <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
@@ -1438,7 +1441,8 @@
                                                             <exclude reference="noJ-zu-wzl"/>
                                                         </mask>
                                                     </variation>
-                                                    <variation key="heightClass=regular-widthClass=compact">
+                                                    <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
+                                                        <rect key="frame" x="105" y="15" width="30" height="30"/>
                                                         <mask key="constraints">
                                                             <include reference="VzU-Ci-jMY"/>
                                                             <include reference="noJ-zu-wzl"/>
@@ -1681,14 +1685,7 @@
                         </connections>
                     </tableView>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" title="DriverList" id="0mP-W0-DZ1">
-                        <barButtonItem key="rightBarButtonItem" title="Reload" id="EAT-Ab-sGx">
-                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            <connections>
-                                <action selector="reloadDriverList:" destination="Sad-co-ArP" id="5Ev-KN-rRe"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="DriverList" id="0mP-W0-DZ1"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <segue destination="ZeT-ul-taa" kind="show" identifier="ShowDriverDetail" id="fmp-9N-V6k"/>
@@ -2362,7 +2359,7 @@
                                     <include reference="oRo-bb-0dU"/>
                                     <include reference="GGe-bn-JLD"/>
                                     <include reference="Owf-Pj-oWs"/>
-                                    <include reference="S0K-mO-2x9"/>
+                                    <exclude reference="S0K-mO-2x9"/>
                                     <include reference="d8R-lJ-aoA"/>
                                     <include reference="1HF-hr-oB3"/>
                                     <include reference="ekH-MS-edR"/>
@@ -2862,8 +2859,8 @@
         <image name="wioLink" width="330" height="145"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="6Cq-qK-6qe"/>
-        <segue reference="atg-AO-yqh"/>
         <segue reference="gLr-bg-hU9"/>
+        <segue reference="fmp-9N-V6k"/>
+        <segue reference="atg-AO-yqh"/>
     </inferredMetricsTieBreakers>
 </document>

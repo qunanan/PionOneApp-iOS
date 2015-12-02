@@ -17,5 +17,5 @@
 
 @interface Driver (Create)
 + (Driver *)driverWithInfo:(NSDictionary *)dic inManagedObjectContext:(NSManagedObjectContext *)context;
-
++ (void)refreshDriverListWithArray:(NSArray *)list inManagedObjectContext:(NSManagedObjectContext *)context;
 @end

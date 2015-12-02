@@ -136,11 +136,10 @@
 	  newIndexPath:(NSIndexPath *)newIndexPath
 {
     if ( (NSFetchedResultsChangeUpdate == type) && ([self changedSection]) ) {
-        [self  setChangedSection:NO];
         type = NSFetchedResultsChangeMove;
         newIndexPath = indexPath;
     }
-
+    [self  setChangedSection:NO];
     switch(type)
     {
         case NSFetchedResultsChangeInsert:
@@ -156,6 +155,11 @@
             break;
             
         case NSFetchedResultsChangeMove:
+            NSLog(@"SystemVersion: %@", [UIDevice currentDevice].systemVersion);
+
+            if ([[UIDevice currentDevice].systemVersion isEqualToString:@"8.3"]) {
+                break;
+            }
                 [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
@@ -182,10 +186,17 @@
 //    
 //    self.deletedSections = [[NSMutableIndexSet alloc] init];
 //    self.insertedSections = [[NSMutableIndexSet alloc] init];
+//    if (self.refreshControl) {
+//        [self.refreshControl beginRefreshing];
+//    }
+//
 //}
 //
 //- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
 //    [self.tableView endUpdates];
+//    if (self.refreshControl) {
+//        [self.refreshControl endRefreshing];
+//    }
 //}
 //
 //- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {

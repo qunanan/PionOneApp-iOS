@@ -476,9 +476,7 @@
         refreshMOC.parentContext = self.mainMOC;
 
         [refreshMOC performBlock:^{
-            for (NSDictionary *dic in (NSArray *)responseObject) {
-                [Driver driverWithInfo:dic inManagedObjectContext:refreshMOC];
-            }
+            [Driver refreshDriverListWithArray:responseObject inManagedObjectContext:refreshMOC];
             //save context
             [self saveChildContext:refreshMOC];
         }];
@@ -1006,6 +1004,9 @@
         yaml = [yaml stringByAppendingFormat:@"    pinscl: %@\r\n",grove.pinNum0];
     } else if ([grove.driver.interfaceType isEqualToString:@"ANALOG"]) {
         yaml = [yaml stringByAppendingFormat:@"    pin: %@\r\n",grove.pinNum0];
+    } else if ([grove.driver.interfaceType isEqualToString:@"UART"]){
+        yaml = [yaml stringByAppendingFormat:@"    pintx: %@\r\n",grove.pinNum1];
+        yaml = [yaml stringByAppendingFormat:@"    pinrx: %@\r\n",grove.pinNum0];
     } else {
         NSLog(@"Grove interfaceType error~");
     }
@@ -1065,7 +1066,7 @@
         return @[@"17"];
     }
     if ([name isEqualToString:@"UART"]) {
-        return @[@"1",@"3"];
+        return @[@"3",@"1"];
     }
     if ([name isEqualToString:@"I2C"]) {
         return @[@"5",@"4"];
@@ -1132,6 +1133,13 @@
                 }
             } else if ([str containsString:@"    pinscl: "]) {
                 NSString *pin = [str substringFromIndex:12];
+                [dic setObject:pin forKey:@"pin"];
+                if (dic) {
+                    [array addObject:dic.copy];
+                    dic = nil;
+                }
+            } else if ([str containsString:@"    pinrx: "]) {
+                NSString *pin = [str substringFromIndex:11];
                 [dic setObject:pin forKey:@"pin"];
                 if (dic) {
                     [array addObject:dic.copy];

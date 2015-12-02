@@ -173,7 +173,8 @@
         if ([vcID isEqualToString:@"ShowChangePassword"]) {
             [self presentViewController:self.changePasswordDialog animated:YES completion:nil];;
         } else if ([vcID isEqualToString:@"ShowShare"]) {
-            [self shareText:nil andImage:nil andUrl:[NSURL URLWithString:@"http://iot.seeed.cc"]];
+            UIImage *shareImage = [UIImage imageNamed:@"shareImage"];
+            [self shareText:@"Wio Link - 3 Step. 5 Minutes. Build Your Own IoT Applications!" andImage:shareImage andUrl:[NSURL URLWithString:@"http://iot.seeed.cc"]];
            // [self presentViewController:self.shareDialog animated:YES completion:nil];;
         } else {
             UINavigationController *controller = (UINavigationController *)self.sideMenuViewController.contentViewController;

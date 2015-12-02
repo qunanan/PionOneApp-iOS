@@ -69,7 +69,8 @@
 }
 
 - (void)shareAPIs {
-    [self shareText:self.node.name andImage:nil andUrl:[NSURL URLWithString:self.node.apiURL]];
+    UIImage *shareImage = [UIImage imageNamed:@"shareImage"];
+    [self shareText:self.node.name andImage:shareImage andUrl:[NSURL URLWithString:self.node.apiURL]];
 }
 - (void)shareText:(NSString *)text andImage:(UIImage *)image andUrl:(NSURL *)url
 {

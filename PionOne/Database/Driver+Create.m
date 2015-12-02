@@ -36,4 +36,36 @@
     return driver;
 }
 
++ (void)refreshDriverListWithArray:(NSArray *)list inManagedObjectContext:(NSManagedObjectContext *)context {
+    NSMutableArray *newDriverList = [[NSMutableArray alloc] init];
+    for (NSDictionary *dic in list) {
+        [newDriverList addObject:[Driver driverWithInfo:dic inManagedObjectContext:context]];
+    }
+    
+    //remove drivers that are no longer supported.
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Driver"];
+    request.predicate = nil;
+    NSError *error;
+    NSArray *matches = [context executeFetchRequest:request error:&error];
+    
+    if (error || !matches) {
+        // handle error
+    } else {
+        for (Driver *driver in matches) {
+            BOOL supported = NO;
+            for (Driver *newDriver in newDriverList) {
+                if ([newDriver.driverID isEqualToNumber:driver.driverID]) {
+                    supported = YES;
+                }
+            }
+            if (!supported) {
+                [context deleteObject:driver];
+//                NSInteger idid = driver.driverID.integerValue;
+                NSLog(@"remove Driver: %@",driver);
+            }
+        }
+    }
+}
+
+
 @end
