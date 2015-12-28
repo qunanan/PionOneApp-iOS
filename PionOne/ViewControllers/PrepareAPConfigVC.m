@@ -11,8 +11,9 @@
 #import "KHFlatButton.h"
 #import "MBProgressHUD.h"
 #import "TextFieldEffects-Swift.h"
+#import "WiFiListTVC.h"
 
-@interface PrepareAPConfigVC () <UITextFieldDelegate>
+@interface PrepareAPConfigVC () <UITextFieldDelegate, UIAlertViewDelegate>
 @property (strong, nonatomic) MBProgressHUD *progressHUD;
 @property (strong, nonatomic) UIAlertController *userInputDialog;
 @property (assign, nonatomic) BOOL isPreparedPionOne;
@@ -35,7 +36,7 @@
     __typeof (&*self) __weak weakSelf = self;
     if (_userInputDialog == nil) {
         NSString *ssid = [[PionOneManager sharedInstance] cachedSSID];
-        _userInputDialog = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"Join Network:%@",ssid] preferredStyle:UIAlertControllerStyleAlert];
+        _userInputDialog = [UIAlertController alertControllerWithTitle:@"Join Network" message:[NSString stringWithFormat:@"SSID:%@",ssid] preferredStyle:UIAlertControllerStyleAlert];
         [_userInputDialog addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:nil]];
         UIAlertAction *joinAction = [UIAlertAction actionWithTitle:@"Join" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             [self startConfiguration];
@@ -44,7 +45,7 @@
         [_userInputDialog addAction:joinAction];
         [_userInputDialog addTextFieldWithConfigurationHandler:^(UITextField *textField) {
             textField.placeholder = @"Enter SSID Password";
-            textField.secureTextEntry = YES;
+            textField.secureTextEntry = NO;
             [textField addTarget:weakSelf action:@selector(textFieldDidChange) forControlEvents:UIControlEventEditingChanged];
         }];
         [_userInputDialog addTextFieldWithConfigurationHandler:^(UITextField *textField) {
@@ -60,11 +61,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.navigationController.interactivePopGestureRecognizer.enabled = NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     [self registerAPconfigLocalNotification];
     if (![[PionOneManager sharedInstance] isConnectedToPionOne]) {
         [self startCheckingNodeAPConnection];
@@ -83,14 +84,13 @@
     BOOL isConnected = [[PionOneManager sharedInstance] isConnectedToPionOne];
     if (isConnected) {
         [[PionOneManager sharedInstance] setAPConfigurationDone:NO];
-        [[_userInputDialog.actions objectAtIndex:1] setEnabled:NO];
-        [self presentViewController:self.userInputDialog animated:YES completion:nil];
+        [self prepareSetup];
     } else {
-        [[[UIAlertView alloc] initWithTitle:@"Sorry"
-                                   message:@"Please connect to the WioLink_XXXX access point!"
+        [[[UIAlertView alloc] initWithTitle:@"Connect Wio Link"
+                                   message:@"Please go to Settings and connect the WioLink_XXXX Network."
                                   delegate:self
-                         cancelButtonTitle:@"OK"
-                          otherButtonTitles:nil] show];
+                         cancelButtonTitle:@"Cancel"
+                          otherButtonTitles:@"OK", nil] show];
     }
 }
 
@@ -100,15 +100,34 @@
             UILocalNotification *notification = [[UILocalNotification alloc] init];
             if (notification) {
                 notification.soundName = UILocalNotificationDefaultSoundName;
-                notification.alertBody = @"Connected to Wio Link!";
+                notification.alertBody = @"Connected a Wio Link!";
                 [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                
-                [[_userInputDialog.actions objectAtIndex:1] setEnabled:NO];
-                [self presentViewController:self.userInputDialog animated:YES completion:nil];
+                [NSThread sleepForTimeInterval:1.0];
+                [self gotReady];
             }
         }
         else {
             NSLog(@"Stopped checking SSID.");
+        }
+    }];
+}
+
+- (void)showDialog {
+    [[_userInputDialog.actions objectAtIndex:1] setEnabled:NO];
+    NSString *ssid = [[PionOneManager sharedInstance] cachedSSID];
+    self.userInputDialog.message = [NSString stringWithFormat:@"SSID:%@",ssid];
+    [self presentViewController:self.userInputDialog animated:YES completion:nil];
+}
+
+- (void)prepareSetup {
+    [self.progressHUD show:YES];
+    [[PionOneManager sharedInstance] getNodeVersionWithCompletionHandler:^(BOOL success, NSString *msg) {
+        [self.progressHUD hide:YES];
+        if (msg.floatValue > 1.0) {
+            NSLog(@"go to select wifi list vc.");
+            [self performSegueWithIdentifier:@"showWiFiList" sender:nil];
+        } else {
+            [self showDialog];
         }
     }];
 }
@@ -175,10 +194,14 @@
     [[[UIAlertView alloc] initWithTitle:@"Success!" message:nil delegate:self cancelButtonTitle:@"Done" otherButtonTitles: nil] show];
 }
 
-
+#pragma mark - AlertView Delegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 0 && [[alertView buttonTitleAtIndex:0] isEqualToString:@"Done"]) {
         [self.navigationController popViewControllerAnimated:YES];
+    }
+    if (buttonIndex == 1 && [[alertView buttonTitleAtIndex:1] isEqualToString:@"OK"]) {
+        NSURL*url=[NSURL URLWithString:@"prefs:root=WIFI"];
+        [[UIApplication sharedApplication] openURL:url];
     }
 }
 
@@ -223,4 +246,11 @@
     }
 }
 
+#pragma mark - Navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    id dVC = segue.destinationViewController;
+    if ([dVC isKindOfClass:[WiFiListTVC class]]) {
+        [(WiFiListTVC *)dVC setPresentingVC:self];
+    }
+}
 @end

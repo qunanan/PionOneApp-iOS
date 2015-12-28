@@ -67,8 +67,7 @@
     [refreshControl setTintColor:[UIColor lightGrayColor]];
     UIFont * font = [UIFont systemFontOfSize:14.0];
     NSDictionary *attributes = @{NSFontAttributeName:font, NSForegroundColorAttributeName : [UIColor lightGrayColor]};
-    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to retrieve server settings" attributes:attributes];
-    [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to retrieve configuration" attributes:attributes];
     self.refreshControl = refreshControl;
 }
 
@@ -91,6 +90,11 @@
     [super viewDidAppear:animated];
     if (self.node.groves.count == 0 || 1) {
     }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    if( self.refreshControl.isRefreshing )
+        [self refresh:nil];
 }
 
 - (void)refresh:(UIRefreshControl *)refreshControl {

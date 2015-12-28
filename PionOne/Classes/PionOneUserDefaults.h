@@ -25,7 +25,7 @@
 #define aPionOneUserLogin @"/v1/user/login"
 #define aPionOneUserRetrievepassword @"/v1/user/retrievepassword"
 #define aPionOneUserChangePassword @"/v1/user/changepassword"
-#define aPionOneUserDownload @"/v1/user/download"
+#define aPionOneUserDownload @"/v1/ota/trigger"
 #define aPionOneOTAStatus @"/v1/ota/status"
 
 #define aPionOneNodeCreate @"/v1/nodes/create"
@@ -37,6 +37,8 @@
 
 #define aPionOneNodeResources @"/v1/node/resources"
 #define aPionOneNodeAPIs @"/v1/node/.well-known"
+
+#define aPionOneNodeChangeDataServer @"/v1/node/setting/dataxserver"
 
 //default keys
 #define kPionOneUserEmail @"PionOneUserEmail"

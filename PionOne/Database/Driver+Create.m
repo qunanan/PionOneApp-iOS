@@ -54,12 +54,14 @@
         for (Driver *driver in matches) {
             BOOL supported = NO;
             for (Driver *newDriver in newDriverList) {
-                if ([newDriver.driverID isEqualToNumber:driver.driverID]) {
+                if ([newDriver.skuID isEqualToString:driver.skuID]) {
                     supported = YES;
                 }
             }
             if (!supported) {
-                [context deleteObject:driver];
+                if (driver.groves.count == 0) {
+                    [context deleteObject:driver];
+                }
 //                NSInteger idid = driver.driverID.integerValue;
                 NSLog(@"remove Driver: %@",driver);
             }

@@ -19,9 +19,9 @@
 #import "wioLinkViews.h"
 #import <GoogleMaterialIconFont/GoogleMaterialIconFont-Swift.h>
 #import "RESideMenu.h"
+#import "NodeSettingTVC.h"
 
 @interface NodeListCDTVC() <MBProgressHUDDelegate, MGSwipeTableCellDelegate, UITextFieldDelegate, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
-@property (strong, nonatomic) UIAlertController *renameDialog;
 @property (strong, nonatomic) Node *configuringNode;
 @property (assign, nonatomic) BOOL cellCanBeSelected;
 @property (assign, nonatomic) BOOL isReloading;
@@ -51,7 +51,23 @@
     [super viewDidLoad];
     self.tableView.emptyDataSetSource = self;
     self.tableView.emptyDataSetDelegate = self;
-    [[PionOneManager sharedInstance] scanDriverListWithCompletionHandler:nil];
+    [[PionOneManager sharedInstance] scanDriverListWithCompletionHandler:^(BOOL success, NSString *msg) {
+        if (!success && [msg isEqualToString:@"Please login to get the token\n"]) {
+            UIAlertController *logout = [UIAlertController alertControllerWithTitle:@"Sorry" message:@"Something is wrong, you need to login again." preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+                [[PionOneManager sharedInstance] logout];
+                UIWindow *window = [[[UIApplication sharedApplication] windows] firstObject];
+                [UIView transitionWithView:window
+                                  duration:0.5
+                                   options:UIViewAnimationOptionTransitionFlipFromRight
+                                animations:^{ window.rootViewController = [window.rootViewController.storyboard instantiateViewControllerWithIdentifier:@"WelcomeVC"]; }
+                                completion:nil];
+
+            }];
+            [logout addAction:okAction];
+            [self presentViewController:logout animated:YES completion:nil];
+        }
+    }];
 
     self.managedObjectContext = [[PionOneManager sharedInstance] mainMOC];
 //    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
@@ -61,7 +77,7 @@
 
     self.reachableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 40)];
     UILabel *info = [[UILabel alloc] initWithFrame:self.reachableHeaderView.frame];
-    info.text = @"We need network to retrieve the settings from server";
+    info.text = @"We need network to communicate with server";
     info.font = [UIFont systemFontOfSize:14];
     info.alpha = 0.9;
     info.textAlignment = NSTextAlignmentCenter;
@@ -103,8 +119,8 @@
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     UIFont * font = [UIFont systemFontOfSize:14.0];
     NSDictionary *attributes = @{NSFontAttributeName:font, NSForegroundColorAttributeName : [UIColor blackColor]};
-    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to retrieve server settings" attributes:attributes];
-    [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to retrieve list" attributes:attributes];
+//    [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refreshControl;
     [self refresh:self.refreshControl];
     
@@ -146,6 +162,11 @@
 
 }
 
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    if( self.refreshControl.isRefreshing )
+        [self refresh:nil];
+}
+
 - (void)refresh:(UIRefreshControl *)refreshControl {
     [[PionOneManager sharedInstance] deleteZombieNodeWithCompletionHandler:^(BOOL succes, NSString *msg) {
         [[PionOneManager sharedInstance] getNodeListAndNodeSettingsWithCompletionHandler:^(BOOL success, NSString *msg) {
@@ -178,27 +199,6 @@
         [self.navigationController.view addSubview:_HUD];
     }
     return _HUD;
-}
-
-- (UIAlertController *)renameDialog {
-    __typeof (&*self) __weak weakSelf = self;
-    if (_renameDialog == nil) {
-        _renameDialog = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"Rename Wio Link"] preferredStyle:UIAlertControllerStyleAlert];
-        [_renameDialog addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:nil]];
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self renameNode];
-        }];
-        okAction.enabled = NO;
-        [_renameDialog addAction:okAction];
-        [_renameDialog addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-            textField.placeholder = @"Take a name for Wio Link";
-            textField.secureTextEntry = NO;
-            [textField setReturnKeyType:UIReturnKeyGo];
-            textField.delegate = weakSelf;
-            [textField addTarget:weakSelf action:@selector(textFieldDidChange) forControlEvents:UIControlEventEditingChanged];
-        }];
-    }
-    return _renameDialog;
 }
 
 #pragma -mark EmptyDataSet Datasource
@@ -312,8 +312,9 @@
         cell.onlineLabel.text = @"Offline";
         cell.onlineLabel.textColor = [wioLinkViews wioLinkRed];
     }
-    NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"connectorName" ascending:YES];
-    cell.groves = [node.groves sortedArrayUsingDescriptors:@[descriptor]];
+    NSSortDescriptor *descriptorName = [[NSSortDescriptor alloc] initWithKey:@"connectorName" ascending:YES];
+    NSSortDescriptor *descriptorSKU = [[NSSortDescriptor alloc] initWithKey:@"driver.skuID" ascending:YES];
+    cell.groves = [node.groves sortedArrayUsingDescriptors:@[descriptorName, descriptorSKU]];
     return cell;
 }
 
@@ -404,10 +405,7 @@
             [[[UIAlertView alloc] initWithTitle:@"Sorry" message:@"You have to update firmware for this device first." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
         }
     } else if (direction == MGSwipeDirectionRightToLeft && index == 1) {
-        self.configuringNode = node;
-        [[self.renameDialog.textFields objectAtIndex:0] setText:nil];
-        [[self.renameDialog.actions objectAtIndex:1] setEnabled:NO];
-        [self presentViewController:self.renameDialog animated:YES completion:nil];
+        [self performSegueWithIdentifier:@"ShowNodeSetting" sender:node];
     } else if (direction == MGSwipeDirectionRightToLeft && index == 2) {
         //delete button
         UIAlertController *removeAlert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
@@ -433,7 +431,7 @@
 //        [UIColor colorWithRed:0 green:0x99/255.0 blue:0xcc/255.0 alpha:1.0],
 //        [UIColor redColor]};
 //    UIImage * icons[3] = {[UIImage imageNamed:@"check.png"], [UIImage imageNamed:@"fav.png"], [UIImage imageNamed:@"menu.png"]};
-    NSString* titles[3] = {@"API", @"Rename", @"Delete"};
+    NSString* titles[3] = {@"API", @"Setting", @"Delete"};
     for (int i = 0; i < number; ++i)
     {
 //        MGSwipeButton * button = [MGSwipeButton buttonWithTitle:@"" icon:icons[i] backgroundColor:colors[i] padding:15 callback:^BOOL(MGSwipeTableCell * sender){
@@ -521,34 +519,34 @@
     }];
 }
 
-- (void)renameNode {
-    NSString *name = [[_renameDialog.textFields objectAtIndex:0] text];
-    [self.HUD show:YES];
-    [[PionOneManager sharedInstance] renameNode:self.configuringNode withName:name completionHandler:^(BOOL success, NSString *msg) {
-        [self.HUD hide:YES];;
-    }];
-}
-
-
-#pragma mark -  TextFielDelegate methods
-// when user tap Enter or Return
--(BOOL)textFieldShouldReturn:(UITextField *)textField
-{
-    if (textField.text.length == 0) {
-        return NO;
-    }
-    [self renameNode];
-    [self.renameDialog dismissViewControllerAnimated:YES completion:nil];
-    return YES;
-}
-- (void)textFieldDidChange {
-    UITextField *textField = [_renameDialog.textFields objectAtIndex:0];
-    if (textField.text.length == 0) {
-        [_renameDialog.actions objectAtIndex:1].enabled = NO;
-    } else {
-        [_renameDialog.actions objectAtIndex:1].enabled = YES;
-    }
-}
+//- (void)renameNode {
+//    NSString *name = [[_renameDialog.textFields objectAtIndex:0] text];
+//    [self.HUD show:YES];
+//    [[PionOneManager sharedInstance] renameNode:self.configuringNode withName:name completionHandler:^(BOOL success, NSString *msg) {
+//        [self.HUD hide:YES];;
+//    }];
+//}
+//
+//
+//#pragma mark -  TextFielDelegate methods
+//// when user tap Enter or Return
+//-(BOOL)textFieldShouldReturn:(UITextField *)textField
+//{
+//    if (textField.text.length == 0) {
+//        return NO;
+//    }
+//    [self renameNode];
+//    [self.renameDialog dismissViewControllerAnimated:YES completion:nil];
+//    return YES;
+//}
+//- (void)textFieldDidChange {
+//    UITextField *textField = [_renameDialog.textFields objectAtIndex:0];
+//    if (textField.text.length == 0) {
+//        [_renameDialog.actions objectAtIndex:1].enabled = NO;
+//    } else {
+//        [_renameDialog.actions objectAtIndex:1].enabled = YES;
+//    }
+//}
 
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -564,8 +562,11 @@
         if ([sender isKindOfClass:[Node class]]) {
             [(NodeResourcesVC *)dVC setNode:sender];
         }
+    }  else if ([dVC isKindOfClass:[NodeSettingTVC class]]) {
+        if ([sender isKindOfClass:[Node class]]) {
+            [(NodeSettingTVC *)dVC setNode:sender];
+        }
     }
 }
-
 
 @end

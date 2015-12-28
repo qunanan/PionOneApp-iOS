@@ -1,8 +1,8 @@
 //
 //  Node+CoreDataProperties.m
-//  Pion One
+//  Wio Link
 //
-//  Created by Qxn on 15/10/24.
+//  Created by Qxn on 15/12/21.
 //  Copyright © 2015年 SeeedStudio. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -15,11 +15,12 @@
 
 @dynamic date;
 @dynamic key;
+@dynamic macAddress;
 @dynamic name;
 @dynamic nodeID;
 @dynamic online;
 @dynamic sn;
-@dynamic macAddress;
+@dynamic dataServerIP;
 @dynamic groves;
 @dynamic user;
 

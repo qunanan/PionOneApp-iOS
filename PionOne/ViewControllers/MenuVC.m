@@ -171,6 +171,9 @@
         NSDictionary *menu = [self.menuList objectAtIndex:indexPath.row];
         NSString *vcID = [menu objectForKey:kControllerID];
         if ([vcID isEqualToString:@"ShowChangePassword"]) {
+            for (UITextField *tf in self.changePasswordDialog.textFields) {
+                tf.text = nil;
+            }
             [self presentViewController:self.changePasswordDialog animated:YES completion:nil];;
         } else if ([vcID isEqualToString:@"ShowShare"]) {
             UIImage *shareImage = [UIImage imageNamed:@"shareImage"];

@@ -2,69 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>SchemeUserState</key>
-	<dict>
-		<key>AFNetworking.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>CocoaAsyncSocket.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>DZNEmptyDataSet.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>GoogleMaterialIconFont-GoogleMaterialIconFont.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>GoogleMaterialIconFont.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>KHFlatButton.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>MBProgressHUD.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>MGSwipeTableCell.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>Pods.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>RESideMenu.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>SDWebImage.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>TextFieldEffects.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>16FB872D0D2D4BA0F378AB34D47CF95F</key>
@@ -73,11 +10,6 @@
 			<true/>
 		</dict>
 		<key>1C3436CEA5C3D39764C5F54374794ECB</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>2576DDF84200052AF88ACE2E150DD9BA</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -102,11 +34,6 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>4878C70B21CA37D7CB8A476BF986741B</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>4E1263BFF45F6446CF3DE29AE234C893</key>
 		<dict>
 			<key>primary</key>
@@ -117,17 +44,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>5E486289B259E63397ACC613B1798A8B</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>74DC5F016B9D770A751295B52D5F14E8</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>93EB05ECC8D32D0141E5A67EF65CD9D8</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -143,11 +60,6 @@
 			<true/>
 		</dict>
 		<key>DAD963ABFDE3822DDDD1117035EA4D96</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>DDC77B90D63BE7AE5C149E7F4CA1F0D7</key>
 		<dict>
 			<key>primary</key>
 			<true/>

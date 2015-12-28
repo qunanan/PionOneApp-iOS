@@ -25,7 +25,7 @@
 @property (nonatomic, strong) NSString *cachedNodeName;
 @property (nonatomic, assign) BOOL APConfigurationDone;
 
-@property (nonatomic, strong) AFHTTPRequestOperationManager *httpManager;
+@property (nonatomic, strong) AFHTTPSessionManager *httpManager;
 
 + (instancetype)sharedInstance;
 
@@ -58,7 +58,8 @@
 //************private method called by startAPConfigWithProgressHandler: **************
 //- (void)findTheConfiguringNodeFromSeverWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
 //- (void)setNodeName:(NSString *)name withNodeSN:(NSString *)sn completionHandler:(void (^)(BOOL success, NSString *msg))handler;
-- (void)getNodeMacAddressWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
+- (void)getNodeVersionWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
+- (void)getWiFiListWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
 - (void)checkIfConnectedToPionOneWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
 - (void)startAPConfigWithProgressHandler:(void (^)(BOOL success, NSInteger step, NSString *msg))handler;
 - (void)longDurationProcessBegin;
@@ -71,6 +72,7 @@
 - (NSString *)interfaceTypeForCntName:(NSString *)cntName;
 - (NSArray *)pinNumberWithconnectorName:(NSString *)name;
 - (NSString *)connectoNameForPin:(NSString *)pin;
+- (NSString *)connectorNameForPort:(NSString *)portName;
 
 #pragma -mark Node API Method
 //- (void)getAPIsForNode:(Node *)node completion:(void (^)(BOOL success, NSString *msg, NSArray *apis))handler;
@@ -79,4 +81,6 @@
 
 #pragma -mark setup Server IP
 - (void)setRegion:(NSString*)region OTAServerIP:(NSString *)otaIP andDataSeverIP:(NSString *)dataIP;
+- (void)node:(Node *)node setDataServerIP:(NSString *)dataIP WithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
+
 @end

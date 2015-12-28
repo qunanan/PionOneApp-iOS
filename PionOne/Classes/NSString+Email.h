@@ -27,5 +27,5 @@
 @interface NSString (Email)
 
 - (BOOL)isEmail;
-
+- (BOOL)isIp;
 @end
