@@ -51,7 +51,7 @@
     NSDictionary *attributes = @{NSFontAttributeName:font, NSForegroundColorAttributeName : [UIColor blackColor]};
     self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to refresh" attributes:attributes];
     [self.webView.scrollView addSubview:self.refreshControl];
-
+    
     NSURL *url = [NSURL URLWithString:self.node.apiURL];
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:10.0];
     [self.webView loadRequest:request];

@@ -126,29 +126,30 @@
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[email, pwd] forKeys:@[@"email", @"password"]];
     self.httpManager.requestSerializer.timeoutInterval = 20.0f;
     [self.httpManager POST:aPionOneUserCreate parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
-        NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
-        if (status.integerValue == 200) {
-            self.user = [User userWithInfo:responseObject inManagedObjectContext:self.mainMOC];
-            //save context
-            [self.mainMOC performBlock:^{
-                NSError *parentError = nil;
-                if (![_mainMOC save:&parentError]) {
-                    NSLog(@"Error saving parent");
-                }
-            }];
-            [[NSUserDefaults standardUserDefaults] setObject:self.user.token forKey:kPionOneUserToken];
-            [[NSUserDefaults standardUserDefaults] setObject:email forKey:kPionOneUserEmail];
-            if(handler) handler(YES,msg);
-        } else {
-            if(handler) handler(NO,msg);
-        }
+        self.user = [User userWithInfo:responseObject inManagedObjectContext:self.mainMOC];
+        //save context
+        [self.mainMOC performBlock:^{
+            NSError *parentError = nil;
+            if (![_mainMOC save:&parentError]) {
+                NSLog(@"Error saving parent");
+            }
+        }];
+        [[NSUserDefaults standardUserDefaults] setObject:self.user.token forKey:kPionOneUserToken];
+        [[NSUserDefaults standardUserDefaults] setObject:email forKey:kPionOneUserEmail];
+        if(handler) handler(YES,@"Create a User account success.");
         NSLog(@"JSON:SignUp: %@", responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        if (handler) {
-            handler(NO,@"SignUp:Connecting to Server failed!");
+        NSError *errorJson=nil;
+        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+        NSDictionary* responseDict = nil;
+        if (errorData) {
+            responseDict = [NSJSONSerialization JSONObjectWithData:errorData options:NSJSONReadingAllowFragments error:&errorJson];
         }
-        NSLog(@"Networking error: %@", error);
+        if (handler) {
+            handler(NO,responseDict[@"error"]);
+        }
+        NSLog(@"responseDict=%@",responseDict);
+        NSLog(@"http error: %@",error);
     }];
 }
 
@@ -177,30 +178,31 @@
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[email, pwd] forKeys:@[@"email", @"password"]];
     self.httpManager.requestSerializer.timeoutInterval = 20.0f;
     [self.httpManager POST:aPionOneUserLogin parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
-        NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
-        if (status.integerValue == 200) {
-            self.user = [User userWithInfo:responseObject inManagedObjectContext:self.mainMOC];
-            //save context
-            [self.mainMOC performBlock:^{
-                NSError *parentError = nil;
-                if (![_mainMOC save:&parentError]) {
-                    NSLog(@"Error saving parent");
-                }
-            }];
-            [[NSUserDefaults standardUserDefaults] setObject:self.user.token forKey:kPionOneUserToken];
-            [[NSUserDefaults standardUserDefaults] setObject:email forKey:kPionOneUserEmail];
-            if(handler) handler(YES,msg);
-        } else {
-            if(handler) handler(NO,msg);
-        }
+        self.user = [User userWithInfo:responseObject inManagedObjectContext:self.mainMOC];
+        //save context
+        [self.mainMOC performBlock:^{
+            NSError *parentError = nil;
+            if (![_mainMOC save:&parentError]) {
+                NSLog(@"Error saving parent");
+            }
+        }];
+        [[NSUserDefaults standardUserDefaults] setObject:self.user.token forKey:kPionOneUserToken];
+        [[NSUserDefaults standardUserDefaults] setObject:email forKey:kPionOneUserEmail];
+        if(handler) handler(YES,@"User login success.");
         NSLog(@"JSON:SignIn: %@", responseObject);
 
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        if (handler) {
-            handler(NO,@"SignIn:Connecting to Server failed!");
+        NSError *errorJson=nil;
+        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+        NSDictionary* responseDict = nil;
+        if (errorData) {
+            responseDict = [NSJSONSerialization JSONObjectWithData:errorData options:NSJSONReadingAllowFragments error:&errorJson];
         }
-        NSLog(@"Networking error: %@", error);
+        if (handler) {
+            handler(NO,responseDict[@"error"]);
+        }
+        NSLog(@"responseDict=%@",responseDict);
+        NSLog(@"http error: %@",error);
     }];
 }
 
@@ -242,19 +244,20 @@
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[email] forKeys:@[@"email"]];
     self.httpManager.requestSerializer.timeoutInterval = 30.0f;
     [self.httpManager POST:aPionOneUserRetrievepassword parameters:parameters progress:nil success:^(NSURLSessionDataTask *operation, id responseObject) {
-        NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
-        NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
-        if (status.integerValue == 200) {
-            if (handler) handler(YES,msg);
-        } else {
-            if (handler) handler(NO,msg);
-        }
+        if (handler) handler(YES,@"Retreive the password success.");
         NSLog(@"JSON:RetrievePWD %@", responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        if (handler) {
-            handler(NO,@"RetrievePWD:Connecting to Server failed!");
+        NSError *errorJson=nil;
+        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+        NSDictionary* responseDict = nil;
+        if (errorData) {
+            responseDict = [NSJSONSerialization JSONObjectWithData:errorData options:NSJSONReadingAllowFragments error:&errorJson];
         }
-        NSLog(@"Networking error: %@", error);
+        if (handler) {
+            handler(NO,responseDict[@"error"]);
+        }
+        NSLog(@"responseDict=%@",responseDict);
+        NSLog(@"http error: %@",error);
     }];
 }
 
@@ -269,29 +272,30 @@
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[newPwd, self.user.token] forKeys:@[@"password", @"access_token"]];
     self.httpManager.requestSerializer.timeoutInterval = 20.0f;
     [self.httpManager POST:aPionOneUserChangePassword parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
-        NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
-        if (status.integerValue == 200) {
-            NSString *newToken = [(NSDictionary *)responseObject objectForKey:@"token"];
-            self.user.token = newToken;
-            //save context
-            [self.mainMOC performBlock:^{
-                NSError *parentError = nil;
-                if (![_mainMOC save:&parentError]) {
-                    NSLog(@"Error saving parent");
-                }
-            }];
-            [[NSUserDefaults standardUserDefaults] setObject:newToken forKey:kPionOneUserToken];
-            if (handler) handler(YES,msg);
-        } else {
-            if (handler) handler(NO,msg);
-        }
+        NSString *newToken = [(NSDictionary *)responseObject objectForKey:@"token"];
+        self.user.token = newToken;
+        //save context
+        [self.mainMOC performBlock:^{
+            NSError *parentError = nil;
+            if (![_mainMOC save:&parentError]) {
+                NSLog(@"Error saving parent");
+            }
+        }];
+        [[NSUserDefaults standardUserDefaults] setObject:newToken forKey:kPionOneUserToken];
+        if (handler) handler(YES,@"Change the password success.");
         NSLog(@"JSON:ChangePWD %@", responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        if (handler) {
-            handler(NO,@"ChangePWD:Connecting to Server failed!");
+        NSError *errorJson=nil;
+        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+        NSDictionary* responseDict = nil;
+        if (errorData) {
+            responseDict = [NSJSONSerialization JSONObjectWithData:errorData options:NSJSONReadingAllowFragments error:&errorJson];
         }
-        NSLog(@"Networking error: %@", error);
+        if (handler) {
+            handler(NO,responseDict[@"error"]);
+        }
+        NSLog(@"responseDict=%@",responseDict);
+        NSLog(@"http error: %@",error);
     }];
 }
 
@@ -305,26 +309,26 @@
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token, name] forKeys:@[@"access_token", @"name"]];
     self.httpManager.requestSerializer.timeoutInterval = 20.0f;
     [self.httpManager POST:aPionOneNodeCreate parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
-        NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
-        if (status.integerValue == 200) {
-            //save the temp node info to UserDefaults for if the app was closed by user,
-            //it can be removed when launch the app next time
-            self.tmpNodeSN = [(NSDictionary *)responseObject objectForKey:@"node_sn"];
-            self.tmpNodeKey = [(NSDictionary *)responseObject objectForKey:@"node_key"];
-            [[NSUserDefaults standardUserDefaults] setObject:self.tmpNodeSN forKey:kPionOneTmpNodeSN];
-            [[NSUserDefaults standardUserDefaults] setObject:self.tmpNodeKey forKey:kPionOneTmpNodeKey];
-
-            if (handler) handler(YES,msg);
-        } else {
-            if (handler) handler(NO,msg);
-        }
+        //save the temp node info to UserDefaults for if the app was closed by user,
+        //it can be removed when launch the app next time
+        self.tmpNodeSN = [(NSDictionary *)responseObject objectForKey:@"node_sn"];
+        self.tmpNodeKey = [(NSDictionary *)responseObject objectForKey:@"node_key"];
+        [[NSUserDefaults standardUserDefaults] setObject:self.tmpNodeSN forKey:kPionOneTmpNodeSN];
+        [[NSUserDefaults standardUserDefaults] setObject:self.tmpNodeKey forKey:kPionOneTmpNodeKey];
+        if (handler) handler(YES,@"Create a node success.");
         NSLog(@"JSON:CreateNode: %@", responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        if (handler) {
-            handler(NO,@"CreateNode:Connecting to Server failed!");
+        NSError *errorJson=nil;
+        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+        NSDictionary* responseDict = nil;
+        if (errorData) {
+            responseDict = [NSJSONSerialization JSONObjectWithData:errorData options:NSJSONReadingAllowFragments error:&errorJson];
         }
-        NSLog(@"Networking error: %@", error);
+        if (handler) {
+            handler(NO,responseDict[@"error"]);
+        }
+        NSLog(@"responseDict=%@",responseDict);
+        NSLog(@"http error: %@",error);
     }];
 }
 
@@ -337,20 +341,21 @@
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token, node.sn, name] forKeys:@[@"access_token", @"node_sn", @"name"]];
     self.httpManager.requestSerializer.timeoutInterval = 20.0f;
     [self.httpManager POST:aPionOneNodeRename parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
-        NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
-        if (status.integerValue == 200) {
-            node.name = name;
-            if (handler) handler(YES,msg);
-        } else {
-            if (handler) handler(NO,msg);
-        }
+        node.name = name;
+        if (handler) handler(YES,@"Rename a node success.");
         NSLog(@"JSON:renameNode: %@", responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        if (handler) {
-            handler(NO,@"renameNode:Connecting to Server failed!");
+        NSError *errorJson=nil;
+        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+        NSDictionary* responseDict = nil;
+        if (errorData) {
+            responseDict = [NSJSONSerialization JSONObjectWithData:errorData options:NSJSONReadingAllowFragments error:&errorJson];
         }
-        NSLog(@"Networking error: %@", error);
+        if (handler) {
+            handler(NO,responseDict[@"error"]);
+        }
+        NSLog(@"responseDict=%@",responseDict);
+        NSLog(@"http error: %@",error);
     }];
 }
 
@@ -363,27 +368,28 @@
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token] forKeys:@[@"access_token"]];
     self.httpManager.requestSerializer.timeoutInterval = 20.0f;
     [self.httpManager GET:aPionOneNodeList parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
-        NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
-        if (status.integerValue == 200) {
-            NSArray * nodelist = (NSArray *)[(NSDictionary *)responseObject objectForKey:@"nodes"];
-            NSManagedObjectContext *refreshMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-            refreshMOC.parentContext = self.mainMOC;
-            [refreshMOC performBlock:^{
-                User *tmpUser = [refreshMOC objectWithID:self.user.objectID];
-                [tmpUser refreshNodeListWithArry:nodelist];
-            }];
-            [self saveChildContext:refreshMOC];
-            if (handler) handler(YES,msg);
-        } else {
-            if (handler) handler(NO,msg);
-        }
+        NSArray * nodelist = (NSArray *)[(NSDictionary *)responseObject objectForKey:@"nodes"];
+        NSManagedObjectContext *refreshMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        refreshMOC.parentContext = self.mainMOC;
+        [refreshMOC performBlock:^{
+            User *tmpUser = [refreshMOC objectWithID:self.user.objectID];
+            [tmpUser refreshNodeListWithArry:nodelist];
+        }];
+        [self saveChildContext:refreshMOC];
+        if (handler) handler(YES,@"List all nodes of a user success.");
         NSLog(@"JSON:GetNodeList: %@", responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        if (handler) {
-            handler(NO,@"GetNodeList:Connecting to Server failed!");
+        NSError *errorJson=nil;
+        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+        NSDictionary* responseDict = nil;
+        if (errorData) {
+            responseDict = [NSJSONSerialization JSONObjectWithData:errorData options:NSJSONReadingAllowFragments error:&errorJson];
         }
-        NSLog(@"Networking error: %@", error);
+        if (handler) {
+            handler(NO,responseDict[@"error"]);
+        }
+        NSLog(@"responseDict=%@",responseDict);
+        NSLog(@"http error: %@",error);
     }];
 }
 
@@ -396,41 +402,42 @@
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token] forKeys:@[@"access_token"]];
     self.httpManager.requestSerializer.timeoutInterval = 20.0f;
     [self.httpManager GET:aPionOneNodeList parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
-        NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
-        if (status.integerValue == 200) {
-            NSArray * nodelist = (NSArray *)[(NSDictionary *)responseObject objectForKey:@"nodes"];
-            NSManagedObjectContext *refreshMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-            refreshMOC.parentContext = self.mainMOC;
-            [refreshMOC performBlock:^{
-                User *tmpUser = [refreshMOC objectWithID:self.user.objectID];
-                [tmpUser refreshNodeListWithArry:nodelist];
-                __block NSInteger count = tmpUser.nodes.count;
-                if (count == 0) {
-                    [self saveChildContext:refreshMOC];
-                    if (handler) handler(YES,msg);
-                } else {
-                    for (Node *tmpNode in tmpUser.nodes) {
-                        [self node:tmpNode getSettingsWithCompletionHandler:^(BOOL success, NSString *msg) {
-                            if (--count == 0) {
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    [self saveChildContext:refreshMOC];
-                                    if (handler) handler(success,msg);
-                                });
-                            }
-                        }];
-                    }
+        NSArray * nodelist = (NSArray *)[(NSDictionary *)responseObject objectForKey:@"nodes"];
+        NSManagedObjectContext *refreshMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        refreshMOC.parentContext = self.mainMOC;
+        [refreshMOC performBlock:^{
+            User *tmpUser = [refreshMOC objectWithID:self.user.objectID];
+            [tmpUser refreshNodeListWithArry:nodelist];
+            __block NSInteger count = tmpUser.nodes.count;
+            if (count == 0) {
+                [self saveChildContext:refreshMOC];
+                if (handler) handler(YES,@"List all nodes of a user success.");
+            } else {
+                for (Node *tmpNode in tmpUser.nodes) {
+                    [self node:tmpNode getSettingsWithCompletionHandler:^(BOOL success, NSString *msg) {
+                        if (--count == 0) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [self saveChildContext:refreshMOC];
+                                if (handler) handler(success,msg);
+                            });
+                        }
+                    }];
                 }
-            }];
-        } else {
-            if (handler) handler(NO,msg);
-        }
+            }
+        }];
         NSLog(@"JSON:GetNodeList: %@", responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        if (handler) {
-            handler(NO,@"GetNodeList:Connecting to Server failed!");
+        NSError *errorJson=nil;
+        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+        NSDictionary* responseDict = nil;
+        if (errorData) {
+            responseDict = [NSJSONSerialization JSONObjectWithData:errorData options:NSJSONReadingAllowFragments error:&errorJson];
         }
-        NSLog(@"Networking error: %@", error);
+        if (handler) {
+            handler(NO,responseDict[@"error"]);
+        }
+        NSLog(@"responseDict=%@",responseDict);
+        NSLog(@"http error: %@",error);
     }];
 }
 
@@ -444,20 +451,21 @@
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token, node.sn] forKeys:@[@"access_token", @"node_sn"]];
     self.httpManager.requestSerializer.timeoutInterval = 20.0f;
     [self.httpManager POST:aPionOneNodeDelete parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
-        NSString *msg =[(NSDictionary *)responseObject objectForKey:@"msg"];
-        if (status.integerValue == 200) {
-            [self.mainMOC deleteObject:node];
-            if (handler) handler(YES,msg);
-        } else {
-            if(handler) handler(NO,msg);
-        }
+        [self.mainMOC deleteObject:node];
+        if (handler) handler(YES,@"Delete a node success.");
         NSLog(@"JSON:DeleteNode: %@", responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        if (handler) {
-            handler(NO,@"DeleteNode:Connecting to Server failed!");
+        NSError *errorJson=nil;
+        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+        NSDictionary* responseDict = nil;
+        if (errorData) {
+            responseDict = [NSJSONSerialization JSONObjectWithData:errorData options:NSJSONReadingAllowFragments error:&errorJson];
         }
-        NSLog(@"Networking error: %@", error);
+        if (handler) {
+            handler(NO,responseDict[@"error"]);
+        }
+        NSLog(@"responseDict=%@",responseDict);
+        NSLog(@"http error: %@",error);
     }];
 
 }
@@ -473,46 +481,30 @@
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token] forKeys:@[@"access_token"]];
     self.httpManager.requestSerializer.timeoutInterval = 30.0f;
     [self.httpManager GET:aPionOneDriverScan parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
-            NSArray *drivers =[(NSDictionary *)responseObject objectForKey:@"drivers"];
-            NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
-            if (status && status.integerValue == 200) {
-                NSManagedObjectContext *refreshMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-                refreshMOC.parentContext = self.mainMOC;
-                [refreshMOC performBlock:^{
-                    [Driver refreshDriverListWithArray:drivers inManagedObjectContext:refreshMOC];
-                    //save context
-                    [self saveChildContext:refreshMOC];
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if(handler) handler(YES,nil);
-                    });
-                }];
-            } else {
-                if (handler) {
-                    handler(NO, msg);
-                }
-            }
-        }
-
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            NSManagedObjectContext *refreshMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-            refreshMOC.parentContext = self.mainMOC;
-            [refreshMOC performBlock:^{
-                [Driver refreshDriverListWithArray:responseObject inManagedObjectContext:refreshMOC];
-                //save context
-                [self saveChildContext:refreshMOC];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if(handler) handler(YES,nil);
-                });
-            }];
-        }
+        NSArray *drivers =[(NSDictionary *)responseObject objectForKey:@"drivers"];
+        NSManagedObjectContext *refreshMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        refreshMOC.parentContext = self.mainMOC;
+        [refreshMOC performBlock:^{
+            [Driver refreshDriverListWithArray:drivers inManagedObjectContext:refreshMOC];
+            //save context
+            [self saveChildContext:refreshMOC];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if(handler) handler(YES,@"Get all grove drivers’ information success.");
+            });
+        }];
         NSLog(@"JSON:ScanDriver: %@", responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        if (handler) {
-            handler(NO,@"ScanDriver:Connecting to Server failed!");
+        NSError *errorJson=nil;
+        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+        NSDictionary* responseDict = nil;
+        if (errorData) {
+            responseDict = [NSJSONSerialization JSONObjectWithData:errorData options:NSJSONReadingAllowFragments error:&errorJson];
         }
-        NSLog(@"Networking error: %@", error);
+        if (handler) {
+            handler(NO,responseDict[@"error"]);
+        }
+        NSLog(@"responseDict=%@",responseDict);
+        NSLog(@"http error: %@",error);
     }];
 }
 
@@ -527,7 +519,7 @@
 //        if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
 //            // Replace this implementation with code to handle the error appropriately.
 //            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-//            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+//            NSLog(@"Unresolved error %@, %@", error.localizedDescription, [error userInfo]);
 //            abort();
 //        }
 //    }
@@ -594,21 +586,22 @@
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token, zombieNodeSN] forKeys:@[@"access_token", @"node_sn"]];
     self.httpManager.requestSerializer.timeoutInterval = 10.0f;
     [self.httpManager POST:aPionOneNodeDelete parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
-        NSString *msg =[(NSDictionary *)responseObject objectForKey:@"msg"];
-        if (status.integerValue == 200) {
-            [[NSUserDefaults standardUserDefaults] removeObjectForKey:kPionOneTmpNodeSN];
-            [[NSUserDefaults standardUserDefaults] removeObjectForKey:kPionOneTmpNodeKey];
-            if (handler) handler(YES,msg);
-        } else {
-            if(handler) handler(NO,msg);
-        }
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:kPionOneTmpNodeSN];
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:kPionOneTmpNodeKey];
+        if (handler) handler(YES,@"Delete Zombie node success.");
         NSLog(@"JSON:DeleteZombie: %@", responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        if (handler) {
-            handler(NO,@"DeleteZombie:Connecting to Server failed!");
+        NSError *errorJson=nil;
+        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+        NSDictionary* responseDict = nil;
+        if (errorData) {
+            responseDict = [NSJSONSerialization JSONObjectWithData:errorData options:NSJSONReadingAllowFragments error:&errorJson];
         }
-        NSLog(@"Networking error: %@", error);
+        if (handler) {
+            handler(NO,responseDict[@"error"]);
+        }
+        NSLog(@"responseDict=%@",responseDict);
+        NSLog(@"http error: %@",error);
     }];
 }
 
@@ -747,24 +740,31 @@
         while (!timeout && !self.canceled && !self.foundTheNodeOnServer) {
             NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[user_token] forKeys:@[@"access_token"]];
             [self.httpManager GET:aPionOneNodeList parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
-                if (status.integerValue == 200) {
-                    NSArray * nodelist = (NSArray *)[(NSDictionary *)responseObject objectForKey:@"nodes"];
-                    for (NSDictionary *dic in nodelist) {
-                        NSString *sn = dic[@"node_sn"];
-                        if ([sn isEqualToString:self.tmpNodeSN]) {
-                            NSNumber *online = dic[@"online"];
-                            if (online.boolValue) {
-                                self.foundTheNodeOnServer = YES;
-                            }
+                NSArray * nodelist = (NSArray *)[(NSDictionary *)responseObject objectForKey:@"nodes"];
+                for (NSDictionary *dic in nodelist) {
+                    NSString *sn = dic[@"node_sn"];
+                    if ([sn isEqualToString:self.tmpNodeSN]) {
+                        NSNumber *online = dic[@"online"];
+                        if (online.boolValue) {
+                            self.foundTheNodeOnServer = YES;
                         }
                     }
                 }
                 NSLog(@"JSON:findTheConfiguringNode %@", responseObject);
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                NSLog(@"Networking error:findTheConfiguringNode %@", error);
+                NSError *errorJson=nil;
+                NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+                NSDictionary* responseDict = nil;
+                if (errorData) {
+                    responseDict = [NSJSONSerialization JSONObjectWithData:errorData options:NSJSONReadingAllowFragments error:&errorJson];
+                }
+//                if (handler) {
+//                    handler(NO,responseDict[@"error"]);
+//                }
+                NSLog(@"responseDict=%@",responseDict);
+                NSLog(@"http error: %@",error);
             }];
-            [NSThread sleepForTimeInterval:3];
+            [NSThread sleepForTimeInterval:4];
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             if(self.foundTheNodeOnServer == YES) {
@@ -789,19 +789,20 @@
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token, sn, name] forKeys:@[@"access_token", @"node_sn", @"name"]];
     self.httpManager.requestSerializer.timeoutInterval = 30.0f;
     [self.httpManager POST:aPionOneNodeRename parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
-        NSString *msg =[(NSDictionary *)responseObject objectForKey:@"msg"];
-        if (status.integerValue == 200) {
-            if (handler) handler(YES,msg);
-        } else {
-            if(handler) handler(NO,msg);
-        }
+        if (handler) handler(YES,@"Rename a node success.");
         NSLog(@"JSON:APConfigSetNodeName: %@", responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        if (handler) {
-            handler(NO,@"APConfigSetNodeName:Connecting to Server failed!");
+        NSError *errorJson=nil;
+        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+        NSDictionary* responseDict = nil;
+        if (errorData) {
+            responseDict = [NSJSONSerialization JSONObjectWithData:errorData options:NSJSONReadingAllowFragments error:&errorJson];
         }
-        NSLog(@"Networking error: %@", error);
+        if (handler) {
+            handler(NO,responseDict[@"error"]);
+        }
+        NSLog(@"responseDict=%@",responseDict);
+        NSLog(@"http error: %@",error);
     }];
 }
 
@@ -936,10 +937,10 @@
     AFHTTPSessionManager *jsonHttpMgr = [[AFHTTPSessionManager alloc] initWithBaseURL:baseURL];
     jsonHttpMgr.securityPolicy.allowInvalidCertificates = YES;
     jsonHttpMgr.securityPolicy.validatesDomainName = NO;
-    jsonHttpMgr.responseSerializer = [AFJSONResponseSerializer serializer];
-    jsonHttpMgr.responseSerializer.acceptableContentTypes = [jsonHttpMgr.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+    jsonHttpMgr.responseSerializer = [AFJSONResponseSerializer serializerWithReadingOptions:NSJSONReadingAllowFragments];
+    jsonHttpMgr.responseSerializer.acceptableContentTypes = [jsonHttpMgr.responseSerializer.acceptableContentTypes setByAddingObject:@"application/json"];
     jsonHttpMgr.requestSerializer = [AFJSONRequestSerializer serializer];
-    jsonHttpMgr.requestSerializer.timeoutInterval = 30.0f;
+
     [jsonHttpMgr.requestSerializer setValue:node.key forHTTPHeaderField:@"Authorization"];
     NSDictionary *parameters = [self jsonWithNode:node];
     jsonHttpMgr.requestSerializer.timeoutInterval = 30.0f;
@@ -947,62 +948,59 @@
                 parameters:parameters
                   progress:nil
                    success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                   NSString *otaMsg =(NSString *)[(NSDictionary *)responseObject objectForKey:@"ota_msg"];
-                   NSString *msg =(NSString *)[(NSDictionary *)responseObject objectForKey:@"msg"];
-                   NSString *status =(NSString *)[(NSDictionary *)responseObject objectForKey:@"status"];
-                   NSString *otaStatus =(NSString *)[(NSDictionary *)responseObject objectForKey:@"ota_status"];
-                   if (status.integerValue == 200) {
+                       NSString *otaMsg =(NSString *)[(NSDictionary *)responseObject objectForKey:@"ota_msg"];
+                       NSString *msg =(NSString *)[(NSDictionary *)responseObject objectForKey:@"msg"];
+                       NSString *otaStatus =(NSString *)[(NSDictionary *)responseObject objectForKey:@"ota_status"];
                        if (handler) {
                            handler(YES,msg,otaMsg,otaStatus);
                            [self node:node OTAStatusWithprogressHandler:handler];
                        }
-                   } else {
-                       if (handler) {
-                           handler(NO,msg,otaStatus,otaStatus);
+                       NSLog(@"JSON:OTA: %@", responseObject);
+                   } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                       NSError *errorJson=nil;
+                       NSData *errorData = [error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] copy];
+                       NSDictionary* responseDict = nil;
+                       if (errorData) {
+                           responseDict = [NSJSONSerialization JSONObjectWithData:errorData options:NSJSONReadingAllowFragments error:&errorJson];
                        }
-                   }
-                   NSLog(@"JSON:OTA: %@", responseObject);
-               }
-               failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                   if (handler) {
-                       handler(NO,@"OTA:Connecting to Server failed!",nil,nil);
-                   }
-                   NSLog(@"Networking error: %@", error);
-               }];
+                       if (handler) {
+                           handler(NO,responseDict[@"error"], nil, nil);
+                       }
+                       NSLog(@"responseDict=%@",responseDict);
+                       NSLog(@"http error: %@",error);
+                   }];
 }
 
 - (void)node:(Node *)node OTAStatusWithprogressHandler:(void (^)(BOOL, NSString *, NSString *, NSString *))handler {
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[node.key] forKeys:@[@"access_token"]];
     self.httpManager.requestSerializer.timeoutInterval = 60.0f;
-    [self.httpManager POST:aPionOneOTAStatus
+    [self.httpManager GET:aPionOneOTAStatus
                 parameters:parameters
                   progress:nil
                    success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                        NSString *otaMsg =(NSString *)[(NSDictionary *)responseObject objectForKey:@"ota_msg"];
                        NSString *msg =(NSString *)[(NSDictionary *)responseObject objectForKey:@"msg"];
-                       NSString *status =(NSString *)[(NSDictionary *)responseObject objectForKey:@"status"];
                        NSString *otaStatus =(NSString *)[(NSDictionary *)responseObject objectForKey:@"ota_status"];
-                       if (status.integerValue == 200) {
-                           if (handler) {
-                               handler(YES,msg,otaMsg,otaStatus);
-                               if ([otaStatus isEqualToString:@"going"]) {
-                                   [self node:node OTAStatusWithprogressHandler:handler];
-                               }
-                           }
-                       } else {
-                           if (handler) {
-                               handler(NO,msg,otaStatus,otaStatus);
+                       if (handler) {
+                           handler(YES,msg,otaMsg,otaStatus);
+                           if ([otaStatus isEqualToString:@"going"]) {
+                               [self node:node OTAStatusWithprogressHandler:handler];
                            }
                        }
                        NSLog(@"JSON:OTA: %@", responseObject);
-                   }
-                   failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                       if (handler) {
-                           handler(NO,@"OTA:Connecting to Server failed!",nil,nil);
+                   } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                       NSError *errorJson=nil;
+                       NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+                       NSDictionary* responseDict = nil;
+                       if (errorData) {
+                           responseDict = [NSJSONSerialization JSONObjectWithData:errorData options:NSJSONReadingAllowFragments error:&errorJson];
                        }
-                       NSLog(@"Networking error: %@", error);
+                       if (handler) {
+                           handler(NO,responseDict[@"error"], nil, nil);
+                       }
+                       NSLog(@"responseDict=%@",responseDict);
+                       NSLog(@"http error: %@",error);
                    }];
-
 }
 
 - (void)node:(Node *)node getSettingsWithCompletionHandler:(void (^)(BOOL, NSString *))handler {
@@ -1014,69 +1012,66 @@
                parameters:parameters
                  progress:nil
                   success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                      id msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
-                      NSString *status =(NSString *)[(NSDictionary *)responseObject objectForKey:@"status"];
+                      id config = [(NSDictionary *)responseObject objectForKey:@"config"];
                       NSString *type = [(NSDictionary *)responseObject objectForKey:@"type"];
-                       if (status.integerValue == 200) {
-                           if ([type isEqualToString:@"yaml"] || type == nil) {
-                               NSArray *array = [self nodeSettingsFromYamlString:msg];
-                               [refreshMOC performBlock:^{
-                                   Node *tmpNode = [refreshMOC objectWithID:node.objectID];
-                                   [tmpNode refreshNodeSettingsWithArray:array];
-                                   NSError *error = nil;
-                                   if (![refreshMOC save:&error]) {
-                                       NSLog(@"Error saving parent");
-                                   }
-                                   dispatch_async(dispatch_get_main_queue(), ^{
-                                       if (handler) {
-                                           handler(YES,msg);
-                                       }
-                                   });
-                               }];
-                           } else if ([type isEqualToString:@"json"]) {
-                               [refreshMOC performBlock:^{
-                                   Node *tmpNode = [refreshMOC objectWithID:node.objectID];
-                                   [tmpNode refreshNodeSettingsWithJson:msg];
-                                   NSError *error = nil;
-                                   if (![refreshMOC save:&error]) {
-                                       NSLog(@"Error saving parent");
-                                   }
-                                   dispatch_async(dispatch_get_main_queue(), ^{
-                                       if (handler) {
-                                           handler(YES,msg);
-                                       }
-                                   });
-                               }];
-                           }
-                       } else if (status.integerValue == 404) {
-                           [refreshMOC performBlock:^{
-                               Node *tmpNode = [refreshMOC objectWithID:node.objectID];
-                               tmpNode.groves = nil;
-                               NSError *error = nil;
-                               if (![refreshMOC save:&error]) {
-                                   NSLog(@"Error saving parent");
-                               }
-                               dispatch_async(dispatch_get_main_queue(), ^{
-                                   if (handler) {
-                                       handler(YES,msg);
-                                   }
-                               });
-                           }];
-                       } else {
-                           dispatch_async(dispatch_get_main_queue(), ^{
-                               if (handler) {
-                                   handler(NO,msg);
-                               }
-                           });
-                       }
+                      if ([type isEqualToString:@"yaml"] || type == nil) {
+                          NSArray *array = [self nodeSettingsFromYamlString:config];
+                          [refreshMOC performBlock:^{
+                              Node *tmpNode = [refreshMOC objectWithID:node.objectID];
+                              [tmpNode refreshNodeSettingsWithArray:array];
+                              NSError *error = nil;
+                              if (![refreshMOC save:&error]) {
+                                  NSLog(@"Error saving parent");
+                              }
+                              dispatch_async(dispatch_get_main_queue(), ^{
+                                  if (handler) {
+                                      handler(YES,@"Get the configuration of node success.");
+                                  }
+                              });
+                          }];
+                      } else if ([type isEqualToString:@"json"]) {
+                          [refreshMOC performBlock:^{
+                              Node *tmpNode = [refreshMOC objectWithID:node.objectID];
+                              [tmpNode refreshNodeSettingsWithJson:config];
+                              NSError *error = nil;
+                              if (![refreshMOC save:&error]) {
+                                  NSLog(@"Error saving parent");
+                              }
+                              dispatch_async(dispatch_get_main_queue(), ^{
+                                  if (handler) {
+                                      handler(YES,@"Get the configuration of node success.");
+                                  }
+                              });
+                          }];
+                      }
+//                       if (status.integerValue == 404) {
+//                           [refreshMOC performBlock:^{
+//                               Node *tmpNode = [refreshMOC objectWithID:node.objectID];
+//                               tmpNode.groves = nil;
+//                               NSError *error = nil;
+//                               if (![refreshMOC save:&error]) {
+//                                   NSLog(@"Error saving parent");
+//                               }
+//                               dispatch_async(dispatch_get_main_queue(), ^{
+//                                   if (handler) {
+//                                       handler(YES,msg);
+//                                   }
+//                               });
+//                           }];
                        NSLog(@"JSON:GetNodeSettings: %@", responseObject);
-                   }
-                   failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                       if (handler) {
-                           handler(NO,@"GetNodeSettings:Connecting to Server failed!");
-                       }
-                       NSLog(@"Networking error: %@", error);
-                   }];
+                  } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                      NSError *errorJson=nil;
+                      NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+                      NSDictionary* responseDict = nil;
+                      if (errorData) {
+                          responseDict = [NSJSONSerialization JSONObjectWithData:errorData options:NSJSONReadingAllowFragments error:&errorJson];
+                      }
+                      if (handler) {
+                          handler(NO,responseDict[@"error"]);
+                      }
+                      NSLog(@"responseDict=%@",responseDict);
+                      NSLog(@"http error: %@",error);
+                  }];
 }
 
 - (NSDictionary *)jsonWithNode:(Node *) node {
@@ -1335,7 +1330,7 @@
 //        if (handler) {
 //            handler(NO,@"well-known:Connecting to Server failed!",nil);
 //        }
-//        NSLog(@"Networking error: %@", error);
+//        NSLog(@"Networking error: %@", error.localizedDescription);
 //    }];
 //}
 
@@ -1385,20 +1380,21 @@
     self.httpManager.requestSerializer.timeoutInterval = 10.0f;
     NSString *api = [NSString stringWithFormat:@"%@/%@?access_token=%@", aPionOneNodeChangeDataServer, dataIP, node.key];
     [self.httpManager POST:api parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
-        NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
-        if (status.integerValue == 200) {
-            node.dataServerIP = dataIP;
-            if (handler) handler(YES,msg);
-        } else {
-            if (handler) handler(NO,msg);
-        }
+        node.dataServerIP = dataIP;
+        if (handler) handler(YES,@"Change the data exchange server for node success.");
         NSLog(@"JSON:setDataServerIP: %@", responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        if (handler) {
-            handler(NO,@"setDataServerIP:Connecting to Server failed!");
+        NSError *errorJson=nil;
+        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+        NSDictionary* responseDict = nil;
+        if (errorData) {
+            responseDict = [NSJSONSerialization JSONObjectWithData:errorData options:NSJSONReadingAllowFragments error:&errorJson];
         }
-        NSLog(@"Networking error: %@", error);
+        if (handler) {
+            handler(NO,responseDict[@"error"]);
+        }
+        NSLog(@"responseDict=%@",responseDict);
+        NSLog(@"http error: %@",error);
     }];
 }
 
