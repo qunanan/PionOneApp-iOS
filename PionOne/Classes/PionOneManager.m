@@ -21,10 +21,9 @@
 @interface PionOneManager()
 @property (nonatomic, strong) GCDAsyncUdpSocket *udpSocket;
 @property (atomic, assign) __block BOOL canceled;
-@property (atomic, assign) __block BOOL isAPConfigSuccess;
-@property (atomic, assign) __block BOOL isGetMacAddressSuccess;
+//@property (atomic, assign) __block BOOL isAPConfigSuccess;
 @property (atomic, assign) __block BOOL foundTheNodeOnServer;
-@property (atomic, strong) __block NSString *macAddress;
+@property (atomic, strong) __block NSString *udpData;
 
 
 @end
@@ -40,7 +39,7 @@
     return sharedInstance;
 }
 #pragma -mark Property methods
-- (AFHTTPRequestOperationManager *)httpManager {
+- (AFHTTPSessionManager *)httpManager {
     if (_httpManager == nil) {
         NSString *urlStr = [[NSUserDefaults standardUserDefaults] stringForKey:kPionOneOTAServerBaseURL];
         if (urlStr == nil) {
@@ -48,11 +47,12 @@
             NSLog(@"Please Input a Valid Server IP address..");
         }
         NSURL *baseURL = [NSURL URLWithString:urlStr];
-        _httpManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:baseURL];
+        _httpManager = [[AFHTTPSessionManager alloc] initWithBaseURL:baseURL];
         _httpManager.securityPolicy.allowInvalidCertificates = YES;
         _httpManager.securityPolicy.validatesDomainName = NO;
         _httpManager.responseSerializer = [AFJSONResponseSerializer serializer];
         _httpManager.responseSerializer.acceptableContentTypes = [_httpManager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+//        _httpManager.requestSerializer = [AFJSONRequestSerializer serializer];
         _httpManager.requestSerializer.timeoutInterval = 30.0f;
     }
     return _httpManager;
@@ -125,7 +125,7 @@
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[email, pwd] forKeys:@[@"email", @"password"]];
     self.httpManager.requestSerializer.timeoutInterval = 20.0f;
-    [self.httpManager POST:aPionOneUserCreate parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [self.httpManager POST:aPionOneUserCreate parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
         if (status.integerValue == 200) {
@@ -144,7 +144,7 @@
             if(handler) handler(NO,msg);
         }
         NSLog(@"JSON:SignUp: %@", responseObject);
-    } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (handler) {
             handler(NO,@"SignUp:Connecting to Server failed!");
         }
@@ -176,7 +176,7 @@
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[email, pwd] forKeys:@[@"email", @"password"]];
     self.httpManager.requestSerializer.timeoutInterval = 20.0f;
-    [self.httpManager POST:aPionOneUserLogin parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [self.httpManager POST:aPionOneUserLogin parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
         if (status.integerValue == 200) {
@@ -195,7 +195,8 @@
             if(handler) handler(NO,msg);
         }
         NSLog(@"JSON:SignIn: %@", responseObject);
-    } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
+
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (handler) {
             handler(NO,@"SignIn:Connecting to Server failed!");
         }
@@ -240,7 +241,7 @@
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[email] forKeys:@[@"email"]];
     self.httpManager.requestSerializer.timeoutInterval = 30.0f;
-    [self.httpManager POST:aPionOneUserRetrievepassword parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [self.httpManager POST:aPionOneUserRetrievepassword parameters:parameters progress:nil success:^(NSURLSessionDataTask *operation, id responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
         if (status.integerValue == 200) {
@@ -249,7 +250,7 @@
             if (handler) handler(NO,msg);
         }
         NSLog(@"JSON:RetrievePWD %@", responseObject);
-    } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (handler) {
             handler(NO,@"RetrievePWD:Connecting to Server failed!");
         }
@@ -267,7 +268,7 @@
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[newPwd, self.user.token] forKeys:@[@"password", @"access_token"]];
     self.httpManager.requestSerializer.timeoutInterval = 20.0f;
-    [self.httpManager POST:aPionOneUserChangePassword parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [self.httpManager POST:aPionOneUserChangePassword parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
         if (status.integerValue == 200) {
@@ -286,7 +287,7 @@
             if (handler) handler(NO,msg);
         }
         NSLog(@"JSON:ChangePWD %@", responseObject);
-    } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (handler) {
             handler(NO,@"ChangePWD:Connecting to Server failed!");
         }
@@ -303,7 +304,7 @@
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token, name] forKeys:@[@"access_token", @"name"]];
     self.httpManager.requestSerializer.timeoutInterval = 20.0f;
-    [self.httpManager POST:aPionOneNodeCreate parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [self.httpManager POST:aPionOneNodeCreate parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
         if (status.integerValue == 200) {
@@ -319,7 +320,7 @@
             if (handler) handler(NO,msg);
         }
         NSLog(@"JSON:CreateNode: %@", responseObject);
-    } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (handler) {
             handler(NO,@"CreateNode:Connecting to Server failed!");
         }
@@ -335,7 +336,7 @@
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token, node.sn, name] forKeys:@[@"access_token", @"node_sn", @"name"]];
     self.httpManager.requestSerializer.timeoutInterval = 20.0f;
-    [self.httpManager POST:aPionOneNodeRename parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [self.httpManager POST:aPionOneNodeRename parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
         if (status.integerValue == 200) {
@@ -345,7 +346,7 @@
             if (handler) handler(NO,msg);
         }
         NSLog(@"JSON:renameNode: %@", responseObject);
-    } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (handler) {
             handler(NO,@"renameNode:Connecting to Server failed!");
         }
@@ -361,7 +362,7 @@
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token] forKeys:@[@"access_token"]];
     self.httpManager.requestSerializer.timeoutInterval = 20.0f;
-    [self.httpManager GET:aPionOneNodeList parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [self.httpManager GET:aPionOneNodeList parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
         if (status.integerValue == 200) {
@@ -378,7 +379,7 @@
             if (handler) handler(NO,msg);
         }
         NSLog(@"JSON:GetNodeList: %@", responseObject);
-    } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (handler) {
             handler(NO,@"GetNodeList:Connecting to Server failed!");
         }
@@ -394,7 +395,7 @@
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token] forKeys:@[@"access_token"]];
     self.httpManager.requestSerializer.timeoutInterval = 20.0f;
-    [self.httpManager GET:aPionOneNodeList parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [self.httpManager GET:aPionOneNodeList parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
         if (status.integerValue == 200) {
@@ -425,7 +426,7 @@
             if (handler) handler(NO,msg);
         }
         NSLog(@"JSON:GetNodeList: %@", responseObject);
-    } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (handler) {
             handler(NO,@"GetNodeList:Connecting to Server failed!");
         }
@@ -442,7 +443,7 @@
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token, node.sn] forKeys:@[@"access_token", @"node_sn"]];
     self.httpManager.requestSerializer.timeoutInterval = 20.0f;
-    [self.httpManager POST:aPionOneNodeDelete parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [self.httpManager POST:aPionOneNodeDelete parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg =[(NSDictionary *)responseObject objectForKey:@"msg"];
         if (status.integerValue == 200) {
@@ -452,7 +453,7 @@
             if(handler) handler(NO,msg);
         }
         NSLog(@"JSON:DeleteNode: %@", responseObject);
-    } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (handler) {
             handler(NO,@"DeleteNode:Connecting to Server failed!");
         }
@@ -471,18 +472,43 @@
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token] forKeys:@[@"access_token"]];
     self.httpManager.requestSerializer.timeoutInterval = 30.0f;
-    [self.httpManager GET:aPionOneDriverScan parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSManagedObjectContext *refreshMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-        refreshMOC.parentContext = self.mainMOC;
+    [self.httpManager GET:aPionOneDriverScan parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
+            NSArray *drivers =[(NSDictionary *)responseObject objectForKey:@"drivers"];
+            NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
+            if (status && status.integerValue == 200) {
+                NSManagedObjectContext *refreshMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+                refreshMOC.parentContext = self.mainMOC;
+                [refreshMOC performBlock:^{
+                    [Driver refreshDriverListWithArray:drivers inManagedObjectContext:refreshMOC];
+                    //save context
+                    [self saveChildContext:refreshMOC];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if(handler) handler(YES,nil);
+                    });
+                }];
+            } else {
+                if (handler) {
+                    handler(NO, msg);
+                }
+            }
+        }
 
-        [refreshMOC performBlock:^{
-            [Driver refreshDriverListWithArray:responseObject inManagedObjectContext:refreshMOC];
-            //save context
-            [self saveChildContext:refreshMOC];
-        }];
-        if(handler) handler(YES,nil);
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            NSManagedObjectContext *refreshMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+            refreshMOC.parentContext = self.mainMOC;
+            [refreshMOC performBlock:^{
+                [Driver refreshDriverListWithArray:responseObject inManagedObjectContext:refreshMOC];
+                //save context
+                [self saveChildContext:refreshMOC];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if(handler) handler(YES,nil);
+                });
+            }];
+        }
         NSLog(@"JSON:ScanDriver: %@", responseObject);
-    } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (handler) {
             handler(NO,@"ScanDriver:Connecting to Server failed!");
         }
@@ -567,7 +593,7 @@
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token, zombieNodeSN] forKeys:@[@"access_token", @"node_sn"]];
     self.httpManager.requestSerializer.timeoutInterval = 10.0f;
-    [self.httpManager POST:aPionOneNodeDelete parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [self.httpManager POST:aPionOneNodeDelete parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg =[(NSDictionary *)responseObject objectForKey:@"msg"];
         if (status.integerValue == 200) {
@@ -578,7 +604,7 @@
             if(handler) handler(NO,msg);
         }
         NSLog(@"JSON:DeleteZombie: %@", responseObject);
-    } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (handler) {
             handler(NO,@"DeleteZombie:Connecting to Server failed!");
         }
@@ -592,18 +618,48 @@
     NSLog(@"CachedSSID: %@", self.cachedSSID);
 }
 
-- (void)getNodeMacAddressWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler {
-    NSDictionary *nwkInfo = [self fetchSSIDInfo];
-    NSString *ssid = nwkInfo[@"SSID"];
-    if (![ssid containsString:@"WioLink_"] || ![ssid containsString:@"PionOne_"]) {
-        NSString *error = @"This api only works with WioLink configuration network!";
+- (void)getNodeVersionWithCompletionHandler:(void (^)(BOOL, NSString *))handler {
+    if (![self isConnectedToPionOne]) {
+        NSString *error = @"getNodeVersion: needs to connected a Node first.";
         NSLog(@"%@",error);
         if (handler) {
             handler(NO,error);
         }
         return;
     }
-    self.isGetMacAddressSuccess = NO;
+    self.udpData = @"";
+    __block BOOL timeout = NO;
+    int64_t delay = 6.0; // In seconds
+    dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC);
+    dispatch_after(time,dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 1), ^{
+        timeout = YES;
+    });
+    dispatch_async(dispatch_queue_create(PionOneManagerQueueName, NULL), ^{
+        [self openUdpObserver];
+        NSString *cfg = @"VERSION";
+        NSData *cfgData = [cfg dataUsingEncoding:NSUTF8StringEncoding];
+        while (!timeout && ![self.udpData containsString:@"\r\n"]) {
+            [self.udpSocket sendData:cfgData toHost:PionOneConfigurationAddr port:1025 withTimeout:-1 tag:1025];
+            [NSThread sleepForTimeInterval:2];
+        }
+        [self closeUdpObserver];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if(self.udpData) {
+                if (handler) {
+                    NSString *ver = [[self.udpData componentsSeparatedByString:@"\r\n"] firstObject];
+                    handler(YES,ver);
+                }
+            } else {
+                if (handler) {
+                    handler(YES,@"1.0");//Wio Link will not get back version data with firmware v1.0.
+                }
+            }
+        });
+    });
+}
+
+- (void)getWiFiListWithCompletionHandler:(void (^)(BOOL, NSString *))handler {
+    self.udpData = @"";
     __block BOOL timeout = NO;
     int64_t delay = 10.0; // In seconds
     dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC);
@@ -612,22 +668,25 @@
     });
     dispatch_async(dispatch_queue_create(PionOneManagerQueueName, NULL), ^{
         [self openUdpObserver];
-        while (!timeout && !self.canceled && !self.isGetMacAddressSuccess) {
-            NSString *cfg = @"Node?";
-            NSData *cfgData = [cfg dataUsingEncoding:NSUTF8StringEncoding];
-            [self.udpSocket sendData:cfgData toHost:PionOneConfigurationAddr port:1025 withTimeout:-1 tag:1025];
-            [NSThread sleepForTimeInterval:3];
+        NSString *cfg = @"SCAN";
+        NSData *cfgData = [cfg dataUsingEncoding:NSUTF8StringEncoding];
+        [self.udpSocket sendData:cfgData toHost:PionOneConfigurationAddr port:1025 withTimeout:-1 tag:1025];
+
+        while (!timeout && ![self.udpData containsString:@"\r\n\r\n"]) {
+            [NSThread sleepForTimeInterval:1];
         }
         [self closeUdpObserver];
         dispatch_async(dispatch_get_main_queue(), ^{
-            if(self.isGetMacAddressSuccess == YES) {
+            NSLog(@"%@", self.udpData);
+
+            if(self.udpData) {
                 if (handler) {
-                    handler(YES,self.macAddress);
+                    handler(YES,self.udpData);
                 }
             } else {
                 if (handler) {
                     if (handler && !self.canceled) {
-                        handler(NO,@"getMacAddress:setup canceled or time out!");
+                        handler(NO,@"getWiFiList:process canceled or time out!");
                     }
                 }
             }
@@ -644,22 +703,23 @@
         }
         return;
     }
-    self.isAPConfigSuccess = NO;
+    self.udpData = @"";
     __block BOOL timeout = NO;
-    int64_t delay = 60.0; // In seconds
+    int64_t delay = 10.0; // In seconds
     dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC);
     dispatch_after(time,dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 1), ^{
         timeout = YES;
     });
     dispatch_async(dispatch_queue_create(PionOneManagerQueueName, NULL), ^{
         [self openUdpObserver];
-        while (!timeout && !self.canceled && !self.isAPConfigSuccess) {
+        while (!timeout && !self.canceled && !self.udpData.length > 0) {
             [self udpSendPionOneConfiguration];
             [NSThread sleepForTimeInterval:3];
         }
         [self closeUdpObserver];
         dispatch_async(dispatch_get_main_queue(), ^{
-            if(self.isAPConfigSuccess == YES) {
+            NSLog(@"%@", self.udpData);
+            if([self.udpData containsString:@"ok\r\n"]) {
                 if (handler) {
                     handler(YES,[NSString stringWithFormat:@"setup success!"]);
                 }
@@ -677,7 +737,7 @@
 - (void)findTheConfiguringNodeFromSeverWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler {
     self.foundTheNodeOnServer = NO;
     __block BOOL timeout = NO;
-    int64_t delay = 60.0; // In seconds
+    int64_t delay = 40.0; // In seconds
     dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC);
     dispatch_after(time,dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 1), ^{
         timeout = YES;
@@ -686,7 +746,7 @@
     dispatch_async(dispatch_queue_create(PionOneManagerQueueName, NULL), ^{
         while (!timeout && !self.canceled && !self.foundTheNodeOnServer) {
             NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[user_token] forKeys:@[@"access_token"]];
-            [self.httpManager GET:aPionOneNodeList parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            [self.httpManager GET:aPionOneNodeList parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
                 if (status.integerValue == 200) {
                     NSArray * nodelist = (NSArray *)[(NSDictionary *)responseObject objectForKey:@"nodes"];
@@ -701,7 +761,7 @@
                     }
                 }
                 NSLog(@"JSON:findTheConfiguringNode %@", responseObject);
-            } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
+            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 NSLog(@"Networking error:findTheConfiguringNode %@", error);
             }];
             [NSThread sleepForTimeInterval:3];
@@ -728,7 +788,7 @@
     }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token, sn, name] forKeys:@[@"access_token", @"node_sn", @"name"]];
     self.httpManager.requestSerializer.timeoutInterval = 30.0f;
-    [self.httpManager POST:aPionOneNodeRename parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [self.httpManager POST:aPionOneNodeRename parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
         NSString *msg =[(NSDictionary *)responseObject objectForKey:@"msg"];
         if (status.integerValue == 200) {
@@ -737,7 +797,7 @@
             if(handler) handler(NO,msg);
         }
         NSLog(@"JSON:APConfigSetNodeName: %@", responseObject);
-    } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (handler) {
             handler(NO,@"APConfigSetNodeName:Connecting to Server failed!");
         }
@@ -852,12 +912,14 @@
 
 #pragma mark- AsyncUdpSocketDelegate
 -(void)udpSocket:(GCDAsyncUdpSocket *)sock didReceiveData:(NSData *)data fromAddress:(NSData *)address withFilterContext:(id)filterContext {
-    NSString* str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    if ([str containsString:@"ok"]) {
-        self.isAPConfigSuccess = YES;
-    } else if ([str containsString:@"Node:"]) {
-        self.macAddress = [[str componentsSeparatedByString:@","] objectAtIndex:1];
-        self.isGetMacAddressSuccess = YES;
+    NSString *newDataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    if (newDataString) {
+        if (self.udpData.length > 0) {
+            self.udpData = [self.udpData stringByAppendingString:newDataString];
+        } else {
+            self.udpData = newDataString;
+        }
+        // NSLog(@"%@",self.udpData);
     }
 }
 
@@ -865,11 +927,26 @@
 
 #pragma -mark Node Settings Method
 - (void)node:(Node *)node startOTAWithprogressHandler:(void (^)(BOOL, NSString *, NSString *, NSString *))handler {
-    NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[node.key, [self yamlWithnode:node]] forKeys:@[@"access_token", @"yaml"]];
-    self.httpManager.requestSerializer.timeoutInterval = 30.0f;
-    [self.httpManager POST:aPionOneUserDownload
-            parameters:parameters
-               success:^(AFHTTPRequestOperation * __nonnull operation, id  __nonnull responseObject) {
+    NSString *urlStr = [[NSUserDefaults standardUserDefaults] stringForKey:kPionOneOTAServerBaseURL];
+    if (urlStr == nil) {
+        // Please Input a Valid Server IP address
+        NSLog(@"Please Input a Valid Server IP address..");
+    }
+    NSURL *baseURL = [NSURL URLWithString:urlStr];
+    AFHTTPSessionManager *jsonHttpMgr = [[AFHTTPSessionManager alloc] initWithBaseURL:baseURL];
+    jsonHttpMgr.securityPolicy.allowInvalidCertificates = YES;
+    jsonHttpMgr.securityPolicy.validatesDomainName = NO;
+    jsonHttpMgr.responseSerializer = [AFJSONResponseSerializer serializer];
+    jsonHttpMgr.responseSerializer.acceptableContentTypes = [jsonHttpMgr.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+    jsonHttpMgr.requestSerializer = [AFJSONRequestSerializer serializer];
+    jsonHttpMgr.requestSerializer.timeoutInterval = 30.0f;
+    [jsonHttpMgr.requestSerializer setValue:node.key forHTTPHeaderField:@"Authorization"];
+    NSDictionary *parameters = [self jsonWithNode:node];
+    jsonHttpMgr.requestSerializer.timeoutInterval = 30.0f;
+    [jsonHttpMgr POST:aPionOneUserDownload
+                parameters:parameters
+                  progress:nil
+                   success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                    NSString *otaMsg =(NSString *)[(NSDictionary *)responseObject objectForKey:@"ota_msg"];
                    NSString *msg =(NSString *)[(NSDictionary *)responseObject objectForKey:@"msg"];
                    NSString *status =(NSString *)[(NSDictionary *)responseObject objectForKey:@"status"];
@@ -886,7 +963,7 @@
                    }
                    NSLog(@"JSON:OTA: %@", responseObject);
                }
-               failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
+               failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                    if (handler) {
                        handler(NO,@"OTA:Connecting to Server failed!",nil,nil);
                    }
@@ -899,7 +976,8 @@
     self.httpManager.requestSerializer.timeoutInterval = 60.0f;
     [self.httpManager POST:aPionOneOTAStatus
                 parameters:parameters
-                   success:^(AFHTTPRequestOperation * __nonnull operation, id  __nonnull responseObject) {
+                  progress:nil
+                   success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                        NSString *otaMsg =(NSString *)[(NSDictionary *)responseObject objectForKey:@"ota_msg"];
                        NSString *msg =(NSString *)[(NSDictionary *)responseObject objectForKey:@"msg"];
                        NSString *status =(NSString *)[(NSDictionary *)responseObject objectForKey:@"status"];
@@ -918,7 +996,7 @@
                        }
                        NSLog(@"JSON:OTA: %@", responseObject);
                    }
-                   failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
+                   failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                        if (handler) {
                            handler(NO,@"OTA:Connecting to Server failed!",nil,nil);
                        }
@@ -933,25 +1011,43 @@
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[node.key] forKeys:@[@"access_token"]];
     self.httpManager.requestSerializer.timeoutInterval = 10.0f;
     [self.httpManager GET:aPionOneNodeGetSettings
-                parameters:parameters
-                   success:^(AFHTTPRequestOperation * __nonnull operation, id  __nonnull responseObject) {
-                       NSString *msg =(NSString *)[(NSDictionary *)responseObject objectForKey:@"msg"];
-                       NSString *status =(NSString *)[(NSDictionary *)responseObject objectForKey:@"status"];
+               parameters:parameters
+                 progress:nil
+                  success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                      id msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
+                      NSString *status =(NSString *)[(NSDictionary *)responseObject objectForKey:@"status"];
+                      NSString *type = [(NSDictionary *)responseObject objectForKey:@"type"];
                        if (status.integerValue == 200) {
-                           NSArray *array = [self nodeSettingsFromYamlString:msg];
-                           [refreshMOC performBlock:^{
-                               Node *tmpNode = [refreshMOC objectWithID:node.objectID];
-                               [tmpNode refreshNodeSettingsWithArray:array];
-                               NSError *error = nil;
-                               if (![refreshMOC save:&error]) {
-                                   NSLog(@"Error saving parent");
-                               }
-                               dispatch_async(dispatch_get_main_queue(), ^{
-                                   if (handler) {
-                                       handler(YES,msg);
+                           if ([type isEqualToString:@"yaml"] || type == nil) {
+                               NSArray *array = [self nodeSettingsFromYamlString:msg];
+                               [refreshMOC performBlock:^{
+                                   Node *tmpNode = [refreshMOC objectWithID:node.objectID];
+                                   [tmpNode refreshNodeSettingsWithArray:array];
+                                   NSError *error = nil;
+                                   if (![refreshMOC save:&error]) {
+                                       NSLog(@"Error saving parent");
                                    }
-                               });
-                           }];
+                                   dispatch_async(dispatch_get_main_queue(), ^{
+                                       if (handler) {
+                                           handler(YES,msg);
+                                       }
+                                   });
+                               }];
+                           } else if ([type isEqualToString:@"json"]) {
+                               [refreshMOC performBlock:^{
+                                   Node *tmpNode = [refreshMOC objectWithID:node.objectID];
+                                   [tmpNode refreshNodeSettingsWithJson:msg];
+                                   NSError *error = nil;
+                                   if (![refreshMOC save:&error]) {
+                                       NSLog(@"Error saving parent");
+                                   }
+                                   dispatch_async(dispatch_get_main_queue(), ^{
+                                       if (handler) {
+                                           handler(YES,msg);
+                                       }
+                                   });
+                               }];
+                           }
                        } else if (status.integerValue == 404) {
                            [refreshMOC performBlock:^{
                                Node *tmpNode = [refreshMOC objectWithID:node.objectID];
@@ -967,18 +1063,77 @@
                                });
                            }];
                        } else {
-                           if (handler) {
-                               handler(NO,msg);
-                           }
+                           dispatch_async(dispatch_get_main_queue(), ^{
+                               if (handler) {
+                                   handler(NO,msg);
+                               }
+                           });
                        }
                        NSLog(@"JSON:GetNodeSettings: %@", responseObject);
                    }
-                   failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
+                   failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                        if (handler) {
                            handler(NO,@"GetNodeSettings:Connecting to Server failed!");
                        }
                        NSLog(@"Networking error: %@", error);
                    }];
+}
+
+- (NSDictionary *)jsonWithNode:(Node *) node {
+    NSMutableDictionary *json = [[NSMutableDictionary alloc] init];
+    NSMutableArray *settings = [[NSMutableArray alloc] init];
+    [json setValue:@"Wio Link v1.0" forKey:@"board_name"];
+    for (Grove *grove in node.groves) {
+        NSString *port = [self portForConnectorName:grove.connectorName];
+        NSDictionary *setting = [NSDictionary dictionaryWithObjects:@[grove.driver.skuID, port] forKeys:@[@"sku", @"port"]];
+        [settings addObject:setting];
+    }
+    [json setObject:settings forKey:@"connections"];
+    return json;
+}
+
+- (NSString *)portForConnectorName:(NSString *)cntName {
+    if ([cntName isEqualToString:@"Digital0"]) {
+        return @"D0";
+    }
+    if ([cntName isEqualToString:@"Digital1"]) {
+        return @"D1";
+    }
+    if ([cntName isEqualToString:@"Digital2"]) {
+        return @"D2";
+    }
+    if ([cntName isEqualToString:@"Analog"]) {
+        return @"A0";
+    }
+    if ([cntName isEqualToString:@"UART"]) {
+        return @"UART0";
+    }
+    if ([cntName isEqualToString:@"I2C"]) {
+        return @"I2C0";
+    }
+    return nil;
+}
+
+- (NSString *)connectorNameForPort:(NSString *)portName {
+    if ([portName isEqualToString:@"D0"]) {
+        return @"Digital0";
+    }
+    if ([portName isEqualToString:@"D1"]) {
+        return @"Digital1";
+    }
+    if ([portName isEqualToString:@"D2"]) {
+        return @"Digital2";
+    }
+    if ([portName isEqualToString:@"A0"]) {
+        return @"Analog";
+    }
+    if ([portName isEqualToString:@"UART0"]) {
+        return @"UART";
+    }
+    if ([portName isEqualToString:@"I2C0"]) {
+        return @"I2C";
+    }
+    return nil;
 }
 
 - (NSString *)yamlWithnode:(Node *)node {
@@ -1160,7 +1315,7 @@
 //    }
 //    NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[node.key] forKeys:@[@"access_token"]];
 //    self.httpManager.requestSerializer.timeoutInterval = 30.0f;
-//    [self.httpManager GET:aPionOneNodeAPIs parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+//    [self.httpManager GET:aPionOneNodeAPIs parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
 //        NSString *status =(NSString *)[(NSDictionary *)responseObject objectForKey:@"status"];
 //        NSString *msg =(NSString *)[(NSDictionary *)responseObject objectForKey:@"msg"];
 //        if (status.integerValue == 200) {
@@ -1176,7 +1331,7 @@
 //            if(handler) handler(NO,msg,nil);
 //        }
 //        NSLog(@"JSON:well-known: %@", responseObject);
-//    } failure:^(AFHTTPRequestOperation * __nonnull operation, NSError * __nonnull error) {
+//    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
 //        if (handler) {
 //            handler(NO,@"well-known:Connecting to Server failed!",nil);
 //        }
@@ -1218,6 +1373,33 @@
     [[NSUserDefaults standardUserDefaults] setValue:baseURL forKey:kPionOneOTAServerBaseURL];
     [[PionOneManager sharedInstance] setHttpManager:nil];
 
+}
+
+- (void)node:(Node *)node setDataServerIP:(NSString *)dataIP WithCompletionHandler:(void (^)(BOOL, NSString *))handler {
+    if (!node || !dataIP) {
+        NSLog(@"To call the APIs, you need to set Node and dataIP.");
+        if (handler) handler(NO,nil);
+        return;
+    }
+    NSDictionary *parameters = nil;//[NSDictionary dictionaryWithObjects:@[node.key] forKeys:@[@"access_token"]];
+    self.httpManager.requestSerializer.timeoutInterval = 10.0f;
+    NSString *api = [NSString stringWithFormat:@"%@/%@?access_token=%@", aPionOneNodeChangeDataServer, dataIP, node.key];
+    [self.httpManager POST:api parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSNumber *status = [(NSDictionary *)responseObject objectForKey:@"status"];
+        NSString *msg = [(NSDictionary *)responseObject objectForKey:@"msg"];
+        if (status.integerValue == 200) {
+            node.dataServerIP = dataIP;
+            if (handler) handler(YES,msg);
+        } else {
+            if (handler) handler(NO,msg);
+        }
+        NSLog(@"JSON:setDataServerIP: %@", responseObject);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        if (handler) {
+            handler(NO,@"setDataServerIP:Connecting to Server failed!");
+        }
+        NSLog(@"Networking error: %@", error);
+    }];
 }
 
 - (NSString*)lookupHostIPAddressForURLString:(NSString*)str

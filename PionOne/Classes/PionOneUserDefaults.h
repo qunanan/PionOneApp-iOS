@@ -38,6 +38,8 @@
 #define aPionOneNodeResources @"/v1/node/resources"
 #define aPionOneNodeAPIs @"/v1/node/.well-known"
 
+#define aPionOneNodeChangeDataServer @"/v1/node/setting/dataxserver"
+
 //default keys
 #define kPionOneUserEmail @"PionOneUserEmail"
 #define kPionOneOTAServerBaseURL @"PionOneOTAServerBaseURL"

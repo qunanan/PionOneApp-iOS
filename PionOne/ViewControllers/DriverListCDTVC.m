@@ -29,8 +29,13 @@
     UIFont * font = [UIFont systemFontOfSize:14.0];
     NSDictionary *attributes = @{NSFontAttributeName:font, NSForegroundColorAttributeName : [UIColor blackColor]};
     refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to refresh" attributes:attributes];
-    [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refreshControl;
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView*)scrollView
+{
+    if( self.refreshControl.isRefreshing )
+        [self refresh:nil];
 }
 
 - (void)refresh:(UIRefreshControl *)refreshControl {
@@ -54,7 +59,7 @@
     self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                         managedObjectContext:managedObjectContext
                                                                           sectionNameKeyPath:@"interfaceType"
-                                                                                   cacheName:@"DriverList"];
+                                                                                   cacheName:nil];
 }
 
 

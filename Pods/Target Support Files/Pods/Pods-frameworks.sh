@@ -91,7 +91,10 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods/KHFlatButton.framework"
   install_framework "Pods/MBProgressHUD.framework"
   install_framework "Pods/MGSwipeTableCell.framework"
+  install_framework "Pods/REFormattedNumberField.framework"
   install_framework "Pods/RESideMenu.framework"
+  install_framework "Pods/RETableViewManager.framework"
+  install_framework "Pods/REValidation.framework"
   install_framework "Pods/SDWebImage.framework"
   install_framework "Pods/TextFieldEffects.framework"
 fi
@@ -103,7 +106,10 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods/KHFlatButton.framework"
   install_framework "Pods/MBProgressHUD.framework"
   install_framework "Pods/MGSwipeTableCell.framework"
+  install_framework "Pods/REFormattedNumberField.framework"
   install_framework "Pods/RESideMenu.framework"
+  install_framework "Pods/RETableViewManager.framework"
+  install_framework "Pods/REValidation.framework"
   install_framework "Pods/SDWebImage.framework"
   install_framework "Pods/TextFieldEffects.framework"
 fi

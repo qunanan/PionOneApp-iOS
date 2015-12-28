@@ -11,7 +11,7 @@
 #import "UIScrollView+EmptyDataSet.h"
 #import <GoogleMaterialIconFont/GoogleMaterialIconFont-Swift.h>
 
-@interface AboutViewController () <UIWebViewDelegate, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
+@interface AboutViewController () <UIWebViewDelegate, UIScrollViewDelegate, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
 @property (strong, nonatomic) IBOutlet UIWebView *webView;
 @property (nonatomic, strong) MBProgressHUD *HUD;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
@@ -57,20 +57,20 @@
 //    [self.view addSubview:self.webView];
     self.webView.delegate = self;
     self.webView.scalesPageToFit = NO;
-
+    self.webView.scrollView.delegate = self;
+    
     //init refreshcotrol
     self.refreshControl = [[UIRefreshControl alloc] init];
     UIFont * font = [UIFont systemFontOfSize:14.0];
     NSDictionary *attributes = @{NSFontAttributeName:font, NSForegroundColorAttributeName : [UIColor blackColor]};
     self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to refresh" attributes:attributes];
-    [self.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     [self.webView.scrollView addSubview:self.refreshControl];
     
     NSURL *url = [NSURL URLWithString:@"http://iot.seeed.cc"];
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:10.0];
     [self.webView loadRequest:request];
     [self.webIndicator startAnimating];
-    
+    [self.refreshControl endRefreshing];
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
@@ -107,12 +107,14 @@
     self.didFailLoading = YES;
     [self.webIndicator stopAnimating];
     [self.webView.scrollView reloadEmptyDataSet];
+    [self.refreshControl endRefreshing];
 }
+
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
     self.didFailLoading = NO;
-    
+    [self.refreshControl endRefreshing];
     return YES;
 }
 
@@ -165,9 +167,17 @@
     return YES;
 }
 
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    if( self.refreshControl.isRefreshing )
+        [self refresh];
+}
 
 - (void)refresh {
-    [self.webView reload];
+    if (!self.webView.isLoading) {
+        [self.webView reload];
+    } else {
+        [self.refreshControl endRefreshing];
+    }
 }
 
 - (void)gotoHomePage {

@@ -34,6 +34,11 @@
         NSDate *now = [[NSDate alloc] init];
         node.date = now;        
     }
+    if ([nodeDictionary[NODE_DATA_SERVER_IP] isKindOfClass:[NSString class]]) {
+        node.dataServerIP = nodeDictionary[NODE_DATA_SERVER_IP];
+    } else {
+        node.dataServerIP = nil;
+    }
     node.name = nodeDictionary[NODE_NAME];
     node.online = nodeDictionary[NODE_ONLINE_STATUS];
 
@@ -119,7 +124,35 @@
         }
     }
 }
-    
+
+- (void)refreshNodeSettingsWithJson:(NSDictionary *)json {
+    [self removeGroves:self.groves];   //remove all sttings
+    NSArray *settings = json[@"connections"];
+    for (NSDictionary *settingDic in settings) {
+        //        NSString *groveName = settingDic[@"name"];
+        NSString *sku = settingDic[@"sku"];
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Driver"];
+        request.predicate = [NSPredicate predicateWithFormat:@"skuID = %@", sku];
+        NSError *error;
+        NSArray *matches = [self.managedObjectContext executeFetchRequest:request error:&error];
+        Driver *driver = nil;
+        if (!matches || error || ([matches count] > 1 || [matches count] == 0)) {
+            // handle error
+        } else if ([matches count]) {
+            driver = [matches firstObject];
+            NSString *connectorName = [[PionOneManager sharedInstance] connectorNameForPort:settingDic[@"port"]];
+            Grove *grove = [NSEntityDescription insertNewObjectForEntityForName:@"Grove"
+                                                         inManagedObjectContext:self.managedObjectContext];
+            grove.driver = driver;
+            grove.connectorName = connectorName;
+            NSArray *pins = [[PionOneManager sharedInstance] pinNumberWithconnectorName:connectorName];
+            grove.pinNum0 = [pins firstObject];
+            grove.pinNum1 = [pins lastObject];
+            grove.node = self;
+        }
+    }
+}
+
 - (NSString *)apiURL {
     NSString *otaServerAddress = [NSString stringWithFormat:@"%@", [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneOTAServerBaseURL]];
     NSString *dataServerIP = [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneDataServerIPAddress];

@@ -9,5 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface PrepareAPConfigVC : UIViewController
+@property (nonatomic, strong) NSString *selectedSSID;
 
+- (void)showDialog;
 @end

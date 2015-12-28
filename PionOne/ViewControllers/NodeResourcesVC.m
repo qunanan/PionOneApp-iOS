@@ -11,7 +11,7 @@
 #import "AFNetworking.h"
 #import "UIScrollView+EmptyDataSet.h"
 
-@interface NodeResourcesVC () <UIWebViewDelegate, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
+@interface NodeResourcesVC () <UIWebViewDelegate, UIScrollViewDelegate, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
 @property (strong, nonatomic) IBOutlet UIWebView *webView;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
 @property (nonatomic, strong) UIActivityIndicatorView *webIndicator;
@@ -42,13 +42,14 @@
 //    self.webView = [[UIWebView alloc] initWithFrame:self.view.frame];
 //    [self.view addSubview:self.webView];
     self.webView.delegate = self;
+    self.webView.scrollView.delegate = self;
     self.webView.scalesPageToFit = NO;
+    
     //init refreshcotrol
     self.refreshControl = [[UIRefreshControl alloc] init];
     UIFont * font = [UIFont systemFontOfSize:14.0];
     NSDictionary *attributes = @{NSFontAttributeName:font, NSForegroundColorAttributeName : [UIColor blackColor]};
     self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to refresh" attributes:attributes];
-    [self.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     [self.webView.scrollView addSubview:self.refreshControl];
 
     NSURL *url = [NSURL URLWithString:self.node.apiURL];
@@ -64,8 +65,17 @@
     [self.webView setNeedsLayout];
 }
 
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    if( self.refreshControl.isRefreshing )
+        [self refresh];
+}
+
 - (void)refresh {
-    [self.webView reload];
+    if (!self.webView.isLoading) {
+        [self.webView reload];
+    } else {
+        [self.refreshControl endRefreshing];
+    }
 }
 
 - (void)shareAPIs {
@@ -124,6 +134,7 @@
     self.didFailLoading = YES;
     [self.webIndicator stopAnimating];
     [self.webView.scrollView reloadEmptyDataSet];
+    [self.refreshControl endRefreshing];
 }
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
@@ -139,7 +150,7 @@
     if (self.webView.isLoading || !self.didFailLoading) {
         return nil;
     }
-
+    self.webView.scrollView.scrollEnabled = NO;
     float scale = 3* 380.0/[UIScreen mainScreen].applicationFrame.size.width;
     
     UIImage *scaledImage = [UIImage imageWithCGImage:[[UIImage imageNamed:@"sorryPage"] CGImage] scale:scale orientation:UIImageOrientationUp];

@@ -14,9 +14,11 @@
 		9827D01C1BF5A3DD0044E3DD /* Driver.m in Sources */ = {isa = PBXBuildFile; fileRef = 9827D01A1BF5A3DD0044E3DD /* Driver.m */; };
 		984C803A1BD8CBC2006B26C3 /* GroveButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 984C80391BD8CBC2006B26C3 /* GroveButton.m */; };
 		984DFA2C1BA4B944006E4DAB /* NodeResourcesVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 984DFA2B1BA4B944006E4DAB /* NodeResourcesVC.m */; };
+		986252551C27A5CA004703BD /* NodeSettingTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 986252541C27A5CA004703BD /* NodeSettingTVC.m */; };
 		98643D361BE224A000DF2CF5 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 98643D351BE224A000DF2CF5 /* AboutViewController.m */; };
 		986E01471BA3DBCF00C12BF2 /* Grove.m in Sources */ = {isa = PBXBuildFile; fileRef = 986E01461BA3DBCF00C12BF2 /* Grove.m */; };
 		988B06711BD48FFE00C4268E /* NSString+escapedUnicode.m in Sources */ = {isa = PBXBuildFile; fileRef = 988B06701BD48FFE00C4268E /* NSString+escapedUnicode.m */; };
+		989140E31C1ADE9600D89F6B /* WiFiListTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 989140E21C1ADE9600D89F6B /* WiFiListTVC.m */; };
 		98AD9B3A1BE7112500F0BCC3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 98AD9B391BE7112500F0BCC3 /* Images.xcassets */; };
 		98B00AAD1BFB5BEA0014FE27 /* wioLinkViews.m in Sources */ = {isa = PBXBuildFile; fileRef = 98B00AAC1BFB5BEA0014FE27 /* wioLinkViews.m */; };
 		98B4ED631BA13296000D6255 /* SetupNodeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 98B4ED621BA13296000D6255 /* SetupNodeVC.m */; };
@@ -64,6 +66,9 @@
 		984C80391BD8CBC2006B26C3 /* GroveButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GroveButton.m; path = Views/GroveButton.m; sourceTree = "<group>"; };
 		984DFA2A1BA4B944006E4DAB /* NodeResourcesVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NodeResourcesVC.h; sourceTree = "<group>"; };
 		984DFA2B1BA4B944006E4DAB /* NodeResourcesVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NodeResourcesVC.m; sourceTree = "<group>"; };
+		986252531C27A5CA004703BD /* NodeSettingTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NodeSettingTVC.h; sourceTree = "<group>"; };
+		986252541C27A5CA004703BD /* NodeSettingTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NodeSettingTVC.m; sourceTree = "<group>"; };
+		986252561C27FA17004703BD /* WioLink1. 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "WioLink1. 2.xcdatamodel"; sourceTree = "<group>"; };
 		98643D341BE224A000DF2CF5 /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
 		98643D351BE224A000DF2CF5 /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
 		986E01451BA3DBCF00C12BF2 /* Grove.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Grove.h; path = Database/Grove.h; sourceTree = "<group>"; };
@@ -71,6 +76,8 @@
 		987748F31BDF7B4600BC6EC7 /* PionOne PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PionOne PrefixHeader.pch"; sourceTree = "<group>"; };
 		988B066F1BD48FFE00C4268E /* NSString+escapedUnicode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+escapedUnicode.h"; path = "Classes/NSString+escapedUnicode.h"; sourceTree = "<group>"; };
 		988B06701BD48FFE00C4268E /* NSString+escapedUnicode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+escapedUnicode.m"; path = "Classes/NSString+escapedUnicode.m"; sourceTree = "<group>"; };
+		989140E11C1ADE9600D89F6B /* WiFiListTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WiFiListTVC.h; sourceTree = "<group>"; };
+		989140E21C1ADE9600D89F6B /* WiFiListTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WiFiListTVC.m; sourceTree = "<group>"; };
 		98AD9B391BE7112500F0BCC3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = PionOne/Images.xcassets; sourceTree = "<group>"; };
 		98B00AAB1BFB5BEA0014FE27 /* wioLinkViews.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = wioLinkViews.h; path = Views/wioLinkViews.h; sourceTree = "<group>"; };
 		98B00AAC1BFB5BEA0014FE27 /* wioLinkViews.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = wioLinkViews.m; path = Views/wioLinkViews.m; sourceTree = "<group>"; };
@@ -276,6 +283,10 @@
 				984DFA2B1BA4B944006E4DAB /* NodeResourcesVC.m */,
 				98643D341BE224A000DF2CF5 /* AboutViewController.h */,
 				98643D351BE224A000DF2CF5 /* AboutViewController.m */,
+				989140E11C1ADE9600D89F6B /* WiFiListTVC.h */,
+				989140E21C1ADE9600D89F6B /* WiFiListTVC.m */,
+				986252531C27A5CA004703BD /* NodeSettingTVC.h */,
+				986252541C27A5CA004703BD /* NodeSettingTVC.m */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -467,6 +478,7 @@
 				98B00AAD1BFB5BEA0014FE27 /* wioLinkViews.m in Sources */,
 				98F672E01B98290C00A9292B /* User+Create.m in Sources */,
 				98F6725F1B980E6800A9292B /* main.m in Sources */,
+				986252551C27A5CA004703BD /* NodeSettingTVC.m in Sources */,
 				98B4ED661BA1BF0F000D6255 /* SelectGroveTVC.m in Sources */,
 				9805B1401BCFB044003DD994 /* Node+CoreDataProperties.m in Sources */,
 				98643D361BE224A000DF2CF5 /* AboutViewController.m in Sources */,
@@ -477,6 +489,7 @@
 				9805B1411BCFB044003DD994 /* Node.m in Sources */,
 				98F672E31B9839A000A9292B /* NodeListCDTVC.m in Sources */,
 				98F672F51B996E1E00A9292B /* MenuVC.m in Sources */,
+				989140E31C1ADE9600D89F6B /* WiFiListTVC.m in Sources */,
 				98F672B31B98118000A9292B /* NSString+Email.m in Sources */,
 				98F672E91B98457B00A9292B /* AppDelegate+Prepare.m in Sources */,
 				98E026351BBF6B6C00D691B4 /* NodeListCell.m in Sources */,
@@ -591,7 +604,6 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -615,7 +627,6 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -658,10 +669,11 @@
 		98F672631B980E6800A9292B /* PionOne.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				986252561C27FA17004703BD /* WioLink1. 2.xcdatamodel */,
 				9827D0101BF5A29D0044E3DD /* PionOne1.1.xcdatamodel */,
 				98F672641B980E6800A9292B /* PionOne.xcdatamodel */,
 			);
-			currentVersion = 9827D0101BF5A29D0044E3DD /* PionOne1.1.xcdatamodel */;
+			currentVersion = 986252561C27FA17004703BD /* WioLink1. 2.xcdatamodel */;
 			path = PionOne.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
