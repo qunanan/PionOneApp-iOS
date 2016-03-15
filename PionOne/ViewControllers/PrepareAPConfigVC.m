@@ -67,16 +67,26 @@
     [super viewWillAppear:animated];
     self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     [self registerAPconfigLocalNotification];
+    NSArray *viewControllers = self.navigationController.viewControllers;
+    if (viewControllers.count > 1 && [viewControllers objectAtIndex:viewControllers.count-2] == self) {
+        // View is disappearing because a new view controller was pushed onto the stack
+        NSLog(@"New view controller was pushed");
+    } else if ([viewControllers indexOfObject:self] == NSNotFound) {
+        // View is disappearing because it was popped from the stack
+        NSLog(@"View controller was popped");
+        [[PionOneManager sharedInstance] deleteZombieNodeWithCompletionHandler:nil];
+    }
+
     if (![[PionOneManager sharedInstance] isConnectedToPionOne]) {
         [self startCheckingNodeAPConnection];
     }
     
 }
 
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [[PionOneManager sharedInstance] cancel]; //cancel all processing, include Checking Node AP connection
-    [[PionOneManager sharedInstance] deleteZombieNodeWithCompletionHandler:nil];
     self.navigationController.interactivePopGestureRecognizer.enabled = YES;
 }
 

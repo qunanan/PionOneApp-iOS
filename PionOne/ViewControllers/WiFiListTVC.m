@@ -88,7 +88,7 @@
         label.font = [UIFont systemFontOfSize:14];
         label.textColor = [UIColor darkGrayColor];
     } else {
-        label.text = @"CHOUSE ANOTHER NETWORK..";
+        label.text = @"CHOOSE ANOTHER NETWORK..";
         label.font = [UIFont systemFontOfSize:14];
         label.textColor = [UIColor darkGrayColor];
         UIActivityIndicatorView *refreshIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];

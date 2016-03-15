@@ -14,6 +14,8 @@
 #define NODE_KEY    @"node_key"
 #define NODE_ONLINE_STATUS  @"online"
 #define NODE_DATA_SERVER_IP @"dataxserver"
+#define NODE_BOARD @"board"
+
 
 @interface Node (Setup)
 + (Node *)nodeWithServerInfo:(NSDictionary *)nodeDictionary

@@ -14,6 +14,6 @@
 
 @property (nonatomic, strong) Node *node;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
-
+@property (nonatomic, weak) Connector *configuringConnector;
 
 @end

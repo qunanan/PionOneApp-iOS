@@ -2,8 +2,8 @@
 //  Node+CoreDataProperties.h
 //  Wio Link
 //
-//  Created by Qxn on 15/12/21.
-//  Copyright © 2015年 SeeedStudio. All rights reserved.
+//  Created by Qxn on 2/26/16.
+//  Copyright © 2016 SeeedStudio. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
 //  to delete and recreate this implementation file for your updated model.
@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface Node (CoreDataProperties)
 
+@property (nullable, nonatomic, retain) NSString *dataServerIP;
 @property (nullable, nonatomic, retain) NSDate *date;
 @property (nullable, nonatomic, retain) NSString *key;
 @property (nullable, nonatomic, retain) NSString *macAddress;
@@ -22,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSNumber *nodeID;
 @property (nullable, nonatomic, retain) NSNumber *online;
 @property (nullable, nonatomic, retain) NSString *sn;
-@property (nullable, nonatomic, retain) NSString *dataServerIP;
+@property (nullable, nonatomic, retain) NSString *board;
 @property (nullable, nonatomic, retain) NSSet<Grove *> *groves;
 @property (nullable, nonatomic, retain) User *user;
 

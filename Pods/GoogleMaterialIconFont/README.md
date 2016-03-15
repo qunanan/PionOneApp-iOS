@@ -6,11 +6,14 @@
 [![License](https://img.shields.io/cocoapods/l/GoogleMaterialIconFont.svg?style=flat)](http://cocoapods.org/pods/GoogleMaterialIconFont)
 [![Platform](https://img.shields.io/cocoapods/p/GoogleMaterialIconFont.svg?style=flat)](http://cocoapods.org/pods/GoogleMaterialIconFont)
 
-Google Material Design Icons for Swift or ObjC project
+Google Material Design Icons for Swift and ObjC project
 
 This library is inspired by [FontAwesome.swift](https://github.com/thii/FontAwesome.swift)  
+
 Both Swift and Objctive-C are supported  
 See example project or [Material icons](https://www.google.com/design/icons/) more detail
+
+<img src="https://raw.githubusercontent.com/wiki/kitasuke/GoogleMaterialIconFont/images/demo01.png" width="320" height="586">
 
 ## Usage
 
@@ -34,9 +37,12 @@ label.font = [UIFont materialIconOfSize:32];
 
 ## Requirements
 
-iOS8 or later  
-Swift 1.2 or later  
-Xcode 6.3 or later  
+iOS8+  
+Swift 1.2+  
+Xcode 6.3+  
+
+for iOS7 support  
+Follow [Manual usage instruction](#Manual Usage)
 
 ## Installation
 
@@ -75,14 +81,11 @@ $ brew update
 $ brew install carthage
 ```
 
-### Manual
+### <a name="Manual Usage">Manual
 
 Copy all the files in `Pod` directory into your project.
 Make sure that `GoogleMaterialIconFont.ttf` is specified into `Fonts provided by application` in your project's `info.plist`
 
-## Author
-
-kitasuke
 
 ## License
 

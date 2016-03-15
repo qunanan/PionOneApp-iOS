@@ -2,8 +2,8 @@
 //  Node+CoreDataProperties.m
 //  Wio Link
 //
-//  Created by Qxn on 15/12/21.
-//  Copyright © 2015年 SeeedStudio. All rights reserved.
+//  Created by Qxn on 2/26/16.
+//  Copyright © 2016 SeeedStudio. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
 //  to delete and recreate this implementation file for your updated model.
@@ -13,6 +13,7 @@
 
 @implementation Node (CoreDataProperties)
 
+@dynamic dataServerIP;
 @dynamic date;
 @dynamic key;
 @dynamic macAddress;
@@ -20,7 +21,7 @@
 @dynamic nodeID;
 @dynamic online;
 @dynamic sn;
-@dynamic dataServerIP;
+@dynamic board;
 @dynamic groves;
 @dynamic user;
 

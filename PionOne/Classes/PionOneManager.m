@@ -18,7 +18,7 @@
 
 @import SystemConfiguration.CaptiveNetwork;
 
-@interface PionOneManager()
+@interface PionOneManager() <GCDAsyncUdpSocketDelegate>
 @property (nonatomic, strong) GCDAsyncUdpSocket *udpSocket;
 @property (atomic, assign) __block BOOL canceled;
 //@property (atomic, assign) __block BOOL isAPConfigSuccess;
@@ -300,13 +300,13 @@
 }
 
 #pragma -mark Node Management API
-- (void)createNodeWithName:(NSString *)name completionHandler:(void (^)(BOOL, NSString *))handler {
+- (void)createNodeWithName:(NSString *)name boardName:(NSString *)boardName completionHandler:(void (^)(BOOL, NSString *))handler {
     if (!self.user) {
         NSLog(@"To call the APIs, you need to set User.");
         if (handler) handler(NO,nil);
         return;
     }
-    NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token, name] forKeys:@[@"access_token", @"name"]];
+    NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token, name ,boardName] forKeys:@[@"access_token", @"name", @"board"]];
     self.httpManager.requestSerializer.timeoutInterval = 20.0f;
     [self.httpManager POST:aPionOneNodeCreate parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         //save the temp node info to UserDefaults for if the app was closed by user,
@@ -481,6 +481,12 @@
     NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[self.user.token] forKeys:@[@"access_token"]];
     self.httpManager.requestSerializer.timeoutInterval = 30.0f;
     [self.httpManager GET:aPionOneDriverScan parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (![responseObject isKindOfClass:[NSDictionary class]]) {
+            if (handler) {
+                handler(NO,@"Sync error:Server return value error.");
+            }
+            return;
+        }
         NSArray *drivers =[(NSDictionary *)responseObject objectForKey:@"drivers"];
         NSManagedObjectContext *refreshMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
         refreshMOC.parentContext = self.mainMOC;
@@ -557,7 +563,7 @@
 - (BOOL)isConnectedToPionOne {
     NSDictionary *nwkInfo = [self fetchSSIDInfo];
     NSString *ssid = nwkInfo[@"SSID"];
-    if ([ssid containsString:@"WioLink"] || [ssid containsString:@"PionOne"]) {
+    if ([ssid containsString:@"WioLink"] || [ssid containsString:@"PionOne"] || [ssid containsString:@"Wio_"]) {
         return YES;
     }
     return NO;
@@ -590,6 +596,11 @@
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:kPionOneTmpNodeKey];
         if (handler) handler(YES,@"Delete Zombie node success.");
         NSLog(@"JSON:DeleteZombie: %@", responseObject);
+        for (Node *aNode in self.user.nodes) {
+            if ([aNode.name isEqualToString:kTEMP_NODE_NAME]) {
+                [self removeNode:aNode completionHandler:nil];
+            }
+        }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSError *errorJson=nil;
         NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
@@ -1411,4 +1422,14 @@
     return hostIP;
 }
 
+@end
+
+#pragma -mark Board Types classes
+@implementation Board
+@end
+
+@implementation Connector
+@end
+
+@implementation Port
 @end

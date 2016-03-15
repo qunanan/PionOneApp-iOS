@@ -54,4 +54,8 @@
 #define kPionOneTmpNodeKey @"PionOneTmpNodeKey"
 #define PionOneConfigurationAddr @"192.168.4.1"
 
+#define kName_WioLink   @"Wio Link v1.0"
+#define kName_WioNode   @"Wio Node v1.0"
+#define kTEMP_NODE_NAME @"YouShouldNeverSeeMeInYourApp"
+
 #endif

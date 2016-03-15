@@ -52,7 +52,7 @@
     self.tableView.emptyDataSetSource = self;
     self.tableView.emptyDataSetDelegate = self;
     [[PionOneManager sharedInstance] scanDriverListWithCompletionHandler:^(BOOL success, NSString *msg) {
-        if (!success && [msg isEqualToString:@"Please login to get the token\n"]) {
+        if ((!success && [msg isEqualToString:@"Please login to get the token\n"]) || [msg containsString:@"Sync error"]) {
             UIAlertController *logout = [UIAlertController alertControllerWithTitle:@"Sorry" message:@"Something is wrong, you need to login again." preferredStyle:UIAlertControllerStyleAlert];
             UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
                 [[PionOneManager sharedInstance] logout];
@@ -486,18 +486,40 @@
 //        [self performSegueWithIdentifier:@"ShowAPconfigVC" sender:nil];
 //        return;
 //    }
+    UIAlertController *boardListAlert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    [boardListAlert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    
+    //Wio Link action
+    UIAlertAction *wioLinkAction = [UIAlertAction actionWithTitle:@"Wio Link" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self addBoard:kName_WioLink];
+    }];
+    UIImage *wioLinkImage = [UIImage imageNamed:@"wioLickPCBA"];
+    float scale = wioLinkImage.size.height / 40.0;
+    UIImage *scaledImage = [UIImage imageWithCGImage:[wioLinkImage CGImage] scale:wioLinkImage.scale*scale orientation:wioLinkImage.imageOrientation];
+    [wioLinkAction setValue:[scaledImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forKey:@"image"];
+    [boardListAlert addAction:wioLinkAction];
+    
+    //Wio Node action
+    [boardListAlert addAction:[UIAlertAction actionWithTitle:@"Wio Node" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self addBoard:kName_WioNode];
+    }]];
+    [self presentViewController:boardListAlert animated:YES completion:nil];
+}
+
+- (void)addBoard:(NSString *)boardName {
     [self.HUD show:YES];
     [[PionOneManager sharedInstance] rebootPionOne];
     [[PionOneManager sharedInstance] deleteZombieNodeWithCompletionHandler:^(BOOL succes, NSString *msg) {
-        [[PionOneManager sharedInstance] createNodeWithName:@"node000" completionHandler:^(BOOL succes, NSString *msg) {
+        [[PionOneManager sharedInstance] createNodeWithName:kTEMP_NODE_NAME boardName:boardName completionHandler:^(BOOL succes, NSString *msg) {
             [self.HUD hide:YES];
             if (succes) {
                 [[PionOneManager sharedInstance] cacheCurrentSSID];
                 if ([[PionOneManager sharedInstance] cachedSSID] &&
                     ![[[PionOneManager sharedInstance] cachedSSID] containsString:@"PionOne_"] &&
+                    ![[[PionOneManager sharedInstance] cachedSSID] containsString:@"Wio_"] &&
                     ![[[PionOneManager sharedInstance] cachedSSID] containsString:@"WioLink_"])
                 {
-                    [self performSegueWithIdentifier:@"ShowAPconfigVC" sender:nil];
+                    [self performSegueWithIdentifier:@"ShowAPconfigVC" sender:boardName];
                 } else {
                     msg = @"Please make sure that your phone is connected to an available wifi network.";
                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"No"

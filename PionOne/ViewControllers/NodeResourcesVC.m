@@ -73,9 +73,8 @@
 - (void)refresh {
     if (!self.webView.isLoading) {
         [self.webView reload];
-    } else {
-        [self.refreshControl endRefreshing];
     }
+    [self.refreshControl endRefreshing];
 }
 
 - (void)shareAPIs {

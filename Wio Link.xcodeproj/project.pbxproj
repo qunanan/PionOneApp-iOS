@@ -89,6 +89,7 @@
 		98B4ED681BA1C4F7000D6255 /* Grove+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Grove+Create.m"; path = "Database/Grove+Create.m"; sourceTree = "<group>"; };
 		98E026331BBF6B6C00D691B4 /* NodeListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NodeListCell.h; path = Views/NodeListCell.h; sourceTree = "<group>"; };
 		98E026341BBF6B6C00D691B4 /* NodeListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NodeListCell.m; path = Views/NodeListCell.m; sourceTree = "<group>"; };
+		98E996F91C80291500659044 /* WioLink1. 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "WioLink1. 3.xcdatamodel"; sourceTree = "<group>"; };
 		98E9CF471BD0F21E00FE1F38 /* SetupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetupViewController.h; sourceTree = "<group>"; };
 		98E9CF481BD0F21E00FE1F38 /* SetupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetupViewController.m; sourceTree = "<group>"; };
 		98F672591B980E6800A9292B /* Wio Link.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Wio Link.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -669,11 +670,12 @@
 		98F672631B980E6800A9292B /* PionOne.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				98E996F91C80291500659044 /* WioLink1. 3.xcdatamodel */,
 				986252561C27FA17004703BD /* WioLink1. 2.xcdatamodel */,
 				9827D0101BF5A29D0044E3DD /* PionOne1.1.xcdatamodel */,
 				98F672641B980E6800A9292B /* PionOne.xcdatamodel */,
 			);
-			currentVersion = 986252561C27FA17004703BD /* WioLink1. 2.xcdatamodel */;
+			currentVersion = 98E996F91C80291500659044 /* WioLink1. 3.xcdatamodel */;
 			path = PionOne.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

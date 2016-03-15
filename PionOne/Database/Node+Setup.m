@@ -31,6 +31,7 @@
                                              inManagedObjectContext:context];
         node.sn = sn;
         node.key = nodeDictionary[NODE_KEY];
+        node.board = nodeDictionary[NODE_BOARD];
         NSDate *now = [[NSDate alloc] init];
         node.date = now;        
     }

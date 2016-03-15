@@ -15,6 +15,8 @@
 #import "PionOneUserDefaults.h"
 #import <AFNetworking/AFNetworking.h>
 
+@class Board, Connector, Port;
+
 @interface PionOneManager : NSObject
 @property (nonatomic, strong) NSManagedObjectContext *mainMOC; //if you want to call the API, it must not be nil
 @property (nonatomic, strong) User *user;
@@ -26,6 +28,9 @@
 @property (nonatomic, assign) BOOL APConfigurationDone;
 
 @property (nonatomic, strong) AFHTTPSessionManager *httpManager;
+
+@property (nonatomic, strong) Board *wioLink;
+@property (nonatomic, strong) Board *wioNode;
 
 + (instancetype)sharedInstance;
 
@@ -41,11 +46,12 @@
 - (void)changePasswordWithNewPassword:(NSString *)newPwd completionHandler:(void (^)(BOOL success, NSString *msg))handler;
 
 #pragma -mark Node Management API
-- (void)createNodeWithName:(NSString *)name completionHandler:(void (^)(BOOL success, NSString *msg))handler;
+- (void)createNodeWithName:(NSString *)name boardName:(NSString *)boardName completionHandler:(void (^)(BOOL success, NSString *msg))handler;
 - (void)getNodeListWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
 - (void)getNodeListAndNodeSettingsWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
 - (void)removeNode:(Node *)node completionHandler:(void (^)(BOOL success, NSString *msg))handler;
 - (void)renameNode:(Node *)node withName:(NSString *)name completionHandler:(void (^)(BOOL success, NSString *msg))handler;
+//- (void)getBoardListWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
 
 #pragma -mark Driver Management API
 - (void)scanDriverListWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
@@ -83,4 +89,24 @@
 - (void)setRegion:(NSString*)region OTAServerIP:(NSString *)otaIP andDataSeverIP:(NSString *)dataIP;
 - (void)node:(Node *)node setDataServerIP:(NSString *)dataIP WithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
 
+@end
+
+#pragma -mark Board Types classes
+@interface Board : NSObject
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSArray *connectors;
+@end
+
+@interface Connector : NSObject
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSArray *ports;
+@property (nonatomic, strong) Board *board;
+@end
+
+@interface Port : NSObject
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSString *pin0;
+@property (nonatomic, strong) NSString *pin1;
+@property (nonatomic, strong) NSString *type;
+@property (nonatomic, strong) Connector *connector;
 @end
