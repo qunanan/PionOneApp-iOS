@@ -20,6 +20,7 @@
 #import <GoogleMaterialIconFont/GoogleMaterialIconFont-Swift.h>
 #import "RESideMenu.h"
 #import "NodeSettingTVC.h"
+#import "PrepareAPConfigVC.h"
 
 @interface NodeListCDTVC() <MBProgressHUDDelegate, MGSwipeTableCellDelegate, UITextFieldDelegate, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
 @property (strong, nonatomic) Node *configuringNode;
@@ -51,6 +52,7 @@
     [super viewDidLoad];
     self.tableView.emptyDataSetSource = self;
     self.tableView.emptyDataSetDelegate = self;
+
     [[PionOneManager sharedInstance] scanDriverListWithCompletionHandler:^(BOOL success, NSString *msg) {
         if ((!success && [msg isEqualToString:@"Please login to get the token\n"]) || [msg containsString:@"Sync error"]) {
             UIAlertController *logout = [UIAlertController alertControllerWithTitle:@"Sorry" message:@"Something is wrong, you need to login again." preferredStyle:UIAlertControllerStyleAlert];
@@ -66,6 +68,11 @@
             }];
             [logout addAction:okAction];
             [self presentViewController:logout animated:YES completion:nil];
+        }
+        
+        //parse server domain name
+        if (success) {
+            [[PionOneManager sharedInstance] parseDefaultServerDomain];
         }
     }];
 
@@ -312,6 +319,11 @@
         cell.onlineLabel.text = @"Offline";
         cell.onlineLabel.textColor = [wioLinkViews wioLinkRed];
     }
+    if ([node.board containsString:@"Node"]) {
+        [cell.nodeIcon setImage:[UIImage imageNamed:@"wioNodePCBA"]];
+    } else {
+        [cell.nodeIcon setImage:[UIImage imageNamed:@"wioLinkPCBA"]];
+    }
     NSSortDescriptor *descriptorName = [[NSSortDescriptor alloc] initWithKey:@"connectorName" ascending:YES];
     NSSortDescriptor *descriptorSKU = [[NSSortDescriptor alloc] initWithKey:@"driver.skuID" ascending:YES];
     cell.groves = [node.groves sortedArrayUsingDescriptors:@[descriptorName, descriptorSKU]];
@@ -493,16 +505,22 @@
     UIAlertAction *wioLinkAction = [UIAlertAction actionWithTitle:@"Wio Link" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self addBoard:kName_WioLink];
     }];
-    UIImage *wioLinkImage = [UIImage imageNamed:@"wioLickPCBA"];
+    UIImage *wioLinkImage = [UIImage imageNamed:@"wioLinkPCBA"];
     float scale = wioLinkImage.size.height / 40.0;
     UIImage *scaledImage = [UIImage imageWithCGImage:[wioLinkImage CGImage] scale:wioLinkImage.scale*scale orientation:wioLinkImage.imageOrientation];
     [wioLinkAction setValue:[scaledImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forKey:@"image"];
     [boardListAlert addAction:wioLinkAction];
     
     //Wio Node action
-    [boardListAlert addAction:[UIAlertAction actionWithTitle:@"Wio Node" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *wioNodeAction = [UIAlertAction actionWithTitle:@"Wio Node" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self addBoard:kName_WioNode];
-    }]];
+    }];
+    UIImage *wioNodeImage = [UIImage imageNamed:@"wioNodePCBA"];
+    scale = wioNodeImage.size.height / 40.0;
+    UIImage *scaledImage2 = [UIImage imageWithCGImage:[wioNodeImage CGImage] scale:wioNodeImage.scale*scale orientation:wioNodeImage.imageOrientation];
+    [wioNodeAction setValue:[scaledImage2 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forKey:@"image"];
+    [boardListAlert addAction:wioNodeAction];
+
     [self presentViewController:boardListAlert animated:YES completion:nil];
 }
 
@@ -587,6 +605,10 @@
     }  else if ([dVC isKindOfClass:[NodeSettingTVC class]]) {
         if ([sender isKindOfClass:[Node class]]) {
             [(NodeSettingTVC *)dVC setNode:sender];
+        }
+    }  else if ([dVC isKindOfClass:[PrepareAPConfigVC class]]) {
+        if ([sender isKindOfClass:[NSString class]]) {
+            [(PrepareAPConfigVC *)dVC setWioName:sender];
         }
     }
 }

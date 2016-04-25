@@ -19,6 +19,7 @@
 @interface SetupNodeVC () <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate>
 @property (strong, nonatomic) IBOutletCollection(GroveButton) NSArray *groveButtons;
 @property (weak, nonatomic) IBOutlet KHFlatButton *apiButton;
+@property (weak, nonatomic) IBOutlet UIImageView *setupImage;
 
 @property (nonatomic, strong) MBProgressHUD *HUD;
 @property (nonatomic, assign) BOOL isConfigured;
@@ -31,8 +32,25 @@
     self.title = self.node.name;
     self.isConfigured = self.node.groves.count? YES:NO;
     self.tableView.delegate = self;
+    //config setup image and buttons
+    if ([self.node.board containsString:@"Node"]) { //wio node
+        [self.setupImage setImage:[UIImage imageNamed:@"wioNode"]];
+        for (GroveButton *btn in self.groveButtons) {
+            btn.hidden = YES;
+            if (btn.tag == 12) {
+                [btn setTitle:@"PORT0" forState:UIControlStateNormal];
+                btn.hidden = NO;
+            }
+            if (btn.tag == 22) {
+                [btn setTitle:@"PORT1" forState:UIControlStateNormal];
+                btn.hidden = NO;
+            }
+        }
+    } else {
+        [self.setupImage setImage:[UIImage imageNamed:@"wioLink"]];
+    }
     [self refreshGroveButtonConfiguration];
-    
+
     //add a button
     CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
     UIGraphicsBeginImageContext(rect.size);
@@ -54,6 +72,8 @@
     frame.size.height = 210;
     headerView.frame = frame;
     self.tableView.tableHeaderView = headerView;
+    
+    
     
     UIView *footerView = self.tableView.tableFooterView;
     [footerView setNeedsLayout];
@@ -222,8 +242,32 @@
 
 #pragma -mark Actions
 - (IBAction)groveButtonPushed:(UIButton *)sender {
-    [self performSegueWithIdentifier:@"ShowSelectGrove" sender:sender.titleLabel.text];
+    NSString *cntName = sender.titleLabel.text;
+
+    if ([self.node.board containsString:@"Node"]) {
+        NSArray *types;
+        if ([sender.titleLabel.text isEqualToString:@"PORT0"]) {
+            types = @[@"UART",@"I2C",@"GPIO"];
+        } else {
+            types = @[@"ANALOG",@"I2C",@"GPIO"];
+        }
+        UIAlertController *selectPortAction = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        [selectPortAction addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+        for (NSString *type in types) {
+            [selectPortAction addAction:[UIAlertAction actionWithTitle:type style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                NSDictionary *configDic = [[NSDictionary alloc] initWithObjects:@[cntName, type] forKeys:@[CNT_NAME,INTERFACE_TYPE]];
+                [self performSegueWithIdentifier:@"ShowSelectGrove" sender:configDic];
+            }]];
+        }
+        [self presentViewController:selectPortAction animated:YES completion:nil];
+        return;
+    } else {
+        NSString *type = [[PionOneManager sharedInstance] interfaceTypeForCntName:cntName];
+        NSDictionary *configDic = [[NSDictionary alloc] initWithObjects:@[cntName, type] forKeys:@[CNT_NAME,INTERFACE_TYPE]];
+        [self performSegueWithIdentifier:@"ShowSelectGrove" sender:configDic];
+    }
 }
+
 - (IBAction)updateFirmware:(id)sender {
     UIAlertController *action = [UIAlertController alertControllerWithTitle:nil message:@"It will update this WioLink's firmware and will take about one minute." preferredStyle:UIAlertControllerStyleActionSheet];
     [action addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
@@ -243,10 +287,10 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     id dVC = [segue destinationViewController];
     if ([dVC isKindOfClass:[SelectGroveTVC class]]) {
-        if ([sender isKindOfClass:[NSString class]]) {
-            [(SelectGroveTVC *)dVC setConnectorName:sender];
-            [(SelectGroveTVC *)dVC setManagedObjectContext:self.managedObjectContext];
+        if ([sender isKindOfClass:[NSDictionary class]]) {
+            [(SelectGroveTVC *)dVC setConfigDic:sender];
             [(SelectGroveTVC *)dVC setNode:self.node];
+            [(SelectGroveTVC *)dVC setManagedObjectContext:self.managedObjectContext];
         }
     } else if ([dVC isKindOfClass:[DriverDetailVC class]]) {
         if ([sender isKindOfClass:[Driver class]]) {

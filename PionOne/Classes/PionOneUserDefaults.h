@@ -9,12 +9,11 @@
 #ifndef PionOne_PionOneUserDefaults_h
 #define PionOne_PionOneUserDefaults_h
 
+#define kSystemVersion  @"1.0.3"
 //#define PionOneDefaultBaseURL @"https://iot.seeed.cc"
 #define PionOneDefaultBaseURL @"https://iot.seeed.cc"
-#define PionOneDefaultOTAServerHostChina @"cn.iot.seeed.cc"
-#define PionOneDefaultDataServerHostChina @"cn.iot.seeed.cc"
-#define PionOneDefaultOTAServerHostInternational @"iot.seeed.cc"
-#define PionOneDefaultDataServerHostInternational @"iot.seeed.cc"
+#define PionOneDefaultServerURLChina @"https://cn.iot.seeed.cc"
+#define PionOneDefaultServerURLInternational @"https://iot.seeed.cc"
 #define PionOneConfigurationAddr @"192.168.4.1"
 #define PionOneRegionNameInternational @"International"
 #define PionOneRegionNameChina @"China"

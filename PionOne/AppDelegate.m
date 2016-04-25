@@ -20,17 +20,14 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
-    [Bugtags startWithAppKey:@"de954c8e373f9e61fb9b3eb4dd33739b" invocationEvent:BTGInvocationEventBubble];
+    [Bugtags startWithAppKey:@"de954c8e373f9e61fb9b3eb4dd33739b" invocationEvent:BTGInvocationEventNone];
+    
+    [[PionOneManager sharedInstance] checkSysVersion];
     [[PionOneManager sharedInstance] setMainMOC:self.mainMOC];
     
     //init Server baseURL
-    NSString *urlStr = [[NSUserDefaults standardUserDefaults] stringForKey:kPionOneOTAServerBaseURL];
-    if (urlStr == nil) {
-        [[PionOneManager sharedInstance] setRegion:PionOneRegionNameInternational
-                                       OTAServerIP:PionOneDefaultOTAServerHostInternational
-                                    andDataSeverIP:PionOneDefaultDataServerHostInternational];
-    }
-
+    [[PionOneManager sharedInstance] initBaseURL];
+    
     if ([self isUserExist]) {
         self.window.rootViewController = [self.window.rootViewController.storyboard instantiateViewControllerWithIdentifier:@"MainVC"];
     } else {

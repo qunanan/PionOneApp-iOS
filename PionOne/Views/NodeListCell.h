@@ -16,5 +16,6 @@
 @property (strong, nonatomic) NSArray *groves;
 @property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *groveIcons;
 @property (weak, nonatomic) IBOutlet UILabel *moreIndicatorLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *nodeIcon;
 
 @end

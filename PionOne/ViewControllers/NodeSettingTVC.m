@@ -12,15 +12,15 @@
 #import "MBProgressHUD.h"
 #import "NSString+Email.h"
 
-#define mSTR_RENAME_WIO_LINK @"Rename Wio Link"
+#define mSTR_RENAME_WIO_LINK @"Rename Wio Device"
 #define mSTR_CHANGE_DATA_SERVER @"Change Data Server"
-#define mSTR_TAKE_A_NAME_FOR_WIO_LINK @"Take a name for Wio Link"
-#define mSTR_YOUR_DATA_SERVER_IP @"Your data server IP"
+#define mSTR_TAKE_A_NAME_FOR_WIO_LINK @"Take a name for Wio Device"
+#define mSTR_YOUR_DATA_SERVER_URL @"Your data server URL"
 
 @interface NodeSettingTVC () <UITextFieldDelegate>
 @property (nonatomic, strong) RETableViewManager *tvManager;
 @property (nonatomic, strong) RETableViewItem *nameItem;
-@property (nonatomic, strong) RETableViewItem *serverIPItem;
+@property (nonatomic, strong) RETableViewItem *serverURLItem;
 @property (strong, nonatomic) UIAlertController *textInputDialog;
 @property (nonatomic, strong) MBProgressHUD *HUD;
 
@@ -56,20 +56,21 @@
     return _HUD;
 }
 
-- (RETableViewItem *)serverIPItem {
-    if (_serverIPItem == nil) {
-        _serverIPItem = [RETableViewItem itemWithTitle:@"Data Server IP" accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
+- (RETableViewItem *)serverURLItem {
+    if (_serverURLItem == nil) {
+        _serverURLItem = [RETableViewItem itemWithTitle:@"Data Server URL" accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
             [item deselectRowAnimated:YES];
             self.textInputDialog.title = mSTR_CHANGE_DATA_SERVER;
-            [[self.textInputDialog.textFields objectAtIndex:0] setPlaceholder:mSTR_YOUR_DATA_SERVER_IP];
-            [[self.textInputDialog.textFields objectAtIndex:0] setText:nil];
+            NSString *defaultURLStr = [[NSUserDefaults standardUserDefaults] valueForKey:kPionOneDataServerBaseURL];
+            [[self.textInputDialog.textFields objectAtIndex:0] setPlaceholder:mSTR_YOUR_DATA_SERVER_URL];
+            [[self.textInputDialog.textFields objectAtIndex:0] setText:self.node.dataServerURL? self.node.dataServerURL:defaultURLStr];
             [[self.textInputDialog.actions objectAtIndex:1] setEnabled:NO];
             [self presentViewController:self.textInputDialog animated:YES completion:nil];
         }];
-        _serverIPItem.style = UITableViewCellStyleValue1;
+        _serverURLItem.style = UITableViewCellStyleValue1;
 
     }
-    return _serverIPItem;
+    return _serverURLItem;
 }
                          
 - (void)viewDidLoad {
@@ -99,24 +100,27 @@
     RETableViewSection *section2 = [RETableViewSection section];
     section2.headerTitle = @"";
     section2.headerHeight = 20.0;
-    NSString *defaultServerIP = [[NSUserDefaults standardUserDefaults] valueForKey:kPionOneDataServerIPAddress];
-
-    BOOL dataServerChanged = self.node.dataServerIP != nil && ![self.node.dataServerIP isEqualToString:defaultServerIP];
+    NSString *defaultServerURL = [[NSUserDefaults standardUserDefaults] valueForKey:kPionOneDataServerBaseURL];
+    NSURL *dsURL = [NSURL URLWithString:defaultServerURL];
+    BOOL dataServerChanged = self.node.dataServerURL != nil && ![self.node.dataServerURL isEqualToString:defaultServerURL];
 
 
     REBoolItem *dataServerSwitchItem = [REBoolItem itemWithTitle:@"Use Custom Data Server" value:dataServerChanged switchValueChangeHandler:^(REBoolItem *item) {
         if (item.value) {
-            self.serverIPItem.detailLabelText = [[NSUserDefaults standardUserDefaults] valueForKey:kPionOneDataServerIPAddress];
-            self.serverIPItem.style = UITableViewCellStyleValue1;
-            [section2 addItem:self.serverIPItem];
+            self.serverURLItem.detailLabelText = [[NSUserDefaults standardUserDefaults] valueForKey:kPionOneDataServerBaseURL];
+            self.serverURLItem.style = UITableViewCellStyleValue1;
+            [section2 addItem:self.serverURLItem];
             [section2 reloadSectionWithAnimation:UITableViewRowAnimationFade];
         } else {
             [self.HUD show:YES];
-            [[PionOneManager sharedInstance] node:self.node setDataServerIP:defaultServerIP WithCompletionHandler:^(BOOL success, NSString *msg) {
+            NSString *dataIPStr = [[PionOneManager sharedInstance] lookupIPAddressForHostName:dsURL.host];
+            [[PionOneManager sharedInstance] node:self.node setDataServerIP:dataIPStr url:defaultServerURL WithCompletionHandler:^(BOOL success, NSString *msg) {
                 [self.HUD hide:YES];
                 [section2 removeLastItem];
                 if (!success) {
                     [self showAlertMsg:msg];
+                } else {
+                    self.node.dataServerURL = defaultServerURL;
                 }
                 [section2 reloadSectionWithAnimation:UITableViewRowAnimationFade];
             }];
@@ -125,10 +129,10 @@
     [section2 addItem:dataServerSwitchItem];
 
     if (dataServerChanged) {
-        self.serverIPItem.detailLabelText = self.node.dataServerIP;
-        [section2 addItem:self.serverIPItem];
+        self.serverURLItem.detailLabelText = self.node.dataServerURL;
+        [section2 addItem:self.serverURLItem];
     } else {
-        self.serverIPItem.detailLabelText = [[NSUserDefaults standardUserDefaults] valueForKey:kPionOneDataServerIPAddress];
+        self.serverURLItem.detailLabelText = [[NSUserDefaults standardUserDefaults] valueForKey:kPionOneDataServerIPAddress];
     }
 
     [self.tvManager addSection:section2];
@@ -155,20 +159,23 @@
 }
 
 - (void)changeDataServer {
-    NSString *ip = [[_textInputDialog.textFields objectAtIndex:0] text];
+    NSString *urlStr = [[_textInputDialog.textFields objectAtIndex:0] text];
+    NSURL *url = [NSURL URLWithString:urlStr];
+    NSString *ip = [[PionOneManager sharedInstance] lookupIPAddressForHostName:url.host];
     if ([ip isIp]) {
         [self.HUD show:YES];
-        [[PionOneManager sharedInstance] node:self.node setDataServerIP:ip WithCompletionHandler:^(BOOL success, NSString *msg) {
+        [[PionOneManager sharedInstance] node:self.node setDataServerIP:ip url:urlStr WithCompletionHandler:^(BOOL success, NSString *msg) {
             [self.HUD hide:YES];
             if (success) {
-                self.serverIPItem.detailLabelText = ip;
+                self.node.dataServerURL = urlStr;
+                self.serverURLItem.detailLabelText = urlStr;
                 [self.tableView reloadData];
             } else {
                 [self showAlertMsg:msg];
             }
         }];
     } else {
-        [self showAlertMsg:@"Bad IP address"];
+        [self showAlertMsg:@"Bad Server URL"];
     }
 }
 

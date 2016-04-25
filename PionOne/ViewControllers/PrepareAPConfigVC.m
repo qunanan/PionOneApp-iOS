@@ -17,6 +17,7 @@
 @property (strong, nonatomic) MBProgressHUD *progressHUD;
 @property (strong, nonatomic) UIAlertController *userInputDialog;
 @property (assign, nonatomic) BOOL isPreparedPionOne;
+@property (weak, nonatomic) IBOutlet UIImageView *guideImage;
 
 //@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
 @property (weak, nonatomic) IBOutlet KHFlatButton *button;
@@ -28,6 +29,8 @@
         _progressHUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
         [self.navigationController.view addSubview:_progressHUD];
         _progressHUD.dimBackground = YES;
+        _progressHUD.minSize = CGSizeMake(150.f, 100.f);
+        _progressHUD.animationType = MBProgressHUDAnimationZoom;
     }
     return _progressHUD;
 }
@@ -49,7 +52,7 @@
             [textField addTarget:weakSelf action:@selector(textFieldDidChange) forControlEvents:UIControlEventEditingChanged];
         }];
         [_userInputDialog addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-            textField.placeholder = @"Enter A Name For Your Wio Link";
+            textField.placeholder = @"Enter A Name For Your Wio Device";
             textField.secureTextEntry = NO;
             [textField setReturnKeyType:UIReturnKeyJoin];
             textField.delegate = weakSelf;
@@ -59,14 +62,29 @@
     return _userInputDialog;
 }
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    if (self.wioName) {
+        if ([self.wioName isEqualToString:kName_WioLink]) {
+            self.guideImage.image = [UIImage imageNamed:@"apconfigLink"];
+        } else if ([self.wioName isEqualToString:kName_WioNode]) {
+            self.guideImage.image = [UIImage imageNamed:@"apconfigNode"];
+        }
+    }
+
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationController.interactivePopGestureRecognizer.enabled = NO;
-    [self registerAPconfigLocalNotification];
+    
+    if (![[PionOneManager sharedInstance] isConnectedToPionOne]) {
+        [self.button setTitle:@"Goto wifi list" forState:UIControlStateNormal];
+        [self registerAPconfigLocalNotification];
+    } else {
+        [self.button setTitle:@"Ready" forState:UIControlStateNormal];
+    }
     NSArray *viewControllers = self.navigationController.viewControllers;
     if (viewControllers.count > 1 && [viewControllers objectAtIndex:viewControllers.count-2] == self) {
         // View is disappearing because a new view controller was pushed onto the stack
@@ -76,11 +94,6 @@
         NSLog(@"View controller was popped");
         [[PionOneManager sharedInstance] deleteZombieNodeWithCompletionHandler:nil];
     }
-
-    if (![[PionOneManager sharedInstance] isConnectedToPionOne]) {
-        [self startCheckingNodeAPConnection];
-    }
-    
 }
 
 
@@ -96,8 +109,8 @@
         [[PionOneManager sharedInstance] setAPConfigurationDone:NO];
         [self prepareSetup];
     } else {
-        [[[UIAlertView alloc] initWithTitle:@"Connect Wio Link"
-                                   message:@"Please go to Settings and connect the WioLink_XXXX Network."
+        [[[UIAlertView alloc] initWithTitle:@"Connect Wio Device"
+                                   message:@"Please go to Settings and connect the Wio_XXXXXX Network."
                                   delegate:self
                          cancelButtonTitle:@"Cancel"
                           otherButtonTitles:@"OK", nil] show];
@@ -110,7 +123,7 @@
             UILocalNotification *notification = [[UILocalNotification alloc] init];
             if (notification) {
                 notification.soundName = UILocalNotificationDefaultSoundName;
-                notification.alertBody = @"Connected a Wio Link!";
+                notification.alertBody = @"Connected a Wio Device!";
                 [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                 [NSThread sleepForTimeInterval:1.0];
                 [self gotReady];
@@ -158,33 +171,99 @@
                 switch (step) {
                     case 1:
                         //connecting wifi
-                        self.progressHUD.labelText = @"Connecting WiFi...";
+                        self.progressHUD.detailsLabelText = @"Transmitting the configuration...";
                         [self.progressHUD show:YES];
-                        self.progressHUD.animationType = MBProgressHUDModeDeterminate;
                         
                         break;
                     case 2:
                         //connecting server
-                        self.progressHUD.labelText = @"Connecting Server...";
+                        self.progressHUD.detailsLabelText = @"The Wio is connecting Server...";
+                        self.progressHUD.mode = MBProgressHUDModeDeterminate;
+                        [self countDownProgress];
                         break;
                     case 3:
                         //rename device
-                        self.progressHUD.labelText = @"Setup Device...";
+                        self.progressHUD.mode = MBProgressHUDModeIndeterminate;
+                        self.progressHUD.detailsLabelText = @"Setting up the Wio's name...";
                         break;
                     case 4:
                         //done
-                        self.progressHUD.labelText = @"Done";
+                        self.progressHUD.detailsLabelText = @"Done";
                         [self configurationgDone];
                         break;
                     default:
                         break;
                 }
             } else {
-                [self showAlertMsg:msg];
-                [self cancelConfiguration];
+                [self.progressHUD hide:YES];
+                self.progressHUD.mode = MBProgressHUDModeIndeterminate;
+                [self showErrorHandlingProcess];
+//                [self cancelConfiguration];
             }
         }];
     }
+}
+
+- (void)showErrorHandlingProcess {
+    UIAlertController *errorHandlingAlert = [UIAlertController alertControllerWithTitle:@"Setup failed" message:@"Please check the BLUE LED on the board and select the right status below." preferredStyle:UIAlertControllerStyleActionSheet];
+    [errorHandlingAlert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        [self cancelConfiguration];
+    }]];
+    
+    //blink twice quickly then off 1s - requesting IP address from router
+    [errorHandlingAlert addAction:[UIAlertAction actionWithTitle:@"blink twice quickly then off 1s" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self showAlertMsg:@"It might be you input a wrong password of your wifi network, please retry the process from the very beginning."];
+    }]];
+    //blink once quickly then off 1s - connecting to the server
+    [errorHandlingAlert addAction:[UIAlertAction actionWithTitle:@"blink once quickly then off 1s" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self showAlertMsg:@"There might be something wrong with the network, the Wio can not connect to the sever. You can reset the Wio by pushing the RESET button and pull to refresh the list."];
+        PionOneManager *manager = [PionOneManager sharedInstance];
+        self.progressHUD.mode = MBProgressHUDModeIndeterminate;
+        [self.progressHUD show:YES];
+        [manager setNodeName:manager.cachedNodeName withNodeSN:manager.tmpNodeSN completionHandler:^(BOOL success, NSString *msg) {
+            [self.progressHUD hide:YES];
+            PionOneManager *manager = [PionOneManager sharedInstance];
+            manager.APConfigurationDone = YES;
+            manager.cachedPassword = nil;
+            [self.navigationController popViewControllerAnimated:YES];
+        }];
+    }]];
+
+    //on 1s then off 1s - The node is online
+    [errorHandlingAlert addAction:[UIAlertAction actionWithTitle:@"on 1s then off 1s" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self showAlertMsg:@"The Wio already connected to the sever. You can pull to refresh the list."];
+        PionOneManager *manager = [PionOneManager sharedInstance];
+        self.progressHUD.mode = MBProgressHUDModeIndeterminate;
+        [self.progressHUD show:YES];
+        [manager setNodeName:manager.cachedNodeName withNodeSN:manager.tmpNodeSN completionHandler:^(BOOL success, NSString *msg) {
+            [self.progressHUD hide:YES];
+            PionOneManager *manager = [PionOneManager sharedInstance];
+            manager.APConfigurationDone = YES;
+            manager.cachedPassword = nil;
+            [self.navigationController popViewControllerAnimated:YES];
+        }];
+    }]];
+    
+
+    [self presentViewController:errorHandlingAlert animated:YES completion:nil];
+
+}
+
+- (void)countDownProgress {
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        // Do something useful in the background and update the HUD periodically.
+        // This just increases the progress indicator in a loop.
+        float progress = 0.0f;
+        while (progress < 1.0f) {
+            progress += 0.01f;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                // Instead we could have also passed a reference to the HUD
+                // to the HUD to myProgressTask as a method parameter.
+                self.progressHUD.progress = progress;
+            });
+            usleep(400000);
+        }
+    });
 }
 
 - (void)cancelConfiguration {
@@ -199,7 +278,7 @@
 - (void)configurationgDone {
     [self.progressHUD hide:YES];
     PionOneManager *manager = [PionOneManager sharedInstance];
-    manager.APConfigurationDone = NO;
+    manager.APConfigurationDone = YES;
     manager.cachedPassword = nil;
     [[[UIAlertView alloc] initWithTitle:@"Success!" message:nil delegate:self cancelButtonTitle:@"Done" otherButtonTitles: nil] show];
 }
@@ -211,12 +290,15 @@
     }
     if (buttonIndex == 1 && [[alertView buttonTitleAtIndex:1] isEqualToString:@"OK"]) {
         NSURL*url=[NSURL URLWithString:@"prefs:root=WIFI"];
+        if (![[PionOneManager sharedInstance] isConnectedToPionOne]) {
+            [self startCheckingNodeAPConnection];
+        }
         [[UIApplication sharedApplication] openURL:url];
     }
 }
 
 - (void)showAlertMsg:(NSString *)msg {
-    UIAlertView *alart = [[UIAlertView alloc] initWithTitle:@"Failed"
+    UIAlertView *alart = [[UIAlertView alloc] initWithTitle:@"Info"
                                 message:msg delegate:self
                       cancelButtonTitle:@"OK"
                       otherButtonTitles:nil];
@@ -239,7 +321,7 @@
 {
     UITextField *passwordTextField = [_userInputDialog.textFields objectAtIndex:0];
     UITextField *nameTextField = [_userInputDialog.textFields objectAtIndex:1];
-    if (passwordTextField.text.length == 0 || nameTextField.text.length == 0) {
+    if (nameTextField.text.length == 0) {
         return NO;
     }
     [self.userInputDialog dismissViewControllerAnimated:YES completion:nil];
@@ -249,7 +331,7 @@
 - (void)textFieldDidChange {
     UITextField *passwordTextField = [_userInputDialog.textFields objectAtIndex:0];
     UITextField *nameTextField = [_userInputDialog.textFields objectAtIndex:1];
-    if (passwordTextField.text.length == 0 || nameTextField.text.length == 0) {
+    if (nameTextField.text.length == 0) {
         [_userInputDialog.actions objectAtIndex:1].enabled = NO;
     } else {
         [_userInputDialog.actions objectAtIndex:1].enabled = YES;

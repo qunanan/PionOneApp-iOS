@@ -16,7 +16,9 @@
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
 @property (nonatomic, strong) UIActivityIndicatorView *webIndicator;
 @property (nonatomic, assign) BOOL didFailLoading;
-
+@property (nonatomic, assign) BOOL authenticated;
+@property (nonatomic, strong) NSURLRequest *request;
+@property (nonatomic, strong) NSURLConnection *urlConnection;
 @end
 @implementation NodeResourcesVC
 
@@ -53,8 +55,8 @@
     [self.webView.scrollView addSubview:self.refreshControl];
     
     NSURL *url = [NSURL URLWithString:self.node.apiURL];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:10.0];
-    [self.webView loadRequest:request];
+    self.request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:10.0];
+    [self.webView loadRequest:self.request];
     [self.webIndicator startAnimating];
     
 }
@@ -136,11 +138,75 @@
     [self.refreshControl endRefreshing];
 }
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+//- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+//{
+//    self.didFailLoading = NO;
+//    
+//    return YES;
+//}
+#pragma mark - Webview delegate
+
+// Note: This method is particularly important. As the server is using a self signed certificate,
+// we cannot use just UIWebView - as it doesn't allow for using self-certs. Instead, we stop the
+// request in this method below, create an NSURLConnection (which can allow self-certs via the delegate methods
+// which UIWebView does not have), authenticate using NSURLConnection, then use another UIWebView to complete
+// the loading and viewing of the page. See connection:didReceiveAuthenticationChallenge to see how this works.
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType;
 {
     self.didFailLoading = NO;
+
+    NSLog(@"Did start loading: %@ auth:%d", [[request URL] absoluteString], _authenticated);
+    
+    if (!_authenticated) {
+        _authenticated = NO;
+        
+        _urlConnection = [[NSURLConnection alloc] initWithRequest:self.request delegate:self];
+        
+        [_urlConnection start];
+        
+        return NO;
+    }
     
     return YES;
+}
+
+
+#pragma mark - NURLConnection delegate
+
+- (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge;
+{
+    NSLog(@"WebController Got auth challange via NSURLConnection");
+    
+    if ([challenge previousFailureCount] == 0)
+    {
+        _authenticated = YES;
+        
+        NSURLCredential *credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
+        
+        [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
+        
+    } else
+    {
+        [[challenge sender] cancelAuthenticationChallenge:challenge];
+    }
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response;
+{
+    NSLog(@"WebController received response via NSURLConnection");
+    
+    // remake a webview call now that authentication has passed ok.
+    _authenticated = YES;
+    [self.webView loadRequest:_request];
+    
+    // Cancel the URL connection otherwise we double up (webview + url connection, same url = no good!)
+    [_urlConnection cancel];
+}
+
+// We use this method is to accept an untrusted site which unfortunately we need to do, as our PVM servers are self signed.
+- (BOOL)connection:(NSURLConnection *)connection canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace
+{
+    return [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust];
 }
 
 #pragma -mark EmptyDataSet Datasource

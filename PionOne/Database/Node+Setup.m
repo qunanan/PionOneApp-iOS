@@ -35,10 +35,10 @@
         NSDate *now = [[NSDate alloc] init];
         node.date = now;        
     }
-    if ([nodeDictionary[NODE_DATA_SERVER_IP] isKindOfClass:[NSString class]]) {
-        node.dataServerIP = nodeDictionary[NODE_DATA_SERVER_IP];
+    if ([nodeDictionary[NODE_DATA_SERVER_URL] isKindOfClass:[NSString class]]) {
+        node.dataServerURL = nodeDictionary[NODE_DATA_SERVER_URL];
     } else {
-        node.dataServerIP = nil;
+        node.dataServerURL = nil;
     }
     node.name = nodeDictionary[NODE_NAME];
     node.online = nodeDictionary[NODE_ONLINE_STATUS];
@@ -53,14 +53,15 @@
     NSError *error;
     NSArray *matches = [self.managedObjectContext executeFetchRequest:request error:&error];
     
-    if (!matches || error || ([matches count] > 1)) {
+    if (!matches || error) {
         // handle error
-    } else if ([matches count] == 1) {
-        grove = [matches firstObject];
-    } else {
-        grove = [NSEntityDescription insertNewObjectForEntityForName:@"Grove"
-                                              inManagedObjectContext:self.managedObjectContext];
+    } else if ([matches count] > 0) {
+        for (Grove *oldGrove in matches) {
+            [self removeGrovesObject:oldGrove];
+        }
     }
+    grove = [NSEntityDescription insertNewObjectForEntityForName:@"Grove"
+                                          inManagedObjectContext:self.managedObjectContext];
     grove.driver = driver;
     grove.instanceName = [driver.driverName stringByAppendingString:cntName];
     grove.connectorName = cntName;
@@ -141,7 +142,7 @@
             // handle error
         } else if ([matches count]) {
             driver = [matches firstObject];
-            NSString *connectorName = [[PionOneManager sharedInstance] connectorNameForPort:settingDic[@"port"]];
+            NSString *connectorName = [self cntNameForPort:settingDic[@"port"]];
             Grove *grove = [NSEntityDescription insertNewObjectForEntityForName:@"Grove"
                                                          inManagedObjectContext:self.managedObjectContext];
             grove.driver = driver;
@@ -154,10 +155,112 @@
     }
 }
 
+- (NSDictionary *)configJson {
+    NSMutableDictionary *json = [[NSMutableDictionary alloc] init];
+    NSMutableArray *settings = [[NSMutableArray alloc] init];
+    [json setValue:self.board forKey:@"board_name"];
+    for (Grove *grove in self.groves) {
+        NSString *port = [self portNameForGrove:grove];
+        NSDictionary *setting = [NSDictionary dictionaryWithObjects:@[grove.driver.skuID, port] forKeys:@[@"sku", @"port"]];
+        [settings addObject:setting];
+    }
+    [json setObject:settings forKey:@"connections"];
+    return json;
+}
+
 - (NSString *)apiURL {
     NSString *otaServerAddress = [NSString stringWithFormat:@"%@", [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneOTAServerBaseURL]];
-    NSString *dataServerIP = [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneDataServerIPAddress];
-    return [NSString stringWithFormat:@"%@%@?access_token=%@&data_server=%@", otaServerAddress, aPionOneNodeResources,self.key, dataServerIP];
+    NSString *defalutURL = [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneDataServerBaseURL];
+    if (self.dataServerURL) {
+        defalutURL = [self.dataServerURL stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
+    } else {
+        defalutURL = [defalutURL stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
+    }
+    return [NSString stringWithFormat:@"%@%@?access_token=%@&data_server=%@", otaServerAddress, aPionOneNodeResources,self.key, defalutURL];
+}
+
+
+- (NSString *)portNameForGrove:(Grove *)grove {
+    if ([self.board containsString:@"Node"]) { //wio node
+        if ([grove.connectorName isEqualToString:@"PORT0"]) {
+            if ([grove.driver.interfaceType isEqualToString:@"I2C"]) {
+                return  @"I2C0";
+            }
+            if ([grove.driver.interfaceType isEqualToString:@"GPIO"]) {
+                return  @"D0";
+            }
+            if ([grove.driver.interfaceType isEqualToString:@"UART"]) {
+                return  @"UART0";
+            }
+        }
+        if ([grove.connectorName isEqualToString:@"PORT1"]) {
+            if ([grove.driver.interfaceType isEqualToString:@"I2C"]) {
+                return  @"I2C1";
+            }
+            if ([grove.driver.interfaceType isEqualToString:@"GPIO"]) {
+                return  @"D1";
+            }
+            if ([grove.driver.interfaceType isEqualToString:@"ANALOG"]) {
+                return  @"A0";
+            }
+        }
+    } else { // wio link
+        if ([grove.connectorName isEqualToString:@"Digital0"]) {
+            return @"D0";
+        }
+        if ([grove.connectorName isEqualToString:@"Digital1"]) {
+            return @"D1";
+        }
+        if ([grove.connectorName isEqualToString:@"Digital2"]) {
+            return @"D2";
+        }
+        if ([grove.connectorName isEqualToString:@"Analog"]) {
+            return @"A0";
+        }
+        if ([grove.connectorName isEqualToString:@"UART"]) {
+            return @"UART0";
+        }
+        if ([grove.connectorName isEqualToString:@"I2C"]) {
+            return @"I2C0";
+        }
+    }
+    return @"";
+}
+
+- (NSString *)cntNameForPort:(NSString *)port {
+    if ([self.board containsString:@"Node"]) { //wio node
+        if ([port isEqualToString:@"I2C0"] ||
+            [port isEqualToString:@"D0"] ||
+            [port isEqualToString:@"UART0"]) {
+            return @"PORT0";
+        }
+        if ([port isEqualToString:@"I2C1"] ||
+            [port isEqualToString:@"D1"] ||
+            [port isEqualToString:@"A0"]) {
+            return @"PORT1";
+        }
+    } else {
+        //else wio link
+        if ([port isEqualToString:@"D0"]) {
+            return @"Digital0";
+        }
+        if ([port isEqualToString:@"D1"]) {
+            return @"Digital1";
+        }
+        if ([port isEqualToString:@"D2"]) {
+            return @"Digital2";
+        }
+        if ([port isEqualToString:@"A0"]) {
+            return @"Analog";
+        }
+        if ([port isEqualToString:@"UART0"]) {
+            return @"UART";
+        }
+        if ([port isEqualToString:@"I2C0"]) {
+            return @"I2C";
+        }
+    }
+    return @"";
 }
 
 @end

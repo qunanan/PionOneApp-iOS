@@ -10,8 +10,11 @@
 #import "CoreDataTableViewController.h"
 #import "PionOneManager.h"
 
+#define CNT_NAME @"connectorName"
+#define INTERFACE_TYPE @"interfaceType"
+
 @interface SelectGroveTVC : CoreDataTableViewController
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
-@property (nonatomic, strong) NSString *connectorName;
+@property (nonatomic, strong) NSDictionary *configDic;
 @property (nonatomic, strong) Node *node;
 @end

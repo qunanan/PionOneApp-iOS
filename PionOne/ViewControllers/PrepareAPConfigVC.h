@@ -10,6 +10,7 @@
 
 @interface PrepareAPConfigVC : UIViewController
 @property (nonatomic, strong) NSString *selectedSSID;
+@property (nonatomic, strong) NSString *wioName;
 
 - (void)showDialog;
 @end

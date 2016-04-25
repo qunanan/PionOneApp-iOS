@@ -29,6 +29,28 @@
 @end
 @implementation PionOneManager
 
+- (void)checkSysVersion {
+    NSURL *verUrl = [NSURL URLWithString:@"https://raw.githubusercontent.com/awong1900/wio_version/master/wio_version.json"];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSData* data = [[NSData alloc] initWithContentsOfURL:verUrl];
+        NSError *error = nil;
+        if (data) {
+            NSDictionary *jsonData = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+            if (error != nil) {
+                NSLog(@"Error parsing JSON.");
+            }
+            else {
+                NSLog(@"version: %@", jsonData[@"ios"]);
+                if (![jsonData[@"ios"] isEqualToString:kSystemVersion]) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[[UIAlertView alloc] initWithTitle:@"New Version Available" message:@"Please update your APP to continue using the updated service smoothly." delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+                    });
+                }
+            }
+        }
+    });
+}
+
 + (instancetype)sharedInstance
 {
     static PionOneManager *sharedInstance = nil;
@@ -44,7 +66,9 @@
         NSString *urlStr = [[NSUserDefaults standardUserDefaults] stringForKey:kPionOneOTAServerBaseURL];
         if (urlStr == nil) {
             // Please Input a Valid Server IP address
-            NSLog(@"Please Input a Valid Server IP address..");
+            NSLog(@"Lost base url..");
+            [self initBaseURL];
+            return nil;
         }
         NSURL *baseURL = [NSURL URLWithString:urlStr];
         _httpManager = [[AFHTTPSessionManager alloc] initWithBaseURL:baseURL];
@@ -716,7 +740,7 @@
     });
     dispatch_async(dispatch_queue_create(PionOneManagerQueueName, NULL), ^{
         [self openUdpObserver];
-        while (!timeout && !self.canceled && !self.udpData.length > 0) {
+        while (!timeout && !self.canceled && self.udpData.length == 0) {
             [self udpSendPionOneConfiguration];
             [NSThread sleepForTimeInterval:3];
         }
@@ -953,7 +977,7 @@
     jsonHttpMgr.requestSerializer = [AFJSONRequestSerializer serializer];
 
     [jsonHttpMgr.requestSerializer setValue:node.key forHTTPHeaderField:@"Authorization"];
-    NSDictionary *parameters = [self jsonWithNode:node];
+    NSDictionary *parameters = [node configJson];
     jsonHttpMgr.requestSerializer.timeoutInterval = 30.0f;
     [jsonHttpMgr POST:aPionOneUserDownload
                 parameters:parameters
@@ -1088,7 +1112,7 @@
 - (NSDictionary *)jsonWithNode:(Node *) node {
     NSMutableDictionary *json = [[NSMutableDictionary alloc] init];
     NSMutableArray *settings = [[NSMutableArray alloc] init];
-    [json setValue:@"Wio Link v1.0" forKey:@"board_name"];
+    [json setValue:node.board forKey:@"board_name"];
     for (Grove *grove in node.groves) {
         NSString *port = [self portForConnectorName:grove.connectorName];
         NSDictionary *setting = [NSDictionary dictionaryWithObjects:@[grove.driver.skuID, port] forKeys:@[@"sku", @"port"]];
@@ -1346,52 +1370,23 @@
 //}
 
 #pragma -mark setup Server IP
-- (void)setRegion:(NSString*)region OTAServerIP:(NSString *)otaIP andDataSeverIP:(NSString *)dataIP {
-    
+- (void)setRegion:(NSString*)region serverURL:(NSString *)serverURL {
     [[NSUserDefaults standardUserDefaults] setValue:region forKey:kPionOneServerRegion];
-
-    if ([region isEqualToString:PionOneRegionNameInternational]) {
-        [[NSUserDefaults standardUserDefaults] setValue:[self lookupHostIPAddressForURLString:PionOneDefaultOTAServerHostInternational] forKey:kPionOneOTAServerIPAddress];
-        [[NSUserDefaults standardUserDefaults] setValue:[self lookupHostIPAddressForURLString:PionOneDefaultDataServerHostInternational] forKey:kPionOneDataServerIPAddress];
-        [[NSUserDefaults standardUserDefaults] setValue:PionOneDefaultOTAServerHostInternational forKey:kPionOneOTAServerHost];
-        [[NSUserDefaults standardUserDefaults] setValue:PionOneDefaultDataServerHostInternational forKey:kPionOneDataServerHost];
-        NSString *baseURL = [NSString stringWithFormat:@"https://%@",PionOneDefaultOTAServerHostInternational];
-        [[NSUserDefaults standardUserDefaults] setValue:baseURL forKey:kPionOneOTAServerBaseURL];
-        [[PionOneManager sharedInstance] setHttpManager:nil];
-        return;
-    }
-    if ([region isEqualToString:PionOneRegionNameChina]) {
-        [[NSUserDefaults standardUserDefaults] setValue:[self lookupHostIPAddressForURLString:PionOneDefaultOTAServerHostChina] forKey:kPionOneOTAServerIPAddress];
-        [[NSUserDefaults standardUserDefaults] setValue:[self lookupHostIPAddressForURLString:PionOneDefaultDataServerHostChina] forKey:kPionOneDataServerIPAddress];
-        [[NSUserDefaults standardUserDefaults] setValue:PionOneDefaultOTAServerHostChina forKey:kPionOneOTAServerHost];
-        [[NSUserDefaults standardUserDefaults] setValue:PionOneDefaultDataServerHostChina forKey:kPionOneDataServerHost];
-        NSString *baseURL = [NSString stringWithFormat:@"https://%@",PionOneDefaultOTAServerHostChina];
-        [[NSUserDefaults standardUserDefaults] setValue:baseURL forKey:kPionOneOTAServerBaseURL];
-        [[PionOneManager sharedInstance] setHttpManager:nil];
-        return;
-    }
-    
-    [[NSUserDefaults standardUserDefaults] setValue:otaIP forKey:kPionOneOTAServerIPAddress];
-    [[NSUserDefaults standardUserDefaults] setValue:dataIP forKey:kPionOneDataServerIPAddress];
-    [[NSUserDefaults standardUserDefaults] setValue:otaIP forKey:kPionOneOTAServerHost];
-    [[NSUserDefaults standardUserDefaults] setValue:dataIP forKey:kPionOneDataServerHost];
-    NSString *baseURL = [NSString stringWithFormat:@"https://%@",otaIP];
-    [[NSUserDefaults standardUserDefaults] setValue:baseURL forKey:kPionOneOTAServerBaseURL];
+    [[NSUserDefaults standardUserDefaults] setValue:serverURL forKey:kPionOneOTAServerBaseURL];
+    [[NSUserDefaults standardUserDefaults] setValue:serverURL forKey:kPionOneDataServerBaseURL];
     [[PionOneManager sharedInstance] setHttpManager:nil];
-
 }
 
-- (void)node:(Node *)node setDataServerIP:(NSString *)dataIP WithCompletionHandler:(void (^)(BOOL, NSString *))handler {
-    if (!node || !dataIP) {
+- (void)node:(Node *)node setDataServerIP:(NSString *)dataIP url:(NSString *)url WithCompletionHandler:(void (^)(BOOL, NSString *))handler {
+    if (!node || !dataIP || !url) {
         NSLog(@"To call the APIs, you need to set Node and dataIP.");
         if (handler) handler(NO,nil);
         return;
     }
-    NSDictionary *parameters = nil;//[NSDictionary dictionaryWithObjects:@[node.key] forKeys:@[@"access_token"]];
+    NSDictionary *parameters = [NSDictionary dictionaryWithObjects:@[url] forKeys:@[@"dataxurl"]];
     self.httpManager.requestSerializer.timeoutInterval = 10.0f;
     NSString *api = [NSString stringWithFormat:@"%@/%@?access_token=%@", aPionOneNodeChangeDataServer, dataIP, node.key];
     [self.httpManager POST:api parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        node.dataServerIP = dataIP;
         if (handler) handler(YES,@"Change the data exchange server for node success.");
         NSLog(@"JSON:setDataServerIP: %@", responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -1409,27 +1404,79 @@
     }];
 }
 
-- (NSString*)lookupHostIPAddressForURLString:(NSString*)str
-{
-    // Ask the unix subsytem to query the DNS
-    struct hostent *remoteHostEnt = gethostbyname([str UTF8String]);
-    // Get address info from host entry
-    struct in_addr *remoteInAddr = (struct in_addr *) remoteHostEnt->h_addr_list[0];
-    // Convert numeric addr to ASCII string
-    char *sRemoteInAddr = inet_ntoa(*remoteInAddr);
-    // hostIP
-    NSString* hostIP = [NSString stringWithUTF8String:sRemoteInAddr];
-    return hostIP;
+- (void)initBaseURL {
+    NSString *urlStr = [[NSUserDefaults standardUserDefaults] stringForKey:kPionOneOTAServerBaseURL];
+    if (urlStr == nil) {
+        [self setRegion:PionOneRegionNameInternational serverURL:PionOneDefaultServerURLInternational];
+    }
 }
 
+- (void)checkBaseURL:(NSURL *)url complete:(void (^)(BOOL, NSString *))handler {
+    AFHTTPSessionManager *httpMgr = [[AFHTTPSessionManager alloc] initWithBaseURL:url];
+    httpMgr.securityPolicy.allowInvalidCertificates = YES;
+    httpMgr.securityPolicy.validatesDomainName = NO;
+    httpMgr.responseSerializer = [AFCompoundResponseSerializer serializer];
+    httpMgr.responseSerializer.acceptableContentTypes = [httpMgr.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+    httpMgr.requestSerializer = [AFJSONRequestSerializer serializer];
+    httpMgr.requestSerializer.timeoutInterval = 10.0f;
+    [httpMgr GET:@"/v1/test" parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (handler) {
+            handler(YES, nil);
+        };
+        NSLog(@"JSON:checkBaseURL: %@", responseObject);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSError *errorJson=nil;
+        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+        NSDictionary* responseDict = nil;
+        if (errorData) {
+            responseDict = [NSJSONSerialization JSONObjectWithData:errorData options:NSJSONReadingAllowFragments error:&errorJson];
+        }
+        if (handler) {
+            handler(NO,responseDict[@"error"]);
+        }
+        NSLog(@"responseDict=%@",responseDict);
+        NSLog(@"http error: %@",error);
+    }];
+}
+
+- (BOOL)parseDefaultServerDomain {
+    NSString *otaURLStr = [[NSUserDefaults standardUserDefaults] valueForKey:kPionOneOTAServerBaseURL];
+    NSString *dataURLStr = [[NSUserDefaults standardUserDefaults] valueForKey:kPionOneDataServerBaseURL];
+    NSURL *otaURL = [NSURL URLWithString:otaURLStr];
+    NSURL *dataURL = [NSURL URLWithString:dataURLStr];
+    NSString *otaIPStr = [[PionOneManager sharedInstance] lookupIPAddressForHostName:otaURL.host];
+    NSString *dataIPStr = [[PionOneManager sharedInstance] lookupIPAddressForHostName:dataURL.host];
+    [[NSUserDefaults standardUserDefaults] setValue:otaIPStr forKey:kPionOneOTAServerIPAddress];
+    [[NSUserDefaults standardUserDefaults] setValue:dataIPStr forKey:kPionOneDataServerIPAddress];
+    if (!otaURLStr || !dataURLStr) {
+        NSLog(@"Domain name parse error.");
+        return NO;
+    }
+    return YES;
+}
+- (NSString*)lookupIPAddressForHostName:(NSString*)hostName
+{
+    // Ask the unix subsytem to query the DNS
+    struct hostent *remoteHostEnt;
+    @try {
+        remoteHostEnt = gethostbyname([hostName UTF8String]);
+    }
+    @catch (NSException *exception) {
+        return nil;
+    }
+    // Get address info from host entry
+    if (remoteHostEnt) {
+        struct in_addr *remoteInAddr = (struct in_addr *) remoteHostEnt->h_addr_list[0];
+        // Convert numeric addr to ASCII string
+        char *sRemoteInAddr = inet_ntoa(*remoteInAddr);
+        // hostIP
+        NSString* hostIP = [NSString stringWithUTF8String:sRemoteInAddr];
+        return hostIP;
+    } else {
+        return nil;
+    }
+}
+
+
 @end
 
-#pragma -mark Board Types classes
-@implementation Board
-@end
-
-@implementation Connector
-@end
-
-@implementation Port
-@end

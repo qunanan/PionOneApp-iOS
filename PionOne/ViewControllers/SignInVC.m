@@ -94,16 +94,12 @@
         case 0:
             //International
             self.regionLabel.text = PionOneRegionNameInternational;
-            [[PionOneManager sharedInstance] setRegion:PionOneRegionNameInternational
-                                           OTAServerIP:nil
-                                        andDataSeverIP:nil];
+            [[PionOneManager sharedInstance] setRegion:PionOneRegionNameInternational serverURL:PionOneDefaultServerURLInternational];
             break;
         case 1:
             //China
             self.regionLabel.text = PionOneRegionNameChina;
-            [[PionOneManager sharedInstance] setRegion:PionOneRegionNameChina
-                                           OTAServerIP:nil
-                                        andDataSeverIP:nil];
+            [[PionOneManager sharedInstance] setRegion:PionOneRegionNameChina serverURL:PionOneDefaultServerURLChina];
             break;
         case 2:
             //Custom

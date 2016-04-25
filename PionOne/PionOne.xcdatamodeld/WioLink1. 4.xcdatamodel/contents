@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10171" systemVersion="15E65" minimumToolsVersion="Automatic">
+    <entity name="Driver" representedClassName="Driver" syncable="YES">
+        <attribute name="driverID" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="driverName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="groveName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imageURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="interfaceType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="skuID" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="groves" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Grove" inverseName="driver" inverseEntity="Grove" syncable="YES"/>
+    </entity>
+    <entity name="Grove" representedClassName="Grove" syncable="YES">
+        <attribute name="connectorName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="instanceName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pinNum0" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pinNum1" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="driver" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Driver" inverseName="groves" inverseEntity="Driver" syncable="YES"/>
+        <relationship name="node" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Node" inverseName="groves" inverseEntity="Node" syncable="YES"/>
+    </entity>
+    <entity name="Node" representedClassName="Node" syncable="YES">
+        <attribute name="board" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="dataServerURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="key" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="macAddress" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nodeID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="online" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="sn" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="groves" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Grove" inverseName="node" inverseEntity="Grove" syncable="YES"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="nodes" inverseEntity="User" syncable="YES"/>
+    </entity>
+    <entity name="User" representedClassName="User" syncable="YES">
+        <attribute name="token" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userID" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="nodes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Node" inverseName="user" inverseEntity="Node" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Driver" positionX="18" positionY="-223" width="128" height="148"/>
+        <element name="Grove" positionX="-162" positionY="-225" width="128" height="133"/>
+        <element name="Node" positionX="-335" positionY="-223" width="128" height="210"/>
+        <element name="User" positionX="-531" positionY="-225" width="128" height="88"/>
+    </elements>
+</model>

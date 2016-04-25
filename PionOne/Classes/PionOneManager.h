@@ -34,6 +34,8 @@
 
 + (instancetype)sharedInstance;
 
+- (void)checkSysVersion;
+
 #pragma -mark User Management API
 - (void)signUpWithEmail:(NSString *)email
                 andPwd:(NSString *)pwd
@@ -63,7 +65,7 @@
 - (void)cacheCurrentSSID;
 //************private method called by startAPConfigWithProgressHandler: **************
 //- (void)findTheConfiguringNodeFromSeverWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
-//- (void)setNodeName:(NSString *)name withNodeSN:(NSString *)sn completionHandler:(void (^)(BOOL success, NSString *msg))handler;
+- (void)setNodeName:(NSString *)name withNodeSN:(NSString *)sn completionHandler:(void (^)(BOOL success, NSString *msg))handler;
 - (void)getNodeVersionWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
 - (void)getWiFiListWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
 - (void)checkIfConnectedToPionOneWithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
@@ -86,27 +88,12 @@
 - (void)saveChildContext:(NSManagedObjectContext *) childMOC;
 
 #pragma -mark setup Server IP
-- (void)setRegion:(NSString*)region OTAServerIP:(NSString *)otaIP andDataSeverIP:(NSString *)dataIP;
-- (void)node:(Node *)node setDataServerIP:(NSString *)dataIP WithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
+- (void)setRegion:(NSString*)region serverURL:(NSString *)serverURL;
+- (void)node:(Node *)node setDataServerIP:(NSString *)dataIP url:(NSString *)url WithCompletionHandler:(void (^)(BOOL success, NSString *msg))handler;
+- (NSString*)lookupIPAddressForHostName:(NSString*)hostName;
+- (void)initBaseURL;
+- (void)checkBaseURL:(NSURL *)url complete:(void (^)(BOOL success, NSString *msg))handler;
+- (BOOL)parseDefaultServerDomain;
 
 @end
 
-#pragma -mark Board Types classes
-@interface Board : NSObject
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSArray *connectors;
-@end
-
-@interface Connector : NSObject
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSArray *ports;
-@property (nonatomic, strong) Board *board;
-@end
-
-@interface Port : NSObject
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSString *pin0;
-@property (nonatomic, strong) NSString *pin1;
-@property (nonatomic, strong) NSString *type;
-@property (nonatomic, strong) Connector *connector;
-@end

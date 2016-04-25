@@ -9,26 +9,36 @@
 #import "SetupViewController.h"
 #import "TextFieldEffects-Swift.h"
 #import "PionOneManager.h"
+#import "NSString+Email.h"
+#import "MBProgressHUD.h"
 
 @interface SetupViewController () <UITextFieldDelegate>
-@property (weak, nonatomic) IBOutlet HoshiTextField *otaServerIP;
+@property (weak, nonatomic) IBOutlet HoshiTextField *serverURL;
 @property (weak, nonatomic) IBOutlet HoshiTextField *dataServerIP;
+@property (nonatomic, strong) MBProgressHUD *HUD;
 
 @end
 
 @implementation SetupViewController
+#pragma -mark property
+- (MBProgressHUD *)HUD {
+    if (_HUD == nil) {
+        _HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
+        _HUD.dimBackground = YES;
+        [self.navigationController.view addSubview:_HUD];
+    }
+    return _HUD;
+}
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-
-    self.otaServerIP.delegate = self;
     self.dataServerIP.delegate = self;
-    [self.otaServerIP becomeFirstResponder];
+    self.dataServerIP.hidden = YES;
+
+    self.serverURL.delegate = self;
     
-    self.otaServerIP.text = [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneOTAServerIPAddress];
-    [self.dataServerIP becomeFirstResponder];
-    self.dataServerIP.text = [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneDataServerIPAddress];
-    [self.otaServerIP becomeFirstResponder];
+    self.serverURL.text = [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneOTAServerBaseURL];
+    [self.serverURL becomeFirstResponder];
 
 }
 
@@ -52,10 +62,29 @@
 }
 */
 - (IBAction)done:(UIBarButtonItem *)sender {
-    [[PionOneManager sharedInstance] setRegion:PionOneRegionNameCustom
-                                   OTAServerIP:self.otaServerIP.text
-                                andDataSeverIP:self.dataServerIP.text];
-        [self.navigationController popViewControllerAnimated:YES];
+    [self.serverURL resignFirstResponder];
+    NSURL *url = [NSURL URLWithString:self.serverURL.text];
+    if (url && url.scheme && url.host) {
+        [self.HUD show:YES];
+        [[PionOneManager sharedInstance] checkBaseURL:url complete:^(BOOL success, NSString *msg) {
+            if (success) {
+                [[PionOneManager sharedInstance] setRegion:PionOneRegionNameCustom serverURL:self.serverURL.text];
+                [self.navigationController popViewControllerAnimated:YES];
+            } else {
+                [[[UIAlertView alloc] initWithTitle:nil message:@"Please input a valid url" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+            }
+            [self.HUD hide:YES];
+        }];
+    } else {
+        [[[UIAlertView alloc] initWithTitle:nil message:@"Please input a valid url" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+    }
 }
+
+#pragma -mark UITextFieldDelegate
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [self done:nil];
+    return YES;
+}
+
 
 @end

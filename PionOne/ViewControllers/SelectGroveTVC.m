@@ -12,26 +12,34 @@
 #import "Grove+Create.h"
 
 @interface SelectGroveTVC ()
-@property (nonatomic, strong) NSString *interfaceType;
 @property (nonatomic, strong) NSMutableArray *i2cDevices;
+@property (nonatomic, strong) NSString *connectorName;
+@property (nonatomic, strong) NSString *interfaceType;
+
 @end
 
 @implementation SelectGroveTVC
 
 #pragma -mark Properties
 - (NSString *)interfaceType {
-    if (_connectorName == nil) {
+    if (_configDic == nil) {
         return nil;
     }
-    _interfaceType = [[PionOneManager sharedInstance] interfaceTypeForCntName:_connectorName];
-    return _interfaceType;
+    return [_configDic objectForKey:INTERFACE_TYPE];
+}
+
+- (NSString *)connectorName {
+    if (_configDic == nil) {
+        return nil;
+    }
+    return [_configDic objectForKey:CNT_NAME];
 }
 
 - (void)setManagedObjectContext:(NSManagedObjectContext *)managedObjectContext {
     _managedObjectContext = managedObjectContext;
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Driver"];
-    request.predicate = [NSPredicate predicateWithFormat:@"interfaceType = %@", self.interfaceType];
+    request.predicate = [NSPredicate predicateWithFormat:@"interfaceType = %@",self.interfaceType];
     request.sortDescriptors = @[[[NSSortDescriptor alloc] initWithKey:@"groveName"
                                                             ascending:YES
                                                              selector:@selector(localizedStandardCompare:)]];
@@ -46,7 +54,7 @@
     
     
     self.navigationItem.title = self.connectorName;
-    if ([self.connectorName isEqualToString:@"I2C"]) {
+    if ([self.interfaceType isEqualToString:@"I2C"]) {
         
         UIView *footerView = self.tableView.tableFooterView;
         [footerView setNeedsLayout];
@@ -76,6 +84,15 @@
     return cell;
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.i2cDevices.count > 0) {
+        Driver *driver = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        if (![driver.interfaceType isEqualToString:@"I2C"]) {
+            return nil;
+        }
+    }
+    return indexPath;
+}
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -100,7 +117,6 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 55.0;
 }
-
 
 - (void)addGroves {
     [self.node addI2CGrovesWithDrivers:self.i2cDevices cntName:self.connectorName];
