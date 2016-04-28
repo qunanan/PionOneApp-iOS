@@ -28,4 +28,5 @@
 
 - (BOOL)isEmail;
 - (BOOL)isIp;
+- (BOOL) isUrl;
 @end

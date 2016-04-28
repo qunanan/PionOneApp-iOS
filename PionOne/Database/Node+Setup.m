@@ -170,6 +170,7 @@
 
 - (NSString *)apiURL {
     NSString *otaServerAddress = [NSString stringWithFormat:@"%@", [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneOTAServerBaseURL]];
+    otaServerAddress = [otaServerAddress stringByReplacingOccurrencesOfString:@"https" withString:@"http"];
     NSString *defalutURL = [[NSUserDefaults standardUserDefaults] objectForKey:kPionOneDataServerBaseURL];
     if (self.dataServerURL) {
         defalutURL = [self.dataServerURL stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];

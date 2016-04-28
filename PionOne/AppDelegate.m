@@ -9,7 +9,9 @@
 #import "AppDelegate.h"
 #import "AppDelegate+Prepare.h"
 #import "PionOneManager.h"
-#import <Bugtags/Bugtags.h>
+//#import <Bugtags/Bugtags.h>
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
 
 @interface AppDelegate ()
 
@@ -20,7 +22,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
-    [Bugtags startWithAppKey:@"de954c8e373f9e61fb9b3eb4dd33739b" invocationEvent:BTGInvocationEventNone];
+//    [Bugtags startWithAppKey:@"de954c8e373f9e61fb9b3eb4dd33739b" invocationEvent:BTGInvocationEventNone];
+    [Fabric with:@[[Crashlytics class]]];
     
     [[PionOneManager sharedInstance] checkSysVersion];
     [[PionOneManager sharedInstance] setMainMOC:self.mainMOC];

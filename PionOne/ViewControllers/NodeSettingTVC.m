@@ -13,9 +13,9 @@
 #import "NSString+Email.h"
 
 #define mSTR_RENAME_WIO_LINK @"Rename Wio Device"
-#define mSTR_CHANGE_DATA_SERVER @"Change Data Server"
+#define mSTR_CHANGE_DATA_SERVER @"Change Exchange Server"
 #define mSTR_TAKE_A_NAME_FOR_WIO_LINK @"Take a name for Wio Device"
-#define mSTR_YOUR_DATA_SERVER_URL @"Your data server URL"
+#define mSTR_YOUR_DATA_SERVER_URL @"Your Exchange server URL"
 
 @interface NodeSettingTVC () <UITextFieldDelegate>
 @property (nonatomic, strong) RETableViewManager *tvManager;
@@ -58,7 +58,7 @@
 
 - (RETableViewItem *)serverURLItem {
     if (_serverURLItem == nil) {
-        _serverURLItem = [RETableViewItem itemWithTitle:@"Data Server URL" accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
+        _serverURLItem = [RETableViewItem itemWithTitle:@"Exchange Server URL" accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
             [item deselectRowAnimated:YES];
             self.textInputDialog.title = mSTR_CHANGE_DATA_SERVER;
             NSString *defaultURLStr = [[NSUserDefaults standardUserDefaults] valueForKey:kPionOneDataServerBaseURL];
@@ -105,7 +105,7 @@
     BOOL dataServerChanged = self.node.dataServerURL != nil && ![self.node.dataServerURL isEqualToString:defaultServerURL];
 
 
-    REBoolItem *dataServerSwitchItem = [REBoolItem itemWithTitle:@"Use Custom Data Server" value:dataServerChanged switchValueChangeHandler:^(REBoolItem *item) {
+    REBoolItem *dataServerSwitchItem = [REBoolItem itemWithTitle:@"Use Custom Exchange Server" value:dataServerChanged switchValueChangeHandler:^(REBoolItem *item) {
         if (item.value) {
             self.serverURLItem.detailLabelText = [[NSUserDefaults standardUserDefaults] valueForKey:kPionOneDataServerBaseURL];
             self.serverURLItem.style = UITableViewCellStyleValue1;
@@ -160,20 +160,24 @@
 
 - (void)changeDataServer {
     NSString *urlStr = [[_textInputDialog.textFields objectAtIndex:0] text];
-    NSURL *url = [NSURL URLWithString:urlStr];
-    NSString *ip = [[PionOneManager sharedInstance] lookupIPAddressForHostName:url.host];
-    if ([ip isIp]) {
-        [self.HUD show:YES];
-        [[PionOneManager sharedInstance] node:self.node setDataServerIP:ip url:urlStr WithCompletionHandler:^(BOOL success, NSString *msg) {
-            [self.HUD hide:YES];
-            if (success) {
-                self.node.dataServerURL = urlStr;
-                self.serverURLItem.detailLabelText = urlStr;
-                [self.tableView reloadData];
-            } else {
-                [self showAlertMsg:msg];
-            }
-        }];
+    if ([urlStr isUrl]) {
+        NSURL *url = [NSURL URLWithString:urlStr];
+        NSString *ip = [[PionOneManager sharedInstance] lookupIPAddressForHostName:url.host];
+        if ([ip isIp] || [urlStr isUrl]) {
+            [self.HUD show:YES];
+            [[PionOneManager sharedInstance] node:self.node setDataServerIP:ip url:urlStr WithCompletionHandler:^(BOOL success, NSString *msg) {
+                [self.HUD hide:YES];
+                if (success) {
+                    self.node.dataServerURL = urlStr;
+                    self.serverURLItem.detailLabelText = urlStr;
+                    [self.tableView reloadData];
+                } else {
+                    [self showAlertMsg:msg];
+                }
+            }];
+        } else {
+            [self showAlertMsg:@"Bad Server URL"];
+        }
     } else {
         [self showAlertMsg:@"Bad Server URL"];
     }

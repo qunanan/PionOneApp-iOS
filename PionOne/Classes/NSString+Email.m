@@ -27,4 +27,18 @@
     }
 }
 
+- (BOOL) isUrl {
+     return [self validateWithRegExp: @"(http(s)?:\\/\\/)(www\\.)?[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+(:\\d+)*(\\/\\w+\\.\\w+)*$"];
+}
+
+- (BOOL)validateWithRegExp: (NSString *)regExp
+
+{
+    
+    NSPredicate * predicate = [NSPredicate predicateWithFormat: @"SELF MATCHES %@", regExp];
+    
+    return [predicate evaluateWithObject: self];
+    
+}
+
 @end

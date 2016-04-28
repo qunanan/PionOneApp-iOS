@@ -9,7 +9,9 @@ pod 'RETableViewManager', '~> 1.6'
 #pod 'QRExt', '~> 1.0'
 pod 'MGSwipeTableCell', '~> 1.5'
 pod "GoogleMaterialIconFont"
-pod 'Bugtags'
+#pod 'Bugtags'
+pod 'Fabric'
+pod 'Crashlytics'
 
 use_frameworks!
 pod "TextFieldEffects"
